@@ -23,6 +23,7 @@ class User extends Authenticatable
         'referral_by',
         'wallet',
         'join_date',
+        'last_claim_timestamp'
     ];
 
     /**
@@ -50,5 +51,14 @@ class User extends Authenticatable
     public function claimHistories()
     {
         return $this->hasMany(ClaimHistory::class);
+    }
+    public function referrer()
+    {
+        return $this->belongsTo(User::class, 'referral_by');
+    }
+
+    public function referrals()
+    {
+        return $this->hasMany(User::class, 'referral_by');
     }
 }

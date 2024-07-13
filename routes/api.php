@@ -1,10 +1,12 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\UserController;
+use App\http\Controllers\Api\UserController;
 
-Route::namespace('\App\Http\Controllers')->group(function () {
+Route::namespace('\App\Http\Controllers\Api')->group(function () {
     Route::post('/register', "UserController@register");
-    Route::post('/claim', [UserController::class, 'claimDailyAmount']);
-    Route::post('/investment', [UserController::class, 'invest']);
+    Route::post('/claim', 'UserController@claimDailyAmount');
+    Route::post('/confirm-payment', 'UserController@invest');
+    Route::post('/order_details', 'UserController@order_details');
+    Route::post('/transactions', 'UserController@transactions');
 });

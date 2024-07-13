@@ -11,6 +11,6 @@ class ClaimHistory extends Model
     protected $table = 'claim_historys';
 
     protected $fillable = [
-        'user_id', 'telegram_id', 'amount', 'type', 'claimed_at'
+        'user_id', 'telegram_id', 'amount', 'type', 'last_claim_timestamp'
     ];
 }

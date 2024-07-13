@@ -17,7 +17,7 @@ return new class extends Migration
             $table->unsignedBigInteger('telegram_id'); // Foreign key to users table
             $table->decimal('amount', 15, 2);
             $table->string('type')->default(1)->comment('1=>Daily Roi ,2=> referral_by');
-            $table->string('claimed_at'); // Timestamp of when the claim was made
+            $table->string('last_claim_timestamp'); // Timestamp of when the claim was made
             $table->timestamps();
         });
     }
