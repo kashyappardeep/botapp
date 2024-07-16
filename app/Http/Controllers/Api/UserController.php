@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\User;
+use App\Models\Task;
 use App\Models\Config;
 use App\Models\InvestmentHistory;
 use App\Models\TransactionHistory;
@@ -15,6 +16,7 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
 use App\Models\Level;
+use App\Models\UserTask;
 use Illuminate\Support\Facades\Log;
 
 class UserController extends Controller
@@ -320,5 +322,58 @@ class UserController extends Controller
         $user->save();
 
         return $user;
+    }
+
+    public function user_task(Request $request)
+    {
+
+        $task_deatils = Task::where('type', $request->type)->get();
+        $user = User::where('telegram_id', $request->telegram_id)->first();
+        $userTotalDirect = User::where('referral_by', $request->telegram_id)->count();
+        $user_task_details = [];
+        foreach ($task_deatils as $task) {
+            $user_task_detail = UserTask::where(['user_id' => $user->id, 'task_id' => $task->id])->get();
+            $user_task_details[] = $user_task_detail;
+        }
+
+        return response()->json([
+            'user_Total_Direct' => $userTotalDirect,
+            'task_details' => $task_deatils, // Use $task_detail instead of $task_details
+            'user_task_details' => $user_task_details, // Assuming you want to return user's task details
+        ], 200);
+    }
+
+    public function task_claim(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'user_id' => 'required|exists:users,id',
+            'task_id'  => 'required'
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()], 400);
+        }
+
+        $user = User::where('id', $request->user_id)->first();
+        $task_deatils = Task::where('id', $request->task_id)->first();
+
+
+
+        try {
+            $user_task = UserTask::create([
+                'user_id' => $request->user_id,
+                'amount' => $task_deatils->amount,
+                'task_id' => $request->task_id,
+                'type' => $task_deatils->type,
+            ]);
+
+            $user->wallet += $task_deatils->amount;
+            $user->save();
+
+
+            return response()->json(['user_task' => $user_task], 200);
+        } catch (\Exception $e) {
+            return response()->json(['success' => false, 'message' => 'Error user_task: ' . $e->getMessage()]);
+        }
     }
 }
