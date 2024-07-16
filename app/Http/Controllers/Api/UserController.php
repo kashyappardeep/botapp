@@ -338,7 +338,7 @@ class UserController extends Controller
 
         return response()->json([
             'user_Total_Direct' => $userTotalDirect,
-            'task_details' => $task_deatils, // Use $task_detail instead of $task_details
+            'task_deatils' => $task_deatils, // Use $task_detail instead of $task_details
             'user_task_details' => $user_task_details, // Assuming you want to return user's task details
         ], 200);
     }
