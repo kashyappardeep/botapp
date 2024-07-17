@@ -8,6 +8,6 @@ Route::namespace('\App\Http\Controllers')->group(function () {
     Route::post('/claim', [UserController::class, 'claimDailyAmount']);
     Route::post('/investment', [UserController::class, 'invest']);
     Route::post('/transactions', [UserController::class, 'transactions']);
-    Route::post('/tesk', [UserController::class, 'user_task']);
+    Route::post('/task', [UserController::class, 'user_task']);
     Route::post('/task_claim', [UserController::class, 'task_claim']);
 });

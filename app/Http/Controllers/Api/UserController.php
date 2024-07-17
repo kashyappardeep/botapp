@@ -327,19 +327,24 @@ class UserController extends Controller
     public function user_task(Request $request)
     {
 
-        $task_deatils = Task::where('type', $request->type)->get();
+        // $task_deatils = Task::where('type', $request->type)->get();
         $user = User::where('telegram_id', $request->telegram_id)->first();
+
+        $userId = $user->id;
+        $type = $request->type;
+
+        $task_deatils = Task::with(['userTasks' => function ($query) use ($userId, $type) {
+            $query->where('user_id', $userId);
+        }])->where('type', $type)->get();
+
+
         $userTotalDirect = User::where('referral_by', $request->telegram_id)->count();
-        $user_task_details = [];
-        foreach ($task_deatils as $task) {
-            $user_task_detail = UserTask::where(['user_id' => $user->id, 'task_id' => $task->id])->get();
-            $user_task_details[] = $user_task_detail;
-        }
+
 
         return response()->json([
             'user_Total_Direct' => $userTotalDirect,
             'task_deatils' => $task_deatils, // Use $task_detail instead of $task_details
-            'user_task_details' => $user_task_details, // Assuming you want to return user's task details
+            // 'user_task_details' => $user_task_details, // Assuming you want to return user's task details
         ], 200);
     }
 

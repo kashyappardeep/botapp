@@ -16,4 +16,13 @@ class UserTask extends Model
         'amount',
         'type',
     ];
+
+    public function task()
+    {
+        return $this->belongsTo(Task::class);
+    }
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
 }

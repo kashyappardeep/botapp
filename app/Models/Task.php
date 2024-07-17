@@ -16,4 +16,9 @@ class Task extends Model
         'type',
         'images',
     ];
+
+    public function userTasks()
+    {
+        return $this->hasOne(UserTask::class);
+    }
 }
