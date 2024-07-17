@@ -22,7 +22,7 @@ class User extends Authenticatable
         'last_name',
         'referral_by',
         'wallet',
-        'join_date',
+        'last_claim_timestamp',
     ];
 
     /**

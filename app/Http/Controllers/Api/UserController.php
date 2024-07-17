@@ -23,8 +23,7 @@ class UserController extends Controller
 {
     public function register(Request $request)
     {
-
-
+        // dd($request->all());
         $validator = Validator::make($request->all(), [
             'telegram_id' => 'required|string|max:255',
             'lastname' => 'nullable|string|max:255',
@@ -32,36 +31,28 @@ class UserController extends Controller
             'referral_by' => 'nullable',
         ]);
 
-
         if ($validator->fails()) {
             return response()->json(['errors' => $validator->errors()], 400);
         }
-
-
+        DB::beginTransaction();
         try {
-            $dateTime = Carbon::createFromFormat('Y-m-d H:i:s', Carbon::now());
-
-            // Convert the datetime to a timestamp
+            $dateTime = Carbon::now();
             $timestamp = $dateTime->timestamp;
-
-
 
             $user = User::where('telegram_id', $request->telegram_id)->first();
 
-            if ($user) {
-                $user = $user;
 
+
+
+            if ($user) {
                 $this->claimDaily($user);
             } else {
-
                 $user = User::create([
                     'telegram_id' => $request->input('telegram_id'),
-                    'first_name' => $request->input('first_name'),
-                    'last_name' => $request->input('last_name'),
+                    'first_name' => $request->input('firstname'),
+                    'last_name' => $request->input('lastname'),
                     'referral_by' => $request->input('referral_by'),
-                    'join_date' => $timestamp,
-                    'last_claim_timestamp' => $timestamp
-
+                    'last_claim_timestamp' => $timestamp,
                 ]);
 
                 $investmentHistory = InvestmentHistory::create([
@@ -71,16 +62,19 @@ class UserController extends Controller
                     'invest_at' => $timestamp,
                 ]);
             }
-
-
-
-            return response()->json(['user' => $user], 200);
+            DB::commit();
+            return response()->json([
+                'user' => $user
+            ], 200);
         } catch (\Exception $e) {
-
             // Optionally handle the exception
-            return response()->json(['register' => 'Register failed'], 500);
+            DB::rollBack();
+            return response()->json(['register' => 'Register failed', 'message' => $e->getMessage()], 500);
         }
     }
+
+
+
     public function claimDailyAmount(Request $request)
     {
         $user = User::where('id', $request->user_id)->first();
@@ -112,6 +106,7 @@ class UserController extends Controller
 
     public function invest(Request $request)
     {
+        // dd($$request->all());
         $validator = Validator::make($request->all(), [
             'user_id' => 'required|exists:users,id',
             'amount' => 'required|numeric',
@@ -182,7 +177,7 @@ class UserController extends Controller
             $user->save();
             //update user_id and amount in address table
             $address = Address::get();
-
+            // dd($address);
             foreach ($address as $address) {
                 if ($address->user_id !== null) {
                     $address->user_id = $request->input('user_id');
@@ -339,8 +334,7 @@ class UserController extends Controller
 
 
         $userTotalDirect = User::where('referral_by', $request->telegram_id)->count();
-
-
+        // $userTotalDirect = 9999;
         return response()->json([
             'user_Total_Direct' => $userTotalDirect,
             'task_deatils' => $task_deatils, // Use $task_detail instead of $task_details

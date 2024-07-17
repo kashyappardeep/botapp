@@ -16,6 +16,7 @@ class TransactionHistory extends Model
         'by',
         'level',
         'amount',
-        'type'
+        'type',
+        'task_id'
     ];
 }
