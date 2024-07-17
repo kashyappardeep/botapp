@@ -45,12 +45,13 @@ class UserController extends Controller
 
 
             if ($user) {
+
                 $this->claimDaily($user);
             } else {
                 $user = User::create([
                     'telegram_id' => $request->input('telegram_id'),
-                    'first_name' => $request->input('firstname'),
-                    'last_name' => $request->input('lastname'),
+                    'first_name' => $request->input('first_name'),
+                    'last_name' => $request->input('last_name'),
                     'referral_by' => $request->input('referral_by'),
                     'last_claim_timestamp' => $timestamp,
                 ]);
@@ -365,6 +366,12 @@ class UserController extends Controller
                 'task_id' => $request->task_id,
                 'type' => $task_deatils->type,
             ]);
+            $TransactionHistory =  TransactionHistory::create([
+                'user_id' => $request->user_id,
+                'amount' => $task_deatils->amount,
+                'type' => $task_deatils->type,
+                'task_id' => $request->task_id,
+            ]);
 
             $user->wallet += $task_deatils->amount;
             $user->save();
@@ -373,6 +380,43 @@ class UserController extends Controller
             return response()->json(['user_task' => $user_task], 200);
         } catch (\Exception $e) {
             return response()->json(['success' => false, 'message' => 'Error user_task: ' . $e->getMessage()]);
+        }
+    }
+
+    public function wallet_histroy(Request $request)
+    {
+
+        $validator = Validator::make($request->all(), [
+            'user_id' => 'required|exists:users,id',
+
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()], 400);
+        }
+        try {
+            $userId = $request->user_id;
+            // dd($userId);
+            // $user_claim = ClaimHistory::where('user_id', $request->user_id)->get();
+            // // $TransactionHistory = TransactionHistory::where('user_id', $request->user_id)->get();
+            // $UserTask = UserTask::where('user_id', $request->user_id)->get();
+
+            $wallet_history = User::with([
+                'TransactionHistory',
+                'claimHistories',
+                'UserTask' => function ($query) use ($userId) {
+                    $query->where('user_id', $userId);
+                }
+            ])->get();
+
+            // dd($wallet_history);
+
+            return response()->json([
+                'wallet_history' => $wallet_history,
+
+            ], 200);
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'Failed to wallet_history'], 500);
         }
     }
 }

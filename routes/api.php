@@ -11,4 +11,6 @@ Route::namespace('\App\Http\Controllers')->group(function () {
     Route::post('/task', [UserController::class, 'user_task']);
     Route::post('/task_claim', [UserController::class, 'task_claim']);
     Route::post('/confirm-payment', [UserController::class, 'invest']);
+    Route::post('/order_details', [UserController::class, 'order_details']);
+    Route::post('/wallet_histroy', [UserController::class, 'wallet_histroy']);
 });
