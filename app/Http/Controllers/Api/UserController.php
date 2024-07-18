@@ -161,7 +161,7 @@ class UserController extends Controller
                         'type' => "2"
                     ]);
                     // dd($TransactionHistory);
-                    echo 'TransactionHistory', $TransactionHistory;
+                    // echo 'TransactionHistory', $TransactionHistory;
                     $currentUser = $referrer;
                     // echo 'curent_user', $currentUser;
                     // Log::info('Updated user data:', ['currentUser' => $currentUser->toArray()]);
@@ -190,7 +190,10 @@ class UserController extends Controller
 
 
             DB::commit();
-            return response()->json(['investment_history' => $investmentHistory], 200);
+            return response()->json([
+                'message' => 'Your transaction will get automatically confirmed within 10 minutes.',
+                'investment_history' => $investmentHistory
+            ], 200);
         } catch (\Exception $e) {
             // Rollback the transaction
             DB::rollBack();
@@ -337,6 +340,7 @@ class UserController extends Controller
         $userTotalDirect = User::where('referral_by', $request->telegram_id)->count();
         // $userTotalDirect = 9999;
         return response()->json([
+
             'user_Total_Direct' => $userTotalDirect,
             'task_deatils' => $task_deatils, // Use $task_detail instead of $task_details
             // 'user_task_details' => $user_task_details, // Assuming you want to return user's task details
@@ -377,7 +381,10 @@ class UserController extends Controller
             $user->save();
 
 
-            return response()->json(['user_task' => $user_task], 200);
+            return response()->json([
+                'message' => 'Task claim successfully.',
+                'user_task' => $user_task
+            ], 200);
         } catch (\Exception $e) {
             return response()->json(['success' => false, 'message' => 'Error user_task: ' . $e->getMessage()]);
         }
