@@ -118,7 +118,6 @@ class UserController extends Controller
             return response()->json(['errors' => $validator->errors()], 400);
         }
         $dateTime = Carbon::createFromFormat('Y-m-d H:i:s', Carbon::now());
-
         // Convert the datetime to a timestamp
         $timestamp = $dateTime->timestamp;
 
@@ -342,6 +341,7 @@ class UserController extends Controller
         return response()->json([
 
             'user_Total_Direct' => $userTotalDirect,
+            'user' => $user,
             'task_deatils' => $task_deatils, // Use $task_detail instead of $task_details
             // 'user_task_details' => $user_task_details, // Assuming you want to return user's task details
         ], 200);
