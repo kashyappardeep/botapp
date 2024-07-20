@@ -1,16 +1,16 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Api\UserController;
+use App\http\Controllers\Api\UserController;
 
-Route::namespace('\App\Http\Controllers')->group(function () {
-    Route::post('/register', [UserController::class, 'register']);
-    Route::post('/claim', [UserController::class, 'claimDailyAmount']);
-    Route::post('/investment', [UserController::class, 'invest']);
-    Route::post('/transactions', [UserController::class, 'transactions']);
-    Route::post('/task', [UserController::class, 'user_task']);
-    Route::post('/task_claim', [UserController::class, 'task_claim']);
-    Route::post('/confirm-payment', [UserController::class, 'invest']);
-    Route::post('/order_details', [UserController::class, 'order_details']);
-    Route::post('/wallet_histroy', [UserController::class, 'wallet_histroy']);
+Route::namespace('\App\Http\Controllers\Api')->group(function () {
+    Route::post('/register', "UserController@register");
+    Route::post('/claim', 'UserController@claimDailyAmount');
+    Route::post('/confirm-payment', 'UserController@invest');
+    Route::post('/order_details', 'UserController@order_details');
+    Route::post('/transactions', 'UserController@transactions');
+    Route::post('/wallet_histroy', 'UserController@wallet_histroy');
+    Route::post('/task', 'UserController@user_task');
+    Route::post('/task_claim', 'UserController@task_claim');
+    Route::post('/withdrow', 'UserController@withdrow');
 });

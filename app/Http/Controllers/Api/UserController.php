@@ -9,6 +9,7 @@ use App\Models\Task;
 use App\Models\Config;
 use App\Models\InvestmentHistory;
 use App\Models\TransactionHistory;
+use App\Models\Withdraw;
 
 use App\Models\ClaimHistory;
 use App\Models\Address;
@@ -424,6 +425,46 @@ class UserController extends Controller
             ], 200);
         } catch (\Exception $e) {
             return response()->json(['error' => 'Failed to wallet_history'], 500);
+        }
+    }
+
+    public function withdrow(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'user_id' => 'required|exists:users,id',
+            'address' => 'required',
+            'amount' => 'required',
+
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()], 400);
+        }
+
+        try {
+            $user = User::where('id', $request->user_id)->first();
+            if ($request->amount <= $user->wallet) {
+                $Withdraw =  Withdraw::create([
+                    'user_id' => $request->user_id,
+                    'amount' => $request->amount,
+                    'address' => $request->address,
+                ]);
+
+                $user->wallet -= $request->amount;
+                $user->save();
+
+                return response()->json([
+                    'message' => 'Withdrow Requset Send successfully.',
+                    'Withdraw' => $Withdraw
+                ], 200);
+            } else {
+                return response()->json([
+                    'message' => 'Check Your Balance.',
+
+                ], 200);
+            }
+        } catch (\Exception $e) {
+            return response()->json(['success' => false, 'message' => 'Error Withdrow: ' . $e->getMessage()]);
         }
     }
 }
