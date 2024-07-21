@@ -430,6 +430,7 @@ class UserController extends Controller
 
     public function withdrow(Request $request)
     {
+
         $validator = Validator::make($request->all(), [
             'user_id' => 'required|exists:users,id',
             'address' => 'required',
@@ -443,6 +444,14 @@ class UserController extends Controller
 
         try {
             $user = User::where('id', $request->user_id)->first();
+            if ($request->amount <= 20) {
+
+                return response()->json([
+                    'message' => 'Amount must be at least 20.',
+
+                ], 200);
+            }
+
             if ($request->amount <= $user->wallet) {
                 $Withdraw =  Withdraw::create([
                     'user_id' => $request->user_id,
@@ -454,14 +463,13 @@ class UserController extends Controller
                 $user->save();
 
                 return response()->json([
-                    'message' => 'Withdrow Requset Send successfully.',
-                    'Withdraw' => $Withdraw
+                    'message' => 'Withdrawal request sent successfully.',
+                    'Withdraw' => $Withdraw,
                 ], 200);
             } else {
                 return response()->json([
-                    'message' => 'Check Your Balance.',
-
-                ], 200);
+                    'message' => 'Insufficient balance.',
+                ], 400);
             }
         } catch (\Exception $e) {
             return response()->json(['success' => false, 'message' => 'Error Withdrow: ' . $e->getMessage()]);
