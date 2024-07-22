@@ -79,6 +79,14 @@ class UserController extends Controller
 
     public function claimDailyAmount(Request $request)
     {
+        if ($request->amount <= 1) {
+
+            return response()->json([
+                'message' => 'Insufficient balance',
+
+            ], 200);
+        }
+
         $user = User::where('id', $request->user_id)->first();
         // dd($request->user_id);
         $data = $this->claimDaily($user);
