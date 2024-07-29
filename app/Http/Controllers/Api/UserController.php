@@ -26,9 +26,9 @@ class UserController extends Controller
     {
         // dd($request->all());
         $validator = Validator::make($request->all(), [
-            'telegram_id' => 'required|string|max:255',
-            'lastname' => 'nullable|string|max:255',
-            'firstname' => 'nullable|string|max:255',
+            'id' => 'required|string|max:255',
+            'last_name' => 'nullable|string|max:255',
+            'first_name' => 'nullable|string|max:255',
             'referral_by' => 'nullable',
         ]);
 
@@ -40,7 +40,7 @@ class UserController extends Controller
             $dateTime = Carbon::now();
             $timestamp = $dateTime->timestamp;
 
-            $user = User::where('telegram_id', $request->telegram_id)->first();
+            $user = User::where('telegram_id', $request->id)->first();
 
 
 
@@ -50,7 +50,7 @@ class UserController extends Controller
                 $this->claimDaily($user);
             } else {
                 $user = User::create([
-                    'telegram_id' => $request->input('telegram_id'),
+                    'telegram_id' => $request->input('id'),
                     'first_name' => $request->input('first_name'),
                     'last_name' => $request->input('last_name'),
                     'referral_by' => $request->input('referral_by'),
@@ -80,6 +80,7 @@ class UserController extends Controller
     public function claimDailyAmount(Request $request)
     {
         if ($request->amount <= 1) {
+
 
             return response()->json([
                 'message' => 'Insufficient balance',
