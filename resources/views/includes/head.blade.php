@@ -35,7 +35,7 @@
             <div ui-include="'../views/blocks/dropdown.notification.html'"></div>
           </li>
           <li class="nav-item dropdown">
-            <a class="nav-link clear" href="{{route('dashboard.index')}}" data-toggle="dropdown">
+            <a class="nav-link clear" href="" data-toggle="dropdown">
               <span class="avatar w-32">
                 <img src="{{asset('assets/images/a0.jpg')}}" alt="...">
                 <i class="on b-white bottom"></i>
@@ -57,10 +57,11 @@
           <!-- link and dropdown -->
           <ul class="nav navbar-nav">
             <li class="nav-item dropdown">
-              <a class="nav-link" href="{{route('dashboard.index')}}" data-toggle="dropdown">
+              <a class="nav-link" href="" data-toggle="dropdown">
                   <i class="fa fa-home"></i>
                   <span>Home</span>
                 </a>
+              <div ui-include="'../views/blocks/dropdown.new.html'"></div>
             </li>
           </ul>
           <!-- / -->

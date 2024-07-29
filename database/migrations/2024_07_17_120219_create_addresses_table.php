@@ -11,14 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('investment_history', function (Blueprint $table) {
+        Schema::create('addresses', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('user_id')->nullable();
-            $table->unsignedBigInteger('telegram_id')->nullable();
-            $table->decimal('amount', 15, 2);
-            $table->string('tx_hash')->nullable();
-            $table->foreignId('order_id')->nullable();
-            $table->string('invest_at')->nullable();
+            $table->string('address');
+            $table->decimal('amount', 15, 2)->nullable();
             $table->timestamps();
         });
     }
@@ -28,6 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('investment_history');
+        Schema::dropIfExists('addresses');
     }
 };

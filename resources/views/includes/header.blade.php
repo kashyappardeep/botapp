@@ -3,7 +3,7 @@
 
 <head>
   <meta charset="utf-8" />
-  <title>Cryptobarter Admin | Dashboard</title>
+  <title>BotApp Admin | Dashboard</title>
   <meta name="description" content="Admin, Dashboard, Bootstrap, Bootstrap 4, Angular, AngularJS" />
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimal-ui" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -46,7 +46,7 @@
           <a class="navbar-brand">
 
             <img src="{{asset('assets/images/logo.png')}}" alt="." class="">
-            <span class="hidden-folded inline">Bot App </span>
+            <span class="hidden-folded inline">Cryptobarter</span>
           </a>
           <!-- / brand -->
         </div>
@@ -57,7 +57,7 @@
               
 
               <li>
-                <a href="{{route('dashboard.index')}}">
+                <a href="{{url('admin/dashboard')}}">
                   <span class="nav-icon">
                     <i class="material-icons">&#xe3fc;
                       <span ui-include="'assets/images/i_0.svg'"></span>
@@ -69,7 +69,7 @@
 
 
               <li>
-                <a href="{{route('Userlist.index')}}">
+                <a href="{{route('users.index')}}">
                   <span class="nav-icon">
                     <i class="fa fa-users">
                     </i>
@@ -78,65 +78,62 @@
                 </a>
                 
               </li>
-              <li>
-                <a href="{{route('InvestmentHistory.index')}}">
+            <li>
+                <a href="{{route('Config.index')}}">
                   <span class="nav-icon">
-                    <i class="fa fa-history">
+                    <i class="fa fa-database">
                     </i>
                   </span>
-                  <span class="nav-text">Investment Historys</span>
+                  <span class="nav-text">Config</span>
                 </a>
-                </li>
-                <li>
-                  <a href="{{route('claim_history.index')}}">
-                    <span class="nav-icon">
-                      <i class="fa fa-history">
-                      </i>
-                    </span>
-                    <span class="nav-text">Claim Historys</span>
-                  </a>
-                  </li>
-                  <li>
-                    <a>
-                      <span class="nav-icon">
-                        <i class="fa fa-users">
-                        </i>
-                      </span>
-                      <span class="nav-text">Config</span>
-                    </a>
-                    </li>
-                    <li>
-                      <a>
-                        <span class="nav-icon">
-                          <i class="fa fa-level-up">
-                          </i>
-                        </span>
-                        <span class="nav-text"> Levels</span>
-                      </a>
-                      </li>
-                      <li>
-                        <a>
-                          
-                          <span class="nav-icon">
-                            <i class="fa fa-address-card"  aria-hidden="true">
-                            </i>
-                          </span>
-                          <span class="nav-text">Address</span>
-                        </a>
-                        </li>
-             
+              </li>
               <li>
-                <a href="#" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
-                 
+                <a href="{{route('Level.index')}}">
+                  <span class="nav-icon">
+                    <i class="fa fa-database">
+                    </i>
+                  </span>
+                  <span class="nav-text">Level</span>
+                </a>
+              </li>
+              <li>
+                <a href="{{route('admin.withdraw_request')}}">
+                  <span class="nav-icon">
+                    <i class="fa fa-database">
+                    </i>
+                  </span>
+                  <span class="nav-text">Withdraw Request</span>
+                </a>
+              </li>
+               
+             <li class="nav-header hidden-folded">
+                <small class="text-muted">Components</small>
+              </li>
+
+
+              <li class="nav-header hidden-folded">
+                <small class="text-muted">Help</small>
+              </li>
+
+              <li class="hidden-folded">
+                <a href="docs.html">
+                  <span class="nav-text">Documents</span>
+                </a>
+              </li>
+              <li class="hidden-folded">
+                <form id="logout-form" action="" method="POST" style="display: none;">
+                  @csrf
+                  <button type="submit">Logout</button>
+              </form>
+                <a href="#" onclick="event.preventDefault(); document.getElementById('logout-form').submit();" >
                   <span class="nav-icon">
                     <i class="fa fa-sign-out">
                     </i>
                   </span>
                   <span class="nav-text">Sign out</span>
                 </a>
-                
+               
               </li>
-             
               
 
             </ul>

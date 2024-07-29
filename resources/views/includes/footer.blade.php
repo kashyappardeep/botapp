@@ -2,7 +2,6 @@
  <!-- theme switcher -->
 
 </div>
- 
 
 <script src="{{asset('assets/scripts/app.html.js')}}"></script>
 </body>

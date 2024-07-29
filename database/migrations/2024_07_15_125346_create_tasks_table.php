@@ -11,12 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('configs', function (Blueprint $table) {
+        Schema::create('tasks', function (Blueprint $table) {
             $table->id();
-            $table->string('daily_roi');
-            $table->string('admin_wallet_address');
-            $table->string('level_of_referral');
-            $table->string('gateway_key');
+            $table->string('direct')->nullable();
+            $table->text('description')->nullable();
+            $table->decimal('amount', 10, 2);
+            $table->string('images')->nullable();
+            $table->string('type')->default(1)->comment('1=>User Mission ,2=>User Referral');
             $table->timestamps();
         });
     }
@@ -26,6 +27,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('configs');
+        Schema::dropIfExists('tasks');
     }
 };

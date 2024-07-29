@@ -5,9 +5,12 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\User;
+use App\Models\Task;
 use App\Models\Config;
 use App\Models\InvestmentHistory;
 use App\Models\TransactionHistory;
+use App\Models\Withdraw;
+use App\Models\UserTask;
 
 use App\Models\ClaimHistory;
 use App\Models\Address;
@@ -21,43 +24,37 @@ class UserController extends Controller
 {
     public function register(Request $request)
     {
-
-
+        // dd($request->all());
         $validator = Validator::make($request->all(), [
-            'telegram_id' => 'required|string|max:255',
-            'lastname' => 'nullable|string|max:255',
-            'firstname' => 'nullable|string|max:255',
+            'id' => 'required|string|max:255',
+            'last_name' => 'nullable|string|max:255',
+            'first_name' => 'nullable|string|max:255',
             'referral_by' => 'nullable',
         ]);
-
 
         if ($validator->fails()) {
             return response()->json(['errors' => $validator->errors()], 400);
         }
-
-
+        DB::beginTransaction();
         try {
-            $dateTime = Carbon::createFromFormat('Y-m-d H:i:s', Carbon::now());
-
-            // Convert the datetime to a timestamp
+            $dateTime = Carbon::now();
             $timestamp = $dateTime->timestamp;
 
+            $user = User::where('telegram_id', $request->id)->first();
 
 
-            $user = User::where('telegram_id', $request->telegram_id)->first();
+
 
             if ($user) {
-                $user = $user;
+
                 $this->claimDaily($user);
             } else {
                 $user = User::create([
-                    'telegram_id' => $request->input('telegram_id'),
+                    'telegram_id' => $request->input('id'),
                     'first_name' => $request->input('first_name'),
                     'last_name' => $request->input('last_name'),
                     'referral_by' => $request->input('referral_by'),
-                    'join_date' => $timestamp,
-                    'last_claim_timestamp' => $timestamp
-
+                    'last_claim_timestamp' => $timestamp,
                 ]);
 
                 $investmentHistory = InvestmentHistory::create([
@@ -67,25 +64,35 @@ class UserController extends Controller
                     'invest_at' => $timestamp,
                 ]);
             }
-
-
-
-            return response()->json(['user' => $user], 200);
+            DB::commit();
+            return response()->json([
+                'user' => $user
+            ], 200);
         } catch (\Exception $e) {
-
             // Optionally handle the exception
-            return response()->json(['register' => 'Register failed'], 500);
+            DB::rollBack();
+            return response()->json(['register' => 'Register failed', 'message' => $e->getMessage()], 500);
         }
     }
+
+
+
     public function claimDailyAmount(Request $request)
     {
+        if ($request->amount <= 1) {
+
+
+            return response()->json([
+                'message' => 'Insufficient balance',
+
+            ], 200);
+        }
+
         $user = User::where('id', $request->user_id)->first();
         // dd($request->user_id);
         $data = $this->claimDaily($user);
+        // dd($data);
 
-        $user->wallet += $data->claimable_amt;
-        $user->claimable_amt = 0;
-        $user->save();
 
         $dateTime = Carbon::createFromFormat('Y-m-d H:i:s', Carbon::now());
         $timestamp = $dateTime->timestamp;
@@ -97,6 +104,9 @@ class UserController extends Controller
             'amount' => $data->claimable_amt,
             'last_claim_timestamp' => $timestamp,
         ]);
+        $user->wallet += $data->claimable_amt;
+        $user->claimable_amt = 0;
+        $user->save();
 
         return response()->json([
             'message' => 'Daily claim processed successfully.',
@@ -107,7 +117,7 @@ class UserController extends Controller
 
     public function invest(Request $request)
     {
-        // dd($request->all());
+        // dd($$request->all());
         $validator = Validator::make($request->all(), [
             'user_id' => 'required|exists:users,id',
             'amount' => 'required|numeric',
@@ -118,7 +128,6 @@ class UserController extends Controller
             return response()->json(['errors' => $validator->errors()], 400);
         }
         $dateTime = Carbon::createFromFormat('Y-m-d H:i:s', Carbon::now());
-
         // Convert the datetime to a timestamp
         $timestamp = $dateTime->timestamp;
 
@@ -161,7 +170,7 @@ class UserController extends Controller
                         'type' => "2"
                     ]);
                     // dd($TransactionHistory);
-                    echo 'TransactionHistory', $TransactionHistory;
+                    // echo 'TransactionHistory', $TransactionHistory;
                     $currentUser = $referrer;
                     // echo 'curent_user', $currentUser;
                     // Log::info('Updated user data:', ['currentUser' => $currentUser->toArray()]);
@@ -178,7 +187,7 @@ class UserController extends Controller
             $user->save();
             //update user_id and amount in address table
             $address = Address::get();
-
+            // dd($address);
             foreach ($address as $address) {
                 if ($address->user_id !== null) {
                     $address->user_id = $request->input('user_id');
@@ -190,7 +199,10 @@ class UserController extends Controller
 
 
             DB::commit();
-            return response()->json(['investment_history' => $investmentHistory], 200);
+            return response()->json([
+                'message' => 'Your transaction will get automatically confirmed within 10 minutes.',
+                'investment_history' => $investmentHistory
+            ], 200);
         } catch (\Exception $e) {
             // Rollback the transaction
             DB::rollBack();
@@ -279,8 +291,10 @@ class UserController extends Controller
         $Config_detail = Config::first();
         $paid_daily_roi = $Config_detail->daily_roi;
         $lastClaim = $user->claimHistories()->latest()->first();
+
         $user_investment = InvestmentHistory::where('user_id', $id)->get();
-        // dd($user_investment);
+        $user = User::findOrFail($id);
+
         $claim_amount = 0;
 
         foreach ($user_investment as $investment) {
@@ -302,7 +316,6 @@ class UserController extends Controller
 
             $differenceInSeconds = $old_date->diffInSeconds($currentDate);
 
-            // dd($differenceInSeconds);
 
             $one_day_roi = $investment_amount * $paid_daily_roi  / 100;
             $investment_claim_amount  = $one_day_roi / 86400 * $differenceInSeconds;
@@ -310,10 +323,162 @@ class UserController extends Controller
             $claim_amount += $investment_claim_amount;
         }
 
-        // dd($claim_amount);
         $user->claimable_amt = $claim_amount;
         $user->save();
 
         return $user;
+    }
+
+    public function user_task(Request $request)
+    {
+
+        // $task_deatils = Task::where('type', $request->type)->get();
+        $user = User::where('telegram_id', $request->telegram_id)->first();
+
+        $userId = $user->id;
+        $type = $request->type;
+
+        $task_deatils = Task::with(['userTasks' => function ($query) use ($userId, $type) {
+            $query->where('user_id', $userId);
+        }])->where('type', $type)->get();
+
+
+        $userTotalDirect = User::where('referral_by', $request->telegram_id)->count();
+        // $userTotalDirect = 9999;
+        return response()->json([
+
+            'user_Total_Direct' => $userTotalDirect,
+            'user' => $user,
+            'task_deatils' => $task_deatils, // Use $task_detail instead of $task_details
+            // 'user_task_details' => $user_task_details, // Assuming you want to return user's task details
+        ], 200);
+    }
+
+    public function task_claim(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'user_id' => 'required|exists:users,id',
+            'task_id'  => 'required'
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()], 400);
+        }
+
+        $user = User::where('id', $request->user_id)->first();
+        $task_deatils = Task::where('id', $request->task_id)->first();
+
+
+
+        try {
+            $user_task = UserTask::create([
+                'user_id' => $request->user_id,
+                'amount' => $task_deatils->amount,
+                'task_id' => $request->task_id,
+                'type' => $task_deatils->type,
+            ]);
+            $TransactionHistory =  TransactionHistory::create([
+                'user_id' => $request->user_id,
+                'amount' => $task_deatils->amount,
+                'type' => $task_deatils->type,
+                'task_id' => $request->task_id,
+            ]);
+
+            $user->wallet += $task_deatils->amount;
+            $user->save();
+
+
+            return response()->json([
+                'message' => 'Task claim successfully.',
+                'user_task' => $user_task
+            ], 200);
+        } catch (\Exception $e) {
+            return response()->json(['success' => false, 'message' => 'Error user_task: ' . $e->getMessage()]);
+        }
+    }
+
+    public function wallet_histroy(Request $request)
+    {
+
+        $validator = Validator::make($request->all(), [
+            'user_id' => 'required|exists:users,id',
+
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()], 400);
+        }
+        try {
+            $userId = $request->user_id;
+            // dd($userId);
+            // $user_claim = ClaimHistory::where('user_id', $request->user_id)->get();
+            // // $TransactionHistory = TransactionHistory::where('user_id', $request->user_id)->get();
+            // $UserTask = UserTask::where('user_id', $request->user_id)->get();
+
+            $wallet_history = User::with([
+                'TransactionHistory',
+                'claimHistories',
+                'UserTask' => function ($query) use ($userId) {
+                    $query->where('user_id', $userId);
+                }
+            ])->get();
+
+            // dd($wallet_history);
+
+            return response()->json([
+                'wallet_history' => $wallet_history,
+
+            ], 200);
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'Failed to wallet_history'], 500);
+        }
+    }
+
+    public function withdrow(Request $request)
+    {
+
+        $validator = Validator::make($request->all(), [
+            'user_id' => 'required|exists:users,id',
+            'address' => 'required',
+            'amount' => 'required',
+
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()], 400);
+        }
+
+        try {
+            $user = User::where('id', $request->user_id)->first();
+            if ($request->amount <= 20) {
+
+                return response()->json([
+                    'message' => 'Amount must be at least 20.',
+
+                ], 200);
+            }
+
+            if ($request->amount <= $user->wallet) {
+                $Withdraw =  Withdraw::create([
+                    'user_id' => $request->user_id,
+                    'amount' => $request->amount,
+                    'address' => $request->address,
+                ]);
+
+                $user->wallet -= $request->amount;
+                $user->save();
+
+                return response()->json([
+                    'message' => 'Withdrawal request sent successfully.',
+                    'Withdraw' => $Withdraw,
+                ], 200);
+            } else {
+                return response()->json([
+                    'message' => 'Insufficient balance.',
+                ], 400);
+            }
+        } catch (\Exception $e) {
+            return response()->json(['success' => false, 'message' => 'Error Withdrow: ' . $e->getMessage()]);
+        }
     }
 }

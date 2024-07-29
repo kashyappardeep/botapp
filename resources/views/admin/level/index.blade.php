@@ -11,9 +11,10 @@
   
     <div class="box">
         <div class="box-header" style="display: ruby-text;">
-            <span> <h2>Confin List
+            <span> <h2>Level List
               </h2> </span>
-              <a href="{{route('Config.create')}}"><button type="button" class="btn btn-sm info">Add +</button> </a>
+              <a href="{{route('Level.create')}}">
+                <button type="button" class="btn btn-sm info">Add +</button> </a>
            </div>
        
        
@@ -24,43 +25,30 @@
             <tr style="background: #302e2e;">
             
             
-              <th>daily_roi </th>
-              <th>admin_wallet_address</th>
-              <th>level_of_referral</th>
-              <th>gateway_key</th>
+              <th>ID </th>
+              <th>Level</th>
               <th>Edit</th>
               <th>Delete</th>
-              
-             
+
             </tr>
           </thead>
           <tbody>
-            @foreach ($Config as $Config)
+            @foreach ($Level as $Level)
             <tr>
              
-                <td>{{$Config->daily_roi}}</td>
-                <td>{{$Config->admin_wallet_address}}</td>
-                @if ($Config->level_of_referral == null)
-                <td>....</td>
-                @else
-                <td>{{$Config->level_of_referral}}</td>
-              @endif
-              
-                @if ($Config->gateway_key == null)
-                <td>....</td>
-                @else
-                <td>{{$Config->gateway_key}}</td>
-              @endif
-                
-              <td>
-                <a href="{{route('Config.update',$Config->id)}}">
+                <td>{{$Level->id}}</td>
+                <td>{{$Level->level}}</td>
+               <td>
+                <a href="{{route('Level.update',$Level->id)}}">
                   <i class="fa fa-edit text-success"></i></a>
                 </td>
                 <td>
-                  <form action="{{ route('Config.destroy',$Config->id) }}" method="POST">
+                  <form action="{{ route('Level.destroy',$Level->id) }}" method="POST">
                     @csrf
                     @method('DELETE')
-                    <button type="submit" style="background: none;"><i class="fa fa-trash-o" style="color: red;"></i></button>
+                    <button type="submit" style="background: none;">
+                        <i class="fa fa-trash-o" style="color: red;">
+                            </i></button>
                 </form>
                   {{-- <a href="{{route('fiat_currencies.destroy',$FiatCurrency->id)}}"></a> --}}
                   </td>

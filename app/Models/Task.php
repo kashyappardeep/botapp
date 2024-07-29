@@ -5,18 +5,20 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class TransactionHistory extends Model
+class Task extends Model
 {
     use HasFactory;
-    protected $table = 'transactions_history';
-
+    protected $table = 'tasks';
     protected $fillable = [
-        'user_id',
-        'to',
-        'by',
-        'level',
+
+        'description',
         'amount',
         'type',
-        'task_id'
+        'images',
     ];
+
+    public function userTasks()
+    {
+        return $this->hasOne(UserTask::class);
+    }
 }

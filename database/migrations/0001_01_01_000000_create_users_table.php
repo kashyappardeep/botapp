@@ -19,9 +19,8 @@ return new class extends Migration
             $table->string('referral_by')->nullable();
             $table->string('status')->default('1')->comment('1=>free Packeg ,2=> paid Packeg');
             $table->decimal('wallet', 8, 2)->default(0);
-            $table->decimal('is_invested', 8, 2)->default(0);
             $table->decimal('claimable_amt', 8, 2)->default(0);
-            $table->string('join_date');
+            $table->string('last_claim_timestamp');
             $table->timestamps(); // This adds `created_at` and `updated_at` columns
 
         });

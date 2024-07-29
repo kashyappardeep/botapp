@@ -11,14 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('investment_history', function (Blueprint $table) {
+        Schema::create('users_tasks', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('user_id')->nullable();
-            $table->unsignedBigInteger('telegram_id')->nullable();
+            $table->unsignedBigInteger('user_id');
+            $table->unsignedBigInteger('task_id');
             $table->decimal('amount', 15, 2);
-            $table->string('tx_hash')->nullable();
-            $table->foreignId('order_id')->nullable();
-            $table->string('invest_at')->nullable();
+            $table->string('type')->default(0)->comment('1=>User Mission ,2=>User Referral');
             $table->timestamps();
         });
     }
@@ -28,6 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('investment_history');
+        Schema::dropIfExists('users_tasks');
     }
 };
