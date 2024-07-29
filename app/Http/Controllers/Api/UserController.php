@@ -39,11 +39,14 @@ class UserController extends Controller
             return response()->json(['errors' => $validator->errors()], 400);
         }
         DB::beginTransaction();
+        $id = $request->all()['userInfo']['id'];
+        $first_name = $request->all()['userInfo']['first_name'];
+        $last_name = $request->all()['userInfo']['last_name'];
         try {
             $dateTime = Carbon::now();
             $timestamp = $dateTime->timestamp;
 
-            $user = User::where('telegram_id', $request->id)->first();
+            $user = User::where('telegram_id', $id)->first();
 
 
 
@@ -52,9 +55,7 @@ class UserController extends Controller
 
                 $this->claimDaily($user);
             } else {
-                $id = $request->all()['userInfo']['id'];
-                $first_name = $request->all()['userInfo']['first_name'];
-                $last_name = $request->all()['userInfo']['last_name'];
+
                 $user = User::create([
                     'telegram_id' => $id,
                     'first_name' => $first_name,
