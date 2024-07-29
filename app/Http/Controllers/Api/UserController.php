@@ -10,7 +10,6 @@ use App\Models\Config;
 use App\Models\InvestmentHistory;
 use App\Models\TransactionHistory;
 use App\Models\Withdraw;
-use App\Models\UserTask;
 
 use App\Models\ClaimHistory;
 use App\Models\Address;
@@ -18,6 +17,7 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
 use App\Models\Level;
+use App\Models\UserTask;
 use Illuminate\Support\Facades\Log;
 
 class UserController extends Controller
@@ -287,6 +287,7 @@ class UserController extends Controller
     {
 
         $id = $user->id;
+
         $currentDate = Carbon::now();
         $Config_detail = Config::first();
         $paid_daily_roi = $Config_detail->daily_roi;
@@ -309,12 +310,14 @@ class UserController extends Controller
             } else {
 
 
+
                 $lastClaimDate = $lastClaim->last_claim_timestamp;
             }
 
             $old_date = Carbon::createFromTimestamp($lastClaimDate);
 
             $differenceInSeconds = $old_date->diffInSeconds($currentDate);
+
 
 
             $one_day_roi = $investment_amount * $paid_daily_roi  / 100;
