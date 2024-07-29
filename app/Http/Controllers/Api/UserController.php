@@ -27,7 +27,7 @@ class UserController extends Controller
         // dd($request->all());
         Log::info($request->all()['userInfo']);
         $validator = Validator::make($request->all()['userInfo'], [
-            'id' => 'required|string|max:255',
+            'id' => 'required|max:255',
             'last_name' => 'nullable|string|max:255',
             'first_name' => 'nullable|string|max:255',
             'referral_by' => 'nullable',
