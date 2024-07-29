@@ -25,6 +25,7 @@ class UserController extends Controller
     public function register(Request $request)
     {
         // dd($request->all());
+        Log::info($request->all());
         $validator = Validator::make($request->all(), [
             'id' => 'required|string|max:255',
             'last_name' => 'nullable|string|max:255',
