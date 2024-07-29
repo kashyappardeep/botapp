@@ -12,10 +12,8 @@ class InvestmentHistory extends Model
 
     protected $fillable = [
         'user_id',
-        'telegram_id',
         'amount',
-        'tx_hash',
-        'order_id',
+        'address',
         'invest_at'
     ];
 }

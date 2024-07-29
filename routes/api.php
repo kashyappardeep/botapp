@@ -1,7 +1,6 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\http\Controllers\Api\UserController;
 
 Route::namespace('\App\Http\Controllers\Api')->group(function () {
     Route::post('/register', "UserController@register");

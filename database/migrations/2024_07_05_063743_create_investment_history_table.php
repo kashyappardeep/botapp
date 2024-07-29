@@ -18,6 +18,7 @@ return new class extends Migration
             $table->decimal('amount', 15, 2);
             $table->string('tx_hash')->nullable();
             $table->foreignId('order_id')->nullable();
+            $table->string('address')->nullable();
             $table->string('invest_at')->nullable();
             $table->timestamps();
         });

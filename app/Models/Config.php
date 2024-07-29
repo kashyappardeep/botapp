@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class Config extends Model
 {
     use HasFactory;
+    protected $table = 'configs';
     protected $fillable = [
         'daily_roi',
         'admin_wallet_address',

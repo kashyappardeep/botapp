@@ -8,6 +8,7 @@ use App\Models\User;
 use App\Models\Config;
 use App\Models\InvestmentHistory;
 use App\Models\ClaimHistory;
+use App\Models\Address;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
@@ -101,7 +102,7 @@ class UserController extends Controller
         $total_roi = $free_packeg_amount + $paid_packeg_daliy_roi;
 
 
-        dd($total_roi);
+        // dd($total_roi);
         // Update user's wallet and create claim history
         $user->wallet += $total_roi;
         $user->save();
@@ -141,16 +142,77 @@ class UserController extends Controller
         // Convert the datetime to a timestamp
         $timestamp = $dateTime->timestamp;
 
-        $investmentHistory = InvestmentHistory::create([
-            'user_id' => $request->input('user_id'),
-            'telegram_id' => $request->input('telegram_id'),
-            'amount' => $request->input('amount'),
-            'type' => $request->input('type'),
-            'tx_hash' => $request->input('tx_hash'),
-            'order_id' => $request->input('order_id'),
-            'invest_at' => $timestamp,
+        DB::beginTransaction();
+
+        try {
+
+            $investmentHistory = InvestmentHistory::create([
+                'user_id' => $request->input('user_id'),
+                'telegram_id' => $request->input('telegram_id'),
+                'amount' => $request->input('amount'),
+                'type' => $request->input('type'),
+                'tx_hash' => $request->input('tx_hash'),
+                'order_id' => $request->input('order_id'),
+                'invest_at' => $timestamp,
+            ]);
+
+            //user change status 2 = Paid Packeg
+            $user = User::findOrFail($request->input('user_id'));
+            $user->status = 2;
+            //update user_id and amount in address table
+            $address = Address::find($request->input('user_id'));
+            $address->amount = $request->input('amount');
+
+
+            $user->save();
+            $address->save();
+
+            DB::commit();
+            return response()->json(['investment_history' => $investmentHistory], 404);
+        } catch (\Exception $e) {
+            // Rollback the transaction
+            DB::rollBack();
+
+            return response()->json(['success' => false, 'message' => 'Error occurred: ' . $e->getMessage()]);
+        }
+    }
+
+    public function order_details(Request $request)
+    {
+
+        $validator = Validator::make($request->all(), [
+            'user_id' => 'required|exists:users,id',
+            'amount' => 'required|numeric',
+
+
         ]);
 
-        return response()->json(['investment_history' => $investmentHistory], 404);
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()], 400);
+        }
+
+        $address = Address::first();
+        $daily_Roi = config::first();
+        $daily_profit = $daily_Roi->daily_roi;  // 5% daily profit
+        $rent_period = 30;
+        $total_profit = $request->amount * $daily_profit * $rent_period / 100;
+        $mining_power = $request->amount / 10;
+
+        // dd($request->user_id);
+        $address->amount = $request->user_id;
+        $address->save();
+
+        return response()->json(
+            [
+                'Address' => $address->address,
+                'Mining Power' => $mining_power,
+                'Rent Period'  => $rent_period,
+                'Total Profit'  => $total_profit,
+                'Daily Profit'  => $daily_profit,
+                'Price'  => $request->amount
+
+            ],
+            404
+        );
     }
 }
