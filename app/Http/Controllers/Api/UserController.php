@@ -26,6 +26,8 @@ class UserController extends Controller
     {
         // dd($request->all());
         Log::info($request->all()['userInfo']);
+        Log::info($request->all());
+
         $validator = Validator::make($request->all()['userInfo'], [
             'id' => 'required|max:255',
             'last_name' => 'nullable|string|max:255',
@@ -50,11 +52,14 @@ class UserController extends Controller
 
                 $this->claimDaily($user);
             } else {
+                $id = $request->all()['userInfo']->id;
+                $first_name = $request->all()['first_name']->id;
+                $last_name = $request->all()['last_name']->id;
                 $user = User::create([
-                    'telegram_id' => $request->input('id'),
-                    'first_name' => $request->input('first_name'),
-                    'last_name' => $request->input('last_name'),
-                    'referral_by' => $request->input('referral_by'),
+                    'telegram_id' => $id,
+                    'first_name' => $first_name,
+                    'last_name' => $last_name,
+                    'referral_by' => $request->referral_by,
                     'last_claim_timestamp' => $timestamp,
                 ]);
 
