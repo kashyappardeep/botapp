@@ -425,11 +425,11 @@ class UserController extends Controller
             return response()->json(['errors' => $validator->errors()], 400);
         }
         try {
-            $userId = $request->user_id;
 
-            $TransactionHistory = TransactionHistory::with('user')->where('user_id', $request->user_id)->get();
 
-            dd($TransactionHistory);
+            $TransactionHistory = TransactionHistory::where('user_id', $request->user_id)->get();
+
+            // dd($TransactionHistory);
 
             return response()->json([
                 'TransactionHistory' => $TransactionHistory,
