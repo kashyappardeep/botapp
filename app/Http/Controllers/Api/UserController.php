@@ -426,13 +426,14 @@ class UserController extends Controller
         }
         try {
 
-
+            $user = User::where('id', $request->user_id)->first();
             $TransactionHistory = TransactionHistory::where('user_id', $request->user_id)->get();
 
             // dd($TransactionHistory);
 
             return response()->json([
                 'TransactionHistory' => $TransactionHistory,
+                'user_details' => $user,
 
             ], 200);
         } catch (\Exception $e) {
