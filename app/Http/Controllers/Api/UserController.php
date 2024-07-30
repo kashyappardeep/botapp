@@ -366,8 +366,7 @@ class UserController extends Controller
 
             'user_Total_Direct' => $userTotalDirect,
             'user' => $user,
-            'task_deatils' => $task_deatils, // Use $task_detail instead of $task_details
-            // 'user_task_details' => $user_task_details, // Assuming you want to return user's task details
+            'task_deatils' => $task_deatils,
         ], 200);
     }
 
@@ -428,12 +427,9 @@ class UserController extends Controller
         try {
             $userId = $request->user_id;
 
-            $TransactionHistory = TransactionHistory::where('user_id', $request->user_id)->get();
+            $TransactionHistory = TransactionHistory::with('user')->where('user_id', $request->user_id)->get();
 
-
-
-
-            // dd($wallet_history);
+            dd($TransactionHistory);
 
             return response()->json([
                 'TransactionHistory' => $TransactionHistory,

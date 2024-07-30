@@ -19,4 +19,8 @@ class TransactionHistory extends Model
         'type',
         'task_id'
     ];
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
 }
