@@ -86,7 +86,14 @@ class UserController extends Controller
 
     public function claimDailyAmount(Request $request)
     {
-        if ($request->amount <= 1) {
+        // dd($request->amount);
+
+
+        $user = User::where('id', $request->user_id)->first();
+        // dd($request->user_id);
+        $data = $this->claimDaily($user);
+        // dd($data->claimable_amt);
+        if ($data->claimable_amt <= 1) {
 
 
             return response()->json([
@@ -94,11 +101,6 @@ class UserController extends Controller
 
             ], 200);
         }
-
-        $user = User::where('id', $request->user_id)->first();
-        // dd($request->user_id);
-        $data = $this->claimDaily($user);
-        // dd($data);
 
 
         $dateTime = Carbon::createFromFormat('Y-m-d H:i:s', Carbon::now());
@@ -110,6 +112,11 @@ class UserController extends Controller
             'user_id' => $user->id,
             'amount' => $data->claimable_amt,
             'last_claim_timestamp' => $timestamp,
+        ]);
+        $TransactionHistory =  TransactionHistory::create([
+            'user_id' => $user->id,
+            'amount' => $data->claimable_amt,
+            'type' => 0
         ]);
         $user->wallet += $data->claimable_amt;
         $user->claimable_amt = 0;
@@ -420,23 +427,16 @@ class UserController extends Controller
         }
         try {
             $userId = $request->user_id;
-            // dd($userId);
-            // $user_claim = ClaimHistory::where('user_id', $request->user_id)->get();
-            // // $TransactionHistory = TransactionHistory::where('user_id', $request->user_id)->get();
-            // $UserTask = UserTask::where('user_id', $request->user_id)->get();
 
-            $wallet_history = User::with([
-                'TransactionHistory',
-                'claimHistories',
-                'UserTask' => function ($query) use ($userId) {
-                    $query->where('user_id', $userId);
-                }
-            ])->get();
+            $TransactionHistory = TransactionHistory::where('user_id', $request->user_id)->get();
+
+
+
 
             // dd($wallet_history);
 
             return response()->json([
-                'wallet_history' => $wallet_history,
+                'TransactionHistory' => $TransactionHistory,
 
             ], 200);
         } catch (\Exception $e) {
