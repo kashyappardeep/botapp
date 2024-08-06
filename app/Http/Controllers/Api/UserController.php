@@ -25,10 +25,11 @@ class UserController extends Controller
     public function register(Request $request)
     {
         // dd($request->all());
-        Log::info($request->all()['userInfo']);
-        Log::info($request->all());
+        // Log::info($request->all()['userInfo']);
+        // Log::info($request->all());
 
-        $validator = Validator::make($request->all()['userInfo'], [
+        // $validator = Validator::make($request->all()['userInfo'], [
+        $validator = Validator::make($request->all(), [
             'id' => 'required|max:255',
             'last_name' => 'nullable|string|max:255',
             'first_name' => 'nullable|string|max:255',
@@ -39,9 +40,12 @@ class UserController extends Controller
             return response()->json(['errors' => $validator->errors()], 400);
         }
         DB::beginTransaction();
-        $id = $request->all()['userInfo']['id'];
-        $first_name = $request->all()['userInfo']['first_name'];
-        $last_name = $request->all()['userInfo']['last_name'];
+        // $id = $request->all()['userInfo']['id'];
+        // $first_name = $request->all()['userInfo']['first_name'];
+        // $last_name = $request->all()['userInfo']['last_name'];
+        $id = $request->id;
+        $first_name = $request->first_name;
+        $last_name = $request->last_name;
         try {
             $dateTime = Carbon::now();
             $timestamp = $dateTime->timestamp;
