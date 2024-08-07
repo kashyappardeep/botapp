@@ -287,22 +287,22 @@ class UserController extends Controller
             return response()->json(['errors' => $validator->errors()], 400);
         }
 
-        $transactions = TransactionHistory::where('to', $request->user_id)->get();
-
+        $transactions = TransactionHistory::with('userBy')->where('to', $request->user_id)->get();
+        // dd($transactions);
         // Prepare an array to hold the formatted transaction data
-        $formattedTransactions = [];
+        $formattedTransactions = $transactions;
 
         // Iterate over each transaction and format the data
-        foreach ($transactions as $transaction) {
-            $formattedTransactions[] = [
-                'to' => $transaction->to,
-                'by' => $transaction->by,
-                'amount' => $transaction->amount,
-                'type' => $transaction->type,
-                'created_at' => $transaction->created_at->format('Y-m-d H:i:s'),
-                'updated_at' => $transaction->updated_at->format('Y-m-d H:i:s'),
-            ];
-        }
+        // foreach ($transactions as $transaction) {
+        //     $formattedTransactions[] = [
+        //         'to' => $transaction->to,
+        //         'by' => $transaction->by,
+        //         'amount' => $transaction->amount,
+        //         'type' => $transaction->type,
+        //         'created_at' => $transaction->created_at->format('Y-m-d H:i:s'),
+        //         'updated_at' => $transaction->updated_at->format('Y-m-d H:i:s'),
+        //     ];
+        // }
 
         // Return the formatted transactions as JSON response
         return response()->json($formattedTransactions, 200);
