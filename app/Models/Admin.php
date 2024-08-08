@@ -14,6 +14,9 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 class Admin extends Authenticatable
 {
     // Define your model properties and methods here
+    protected $table = 'admins';
+
+
     protected $fillable = [
         'name', 'email', 'password',
     ];

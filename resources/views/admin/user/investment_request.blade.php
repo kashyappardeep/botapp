@@ -25,6 +25,7 @@
             
               <th>Name </th>
               <th>address</th>
+              <th>Tx_Hash</th>
               <th>amount</th>
               <th>Status</th>
               <th>Verify</th>
@@ -32,27 +33,28 @@
             </tr>
           </thead>
           <tbody>
-            @foreach ($Withdraw as $Withdraw)
+            @foreach ($investment as $investment)
             <tr>
-              @if ($Withdraw && $Withdraw->user && $Withdraw->user->first_name)
-    <td>{{ $Withdraw->user->first_name}}</td>
+              @if ($investment && $investment->user && $investment->user->first_name)
+    <td>{{ $investment->user->first_name}}</td>
 @else
-    <td>{{$Withdraw->id}}</td>
+    <td>{{$investment->id}}</td>
 @endif
                 
-                <td>{{$Withdraw->address}}</td>
-                <td>{{$Withdraw->amount}}</td>
-                @if ($Withdraw->status ==1)
+                <td>{{$investment->address}}</td>
+                <td>{{$investment->tx_hash}}</td>
+                <td>{{$investment->amount}}</td>
+                @if ($investment->status ==1)
                 <td style="color: #e4e136">Pending Requser </td> 
-                @elseif($Withdraw->status ==2)
+                @elseif($investment->status ==2)
                 <td style="color: #32f10c"> Complete </td>
                 @else
                 <td style="color: #32f10c">Rrejected </td>
                 @endif
                 
                 <td style="    display: flex;">
-                  @if($Withdraw->status ==1)
-                  <form action="{{ route('admin.status_change', $Withdraw->id) }}" method="POST">
+                  @if($investment->status ==1)
+                  <form action="{{ route('admin.invist_status_change', $investment->id) }}" method="POST">
                     @csrf
                     @method('POST') <!-- Change to POST if your route uses POST -->
                     <button type="submit" class="open-modal" data-id="" data-toggle="modal" data-target="#inputModal" style="background: none;">
@@ -66,8 +68,8 @@
               @endif
                 
                   &nbsp;
-                  @if($Withdraw->status ==1)
-                 <form action="{{ route('admin.reject_Status', $Withdraw->id) }}" method="POST">
+                  @if($investment->status ==1)
+                 <form action="{{ route('admin.invest_reject_Status', $investment->id) }}" method="POST">
                       @csrf
                       @method('POST')
                       <input type="hidden" name="status" value="2">

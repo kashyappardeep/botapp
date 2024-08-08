@@ -27,23 +27,32 @@
               <th>Telegram Id</th>
               <th>Referral By</th>
               <th>Wallet</th>
+              <th>Investment</th>
               <th>Status</th>
              
             </tr>
           </thead>
           <tbody>
-            @foreach ($user as $user)
+            @foreach ($users as $users)
             <tr>
-              @if ($user->first_name == null)
+              @if ($users->first_name == null)
                 <td>....</td>
                 @else
-                <td>{{$user->first_name}}</td>
+                <td>{{$users->first_name}}</td>
               @endif
                 
-                <td>{{$user->telegram_id}}</td>
-                <td>{{$user->referral_by}}</td>
-                <td>{{$user->wallet}}</td>
-                @if ($user->status ==1)
+                <td>{{$users->telegram_id}}</td>
+                <td>{{$users->referral_by}}</td>
+                <td>{{$users->wallet}}</td>
+                <td> 
+                  <div class="reveal-container">
+                    <div class="revealed-text">User Investment</div>
+                    <a class="reveal-button" href="{{route('admin.user_investment', $users->id)}}">
+                 <i class="fa fa-external-link text-success"></i>
+                  </a>
+                  </div>
+                </td>
+                @if ($users->status ==1)
                 <td style="color: #e4e136">Free Packeg </td> 
                 @else
                 <td style="color: #32f10c"> Paid Packeg </td>

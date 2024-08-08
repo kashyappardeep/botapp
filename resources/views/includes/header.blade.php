@@ -90,19 +90,37 @@
               <li>
                 <a href="{{route('Level.index')}}">
                   <span class="nav-icon">
-                    <i class="fa fa-database">
+                    <i class="fa fa-level-up">
                     </i>
                   </span>
                   <span class="nav-text">Level</span>
                 </a>
               </li>
               <li>
+                <a href="{{route('admin.investment_request')}}">
+                  <span class="nav-icon">
+                    <i class="fas fa-wallet">
+                    </i>
+                  </span>
+                  <span class="nav-text">Investment Request</span>
+                </a>
+              </li>
+              <li>
                 <a href="{{route('admin.withdraw_request')}}">
                   <span class="nav-icon">
-                    <i class="fa fa-database">
+                    <i class="fas fa-wallet">
                     </i>
                   </span>
                   <span class="nav-text">Withdraw Request</span>
+                </a>
+              </li>
+              <li>
+                <a href="{{route('address.index')}}">
+                  <span class="nav-icon">
+                    <i class="fa fa-users">
+                    </i>
+                  </span>
+                  <span class="nav-text">User Address</span>
                 </a>
               </li>
                

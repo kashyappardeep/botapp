@@ -4,7 +4,9 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Validation\ValidationException;
 use App\Models\Level;
+use Illuminate\Support\Facades\Validator;
 
 class LevelController extends Controller
 {
@@ -31,7 +33,25 @@ class LevelController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        try {
+            $validator = Validator::make($request->all(), [
+                'level' => 'required',
+
+            ]);
+            if ($validator->fails()) {
+                return response()->json(['errors' => $validator->errors()], 400);
+            }
+
+            $level = Level::create([
+                'level' => $request->level,
+
+            ]);
+            dd($level);
+            return redirect()->back()->with('success', 'Level created successfully!');
+        } catch (ValidationException $error) {
+
+            return redirect()->back()->withErrors($error->errors())->withInput();
+        }
     }
 
     /**
@@ -39,7 +59,10 @@ class LevelController extends Controller
      */
     public function show(string $id)
     {
-        //
+        $level = Level::where('id', $id)->first();
+        // dd($level);
+
+        return view('admin.level.edit', compact('level'));
     }
 
     /**
@@ -55,7 +78,14 @@ class LevelController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        $level = Level::findOrFail($id);
+
+        // Update the config with the new values
+        $level->level = $request->level;
+
+        // Save the changes to the database
+        $level->save();
+        return redirect()->route('Level.index')->with('success', 'level updated successfully');
     }
 
     /**
