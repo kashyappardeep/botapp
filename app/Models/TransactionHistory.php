@@ -23,4 +23,8 @@ class TransactionHistory extends Model
     {
         return $this->belongsTo(User::class);
     }
+    public function userBy()
+    {
+        return $this->belongsTo(User::class, 'by', 'id');
+    }
 }

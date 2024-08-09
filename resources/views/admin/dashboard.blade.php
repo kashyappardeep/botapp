@@ -126,7 +126,7 @@
                     </div>
                     <div class="clear">
                       <div class="text-muted">Users</div>
-                      <h4 class="m-a-0 text-md _600">000</h4>
+                      <h4 class="m-a-0 text-md _600">{{ $user }}</h4>
                     </div>
                   </div>
                 </div></a>

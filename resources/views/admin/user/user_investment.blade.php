@@ -10,9 +10,10 @@
    
   
     <div class="box">
-      <div class="box-header" style="display: ruby-text;">
-        <h2>Users InvestMent Historys </h2> 
-    </div>
+        <div class="box-header" style="display: ruby-text;">
+             <h2>User Investment Histroy
+              </h2> 
+           </div>
        
        
       <div class="table-responsive">
@@ -21,22 +22,25 @@
           <thead>
             <tr style="background: #302e2e;">
             
-              <th>User Id</th>
-              <th>Telegram Id</th>
-              <th>Amount</th>
-              <th>Order Id</th>
-             
+            
+              <th>user_id </th>
+              <th>telegram_id</th>
+              <th>amount</th>
+              <th>address</th>
+              <th>invest_at</th>
+
             </tr>
           </thead>
           <tbody>
-            @foreach ($InvestmentHistory as $InvestmentHistory)
+            @foreach ($investment as $investment)
             <tr>
              
-              <td>{{ $InvestmentHistory->user_id }}</td>
-              <td>{{ $InvestmentHistory->telegram_id }}</td>
-              <td>{{ $InvestmentHistory->amount }}</td>
-              <td>{{ $InvestmentHistory->order_id }}</td>
-             </tr>
+                <td>{{$investment->user_id}}</td>
+                <td>{{$investment->telegram_id}}</td>
+                <td>{{$investment->amount}}</td>
+                <td>{{$investment->address}}</td>
+                <td>{{$investment->invest_at}}</td>
+               </tr>
             @endforeach
            
           </tbody>
