@@ -13,9 +13,9 @@ class DashboardControlle extends Controller
      */
     public function index()
     {
-        // $user = User::get();
+        $user = User::count();
         // dd($user);
-        return view('admin.dashboard');
+        return view('admin.dashboard', compact('user'));
     }
 
     /**

@@ -16,4 +16,9 @@ class InvestmentHistory extends Model
         'address',
         'invest_at'
     ];
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
 }

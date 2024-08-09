@@ -16,6 +16,7 @@ return new class extends Migration
             $table->unsignedBigInteger('user_id')->nullable();
             $table->unsignedBigInteger('telegram_id')->nullable();
             $table->decimal('amount', 15, 2);
+            $table->string('status')->default(1)->comment('1=>pending ,2=> complete');
             $table->string('tx_hash')->nullable();
             $table->foreignId('order_id')->nullable();
             $table->string('address')->nullable();
