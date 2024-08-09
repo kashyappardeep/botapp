@@ -47,7 +47,7 @@
                 @elseif($Withdraw->status ==2)
                 <td style="color: #32f10c"> Complete </td>
                 @else
-                <td style="color: #32f10c">Rrejected </td>
+                <td style="color: hsl(0, 91%, 50%)">Rrejected </td>
                 @endif
                 
                 <td style="    display: flex;">

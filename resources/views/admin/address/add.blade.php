@@ -26,13 +26,7 @@
             <h2>Add Address</h2>
           </div>
           <div class="box-body">
-            <div class="form-group row">
-              <label class="col-sm-3 form-control-label">User Id</label>
-              <div class="col-sm-9">
-                <input type="text" name="user_id" class="form-control" required="">  
-              </div>
-              
-            </div>
+            
             <div class="form-group row">
               <label class="col-sm-3 form-control-label">User Address</label>
               <div class="col-sm-9">

@@ -1,5 +1,5 @@
  <!-- theme switcher -->
- <div id="switcher" style="display: none;">
+ <div id="switcher" >
   <div class="switcher box-color dark-white text-color active" id="sw-theme" ui-class="active">
     <a href="" ui-toggle-class="active" target="#sw-theme" class="box-color dark-white text-color sw-btn active">
       <i class="fa fa-gear"></i>

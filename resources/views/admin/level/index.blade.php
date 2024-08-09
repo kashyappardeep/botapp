@@ -27,6 +27,7 @@
             
               <th>ID </th>
               <th>Level</th>
+              <th>Level %</th>
               <th>Edit</th>
               <th>Delete</th>
 
@@ -38,6 +39,7 @@
              
                 <td>{{$Level->id}}</td>
                 <td>{{$Level->level}}</td>
+                <td>{{$Level->level_p}}</td>
                <td>
                 <a href="{{route('Level.update',$Level->id)}}">
                   <i class="fa fa-edit text-success"></i></a>

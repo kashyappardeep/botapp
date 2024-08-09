@@ -25,7 +25,6 @@
             
               <th>Name </th>
               <th>address</th>
-              <th>Tx_Hash</th>
               <th>amount</th>
               <th>Status</th>
               <th>Verify</th>
@@ -42,14 +41,13 @@
 @endif
                 
                 <td>{{$investment->address}}</td>
-                <td>{{$investment->tx_hash}}</td>
                 <td>{{$investment->amount}}</td>
                 @if ($investment->status ==1)
                 <td style="color: #e4e136">Pending Requser </td> 
                 @elseif($investment->status ==2)
                 <td style="color: #32f10c"> Complete </td>
                 @else
-                <td style="color: #32f10c">Rrejected </td>
+                <td style="color: #f82b02">Rrejected </td>
                 @endif
                 
                 <td style="    display: flex;">

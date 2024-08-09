@@ -26,7 +26,6 @@
               <th>user_id </th>
               <th>telegram_id</th>
               <th>amount</th>
-              <th>tx_hash</th>
               <th>address</th>
               <th>invest_at</th>
 
@@ -39,7 +38,6 @@
                 <td>{{$investment->user_id}}</td>
                 <td>{{$investment->telegram_id}}</td>
                 <td>{{$investment->amount}}</td>
-                <td>{{$investment->tx_hash}}</td>
                 <td>{{$investment->address}}</td>
                 <td>{{$investment->invest_at}}</td>
                </tr>

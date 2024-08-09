@@ -38,7 +38,7 @@ class AddressController extends Controller
         // Use Validator facade for validation
         $validator = Validator::make($request->all(), [
             'address' => 'required|string|max:255',
-            'user_id' => 'required|string|max:255',
+
         ]);
 
         if ($validator->fails()) {
@@ -48,7 +48,7 @@ class AddressController extends Controller
 
         // Create the address entry in the database
         $address = Address::create([
-            'user_id' => $request->user_id,
+
             'address' => $request->address,
         ]);
 

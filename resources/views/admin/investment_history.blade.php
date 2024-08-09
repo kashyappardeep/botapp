@@ -24,7 +24,6 @@
               <th>User Id</th>
               <th>Telegram Id</th>
               <th>Amount</th>
-              <th>Tx_Hash</th>
               <th>Order Id</th>
              
             </tr>
@@ -36,7 +35,6 @@
               <td>{{ $InvestmentHistory->user_id }}</td>
               <td>{{ $InvestmentHistory->telegram_id }}</td>
               <td>{{ $InvestmentHistory->amount }}</td>
-              <td>{{ $InvestmentHistory->tx_hash }}</td>
               <td>{{ $InvestmentHistory->order_id }}</td>
              </tr>
             @endforeach
