@@ -471,7 +471,11 @@ class UserController extends Controller
 
         try {
             $user = User::where('id', $request->user_id)->first();
+<<<<<<< HEAD
             if ($request->amount  < 20) {
+=======
+            if ($request->amount < 20) {
+>>>>>>> c560a48180b09e0e078342b16f7846fe23f8231b
 
                 return response()->json([
                     'message' => 'Amount must be at least 20.',

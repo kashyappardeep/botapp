@@ -4,8 +4,10 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\AdminController;
 use App\Http\Controllers\Admin\UsersController;
+use App\Http\Controllers\Admin\AddressController;
 use App\Http\Controllers\Admin\ConfigController;
 use App\Http\Controllers\Admin\LevelController;
+use App\Http\Controllers\Admin\DashboardControlle;
 
 Route::prefix('admin')->group(function () {
     Route::get('login', [AdminController::class, 'showLoginForm'])->name('admin.login');
@@ -14,10 +16,30 @@ Route::prefix('admin')->group(function () {
 
     Route::middleware('auth:admin')->group(function () {
 
-        Route::get('/dashboard', [AdminController::class, 'dashboard'])->name('admin.dashboard');
         Route::get('/withdraw_request', [UsersController::class, 'withdraw_request'])->name('admin.withdraw_request');
+        Route::post('status_change/{id}', [UsersController::class, 'updateStatus'])->name('admin.status_change');
+        Route::post('reject_Status/{id}', [UsersController::class, 'rejectStatus'])->name('admin.reject_Status');
+        Route::get('user_investment/{id}', [UsersController::class, 'user_investment'])->name('admin.user_investment');
+
+        Route::get('/investment_request', [UsersController::class, 'investment_request'])->name('admin.investment_request');
+        Route::post('invist_status_change/{id}', [UsersController::class, 'updateInvestmentStatus'])->name('admin.invist_status_change');
+        Route::post('invest_reject_Status/{id}', [UsersController::class, 'investrejectStatus'])->name('admin.invest_reject_Status');
+
+        Route::resource('dashboard', DashboardControlle::class);
         Route::resource('users', UsersController::class);
         Route::resource('Config', ConfigController::class);
         Route::resource('Level', LevelController::class);
+
+
+
+        Route::get('/user_address', [AddressController::class, 'user_address'])->name('admin.user_address');
+        Route::put('address/{id}', [AddressController::class, 'update'])->name('address.address');
+
+        Route::resource('address', AddressController::class);
+
+
+        // Route::post('invist_status_change/{id}', [UsersController::class, 'updateInvestmentStatus'])->name('admin.invist_status_change');
+        // Route::post('invest_reject_Status/{id}', [UsersController::class, 'investrejectStatus'])->name('admin.invest_reject_Status');
+
     });
 });
