@@ -6,7 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Contact_data;
 use Illuminate\Http\Request;
 use App\Models\User;
-use App\Models\investmenthistory;
+use App\Models\Investmenthistory;
 use App\Models\Withdraw;
 use App\Models\Content_data;
 
@@ -72,7 +72,7 @@ class UsersController extends Controller
 
     public function  investment_request()
     {
-        $investment = investmenthistory::with('user')->get();
+        $investment = Investmenthistory::with('user')->get();
         // dd($investment);
         // die;
 
