@@ -6,7 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Contact_data;
 use Illuminate\Http\Request;
 use App\Models\User;
-use App\Models\Investmenthistory;
+use App\Models\InvestmentHistory;
 use App\Models\Withdraw;
 use App\Models\Content_data;
 
@@ -72,7 +72,7 @@ class UsersController extends Controller
 
     public function  investment_request()
     {
-        $investment = Investmenthistory::with('user')->get();
+        $investment = InvestmentHistory::with('user')->get();
         // dd($investment);
         // die;
 
@@ -92,7 +92,7 @@ class UsersController extends Controller
     public function updateInvestmentStatus($id)
     {
         // dd($id); // For debugging purposes
-        $withdraw = investmenthistory::findOrFail($id);
+        $withdraw = InvestmentHistory::findOrFail($id);
 
         // Check if the status is already 'completed'
         $withdraw->status = 2;
@@ -104,7 +104,7 @@ class UsersController extends Controller
     public function investrejectStatus($id)
     {
         // dd($id); // For debugging purposes
-        $withdraw = investmenthistory::findOrFail($id);
+        $withdraw = InvestmentHistory::findOrFail($id);
 
         $withdraw->status = 0;
         $withdraw->save();
@@ -151,7 +151,7 @@ class UsersController extends Controller
 
     public function user_investment($id)
     {
-        $investment = Investmenthistory::where('user_id', $id)->get();
+        $investment = InvestmentHistory::where('user_id', $id)->get();
         // dd($investment);
         return view('admin.user.user_investment', compact('investment'));
     }
