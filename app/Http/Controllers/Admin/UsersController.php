@@ -151,7 +151,7 @@ class UsersController extends Controller
 
     public function user_investment($id)
     {
-        $investment = investmenthistory::where('user_id', $id)->get();
+        $investment = Investmenthistory::where('user_id', $id)->get();
         // dd($investment);
         return view('admin.user.user_investment', compact('investment'));
     }
