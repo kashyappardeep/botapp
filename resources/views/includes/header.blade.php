@@ -123,6 +123,24 @@
                   <span class="nav-text">User Address</span>
                 </a>
               </li>
+              <li>
+                <a href="{{route('admin.user.contact')}}">
+                  <span class="nav-icon">
+                    <i class="fa fa-users">
+                    </i>
+                  </span>
+                  <span class="nav-text">Contact Data</span>
+                </a>
+              </li>
+              <li>
+                <a href="{{route('verify.index')}}">
+                  <span class="nav-icon">
+                    <i class="fa fa-users">
+                    </i>
+                  </span>
+                  <span class="nav-text">Verify Link</span>
+                </a>
+              </li>
                
              <li class="nav-header hidden-folded">
                 <small class="text-muted">Components</small>
