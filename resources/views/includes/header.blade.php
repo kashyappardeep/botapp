@@ -129,7 +129,7 @@
                     <i class="fa fa-users">
                     </i>
                   </span>
-                  <span class="nav-text">Contact Data</span>
+                  <span class="nav-text">Contest Data</span>
                 </a>
               </li>
               <li>
