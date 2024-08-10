@@ -19,7 +19,7 @@ class AddressController extends Controller
         // dd($address);
         // die;
 
-        return view('admin.Address.user_address', compact('address'));
+        return view('admin.address.user_address', compact('address'));
     }
 
     /**
