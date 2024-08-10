@@ -43,7 +43,7 @@
                 <td>{{$investment->address}}</td>
                 <td>{{$investment->amount}}</td>
                 @if ($investment->status ==1)
-                <td style="color: #e4e136">Pending Requser </td> 
+                <td style="color: #e4e136">Pending Request </td> 
                 @elseif($investment->status ==2)
                 <td style="color: #32f10c"> Complete </td>
                 @else

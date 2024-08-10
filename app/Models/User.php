@@ -56,4 +56,10 @@ class User extends Authenticatable
     {
         return $this->investmentHistory()->sum('amount');
     }
+
+
+    public function Contact_data()
+    {
+        return $this->hasMany(Contact_data::class);
+    }
 }

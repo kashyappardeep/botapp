@@ -10,6 +10,8 @@ use App\Models\Config;
 use App\Models\InvestmentHistory;
 use App\Models\TransactionHistory;
 use App\Models\Withdraw;
+use App\Models\LinkVerify;
+use App\Models\ContentData;
 
 use App\Models\ClaimHistory;
 use App\Models\Address;
@@ -50,6 +52,7 @@ class UserController extends Controller
 
 
             if ($user) {
+                // dd($user);
 
                 $user_investment = InvestmentHistory::where('user_id', $user->id)->sum('amount');
                 $total = $user_investment - 20;
@@ -62,6 +65,7 @@ class UserController extends Controller
                 // dd($totalPower);
 
                 $this->claimDaily($user);
+                $user->setAttribute('totalPower', $totalPower);
             } else {
 
                 $user = User::create([
@@ -74,13 +78,14 @@ class UserController extends Controller
 
                 $investmentHistory = InvestmentHistory::create([
                     'user_id' => $user->id,
-                    'amount' => 20,
+                    'amount' => 10,
                     'address' => null,
                     'invest_at' => $timestamp,
+                    'status' => 2
                 ]);
             }
             DB::commit();
-            $user->setAttribute('totalPower', $totalPower);
+
 
             return response()->json([
                 'user' => $user,
@@ -192,7 +197,7 @@ class UserController extends Controller
                         'level' => $level->level,
                         'to' => $referrer->id,
                         'by' => $user->id,
-                        'type' => "2"
+                        'type' => "1"
                     ]);
                     // dd($TransactionHistory);
                     // echo 'TransactionHistory', $TransactionHistory;
@@ -318,7 +323,8 @@ class UserController extends Controller
         $paid_daily_roi = $Config_detail->daily_roi;
         $lastClaim = $user->claimHistories()->latest()->first();
 
-        $user_investment = InvestmentHistory::where('user_id', $id)->get();
+        $user_investment = InvestmentHistory::where('user_id', $id)->where('status', 2)->get();
+        // dd($user_investment);
         $user = User::findOrFail($id);
 
         $claim_amount = 0;
@@ -471,7 +477,7 @@ class UserController extends Controller
 
         try {
             $user = User::where('id', $request->user_id)->first();
-            if ($request->amount < 20) {
+            if ($request->amount  < 20) {
 
                 return response()->json([
                     'message' => 'Amount must be at least 20.',
@@ -501,5 +507,39 @@ class UserController extends Controller
         } catch (\Exception $e) {
             return response()->json(['success' => false, 'message' => 'Error Withdrow: ' . $e->getMessage()]);
         }
+    }
+
+
+    public function LinkVerify()
+    {
+        $LinkVerify = LinkVerify::get();
+        // dd($LinkVerify);
+        return response()->json([
+            'LinkVerify' => $LinkVerify
+        ], 200);
+    }
+    public function RequestLinkVerify(Request $request)
+    {
+
+        $validator = Validator::make($request->all(), [
+            'telegram_id' => 'required',
+            'linkverify_id' => 'required',
+            'link' => 'required',
+
+        ]);
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()], 400);
+        }
+        // dd($request->all());
+        $RequestLinkVerify =  ContentData::create([
+            'telegram_id' => $request->telegram_id,
+            'linkverify_id' => $request->linkverify_id,
+            'link' => $request->link,
+        ]);
+
+        return response()->json([
+            'message' => 'Sumbit successfully',
+            'R_LinkVerify' => $RequestLinkVerify
+        ], 200);
     }
 }

@@ -1,0 +1,40 @@
+body, html {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #f0f0f0;
+    font-family: Arial, sans-serif;
+    text-align: center;
+}
+
+.container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+#rotatingImage {
+    width: 200px;
+    height: 200px;
+    animation: rotate 5s linear infinite;
+    transform-origin: center; /* Ensure the rotation happens around the center of the image */
+}
+
+
+
+.logos img {
+    margin: 0 10px;
+    width: 40px;
+}
+
+@keyframes rotate {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+}

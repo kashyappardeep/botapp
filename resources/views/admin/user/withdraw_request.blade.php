@@ -43,7 +43,7 @@
                 <td>{{$Withdraw->address}}</td>
                 <td>{{$Withdraw->amount}}</td>
                 @if ($Withdraw->status ==1)
-                <td style="color: #e4e136">Pending Requser </td> 
+                <td style="color: #e4e136">Pending Request </td> 
                 @elseif($Withdraw->status ==2)
                 <td style="color: #32f10c"> Complete </td>
                 @else
