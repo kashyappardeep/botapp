@@ -78,9 +78,10 @@ class UserController extends Controller
 
                 $investmentHistory = InvestmentHistory::create([
                     'user_id' => $user->id,
-                    'amount' => 20,
+                    'amount' => 10,
                     'address' => null,
                     'invest_at' => $timestamp,
+                    'status' => 2
                 ]);
             }
             DB::commit();
@@ -322,7 +323,8 @@ class UserController extends Controller
         $paid_daily_roi = $Config_detail->daily_roi;
         $lastClaim = $user->claimHistories()->latest()->first();
 
-        $user_investment = InvestmentHistory::where('user_id', $id)->get();
+        $user_investment = InvestmentHistory::where('user_id', $id)->where('status', 2)->get();
+        // dd($user_investment);
         $user = User::findOrFail($id);
 
         $claim_amount = 0;
@@ -536,6 +538,7 @@ class UserController extends Controller
         ]);
 
         return response()->json([
+            'message' => 'Sumbit successfully',
             'R_LinkVerify' => $RequestLinkVerify
         ], 200);
     }
