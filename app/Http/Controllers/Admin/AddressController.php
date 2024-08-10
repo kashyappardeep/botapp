@@ -63,7 +63,7 @@ class AddressController extends Controller
     {
         $user_address = Address::where('id', $id)->first();
         // dd($user_address);
-        return view('admin.adress.edit', compact('user_address'));
+        return view('admin.address.edit', compact('user_address'));
     }
 
     /**
