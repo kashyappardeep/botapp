@@ -24,11 +24,8 @@ class UserController extends Controller
 {
     public function register(Request $request)
     {
-        // dd($request->all());
-        Log::info($request->all()['userInfo']);
-        Log::info($request->all());
 
-        $validator = Validator::make($request->all()['userInfo'], [
+        $validator = Validator::make($request->all(), [
             'id' => 'required|max:255',
             'last_name' => 'nullable|string|max:255',
             'first_name' => 'nullable|string|max:255',
@@ -39,9 +36,10 @@ class UserController extends Controller
             return response()->json(['errors' => $validator->errors()], 400);
         }
         DB::beginTransaction();
-        $id = $request->all()['userInfo']['id'];
-        $first_name = $request->all()['userInfo']['first_name'];
-        $last_name = $request->all()['userInfo']['last_name'];
+
+        $id = $request->id;
+        $first_name = $request->first_name;
+        $last_name = $request->last_name;
         try {
             $dateTime = Carbon::now();
             $timestamp = $dateTime->timestamp;
@@ -52,6 +50,16 @@ class UserController extends Controller
 
 
             if ($user) {
+
+                $user_investment = InvestmentHistory::where('user_id', $user->id)->sum('amount');
+                $total = $user_investment - 20;
+                $MiningPower = $total / 10;
+                if ($MiningPower == 0) {
+                    $totalPower = 1;
+                } else {
+                    $totalPower = $MiningPower;
+                }
+                // dd($totalPower);
 
                 $this->claimDaily($user);
             } else {
@@ -72,8 +80,11 @@ class UserController extends Controller
                 ]);
             }
             DB::commit();
+            $user->setAttribute('totalPower', $totalPower);
+
             return response()->json([
-                'user' => $user
+                'user' => $user,
+
             ], 200);
         } catch (\Exception $e) {
             // Optionally handle the exception
@@ -276,22 +287,22 @@ class UserController extends Controller
             return response()->json(['errors' => $validator->errors()], 400);
         }
 
-        $transactions = TransactionHistory::where('to', $request->user_id)->get();
-
+        $transactions = TransactionHistory::with('userBy')->where('to', $request->user_id)->get();
+        // dd($transactions);
         // Prepare an array to hold the formatted transaction data
-        $formattedTransactions = [];
+        $formattedTransactions = $transactions;
 
         // Iterate over each transaction and format the data
-        foreach ($transactions as $transaction) {
-            $formattedTransactions[] = [
-                'to' => $transaction->to,
-                'by' => $transaction->by,
-                'amount' => $transaction->amount,
-                'type' => $transaction->type,
-                'created_at' => $transaction->created_at->format('Y-m-d H:i:s'),
-                'updated_at' => $transaction->updated_at->format('Y-m-d H:i:s'),
-            ];
-        }
+        // foreach ($transactions as $transaction) {
+        //     $formattedTransactions[] = [
+        //         'to' => $transaction->to,
+        //         'by' => $transaction->by,
+        //         'amount' => $transaction->amount,
+        //         'type' => $transaction->type,
+        //         'created_at' => $transaction->created_at->format('Y-m-d H:i:s'),
+        //         'updated_at' => $transaction->updated_at->format('Y-m-d H:i:s'),
+        //     ];
+        // }
 
         // Return the formatted transactions as JSON response
         return response()->json($formattedTransactions, 200);
@@ -361,12 +372,15 @@ class UserController extends Controller
 
 
         $userTotalDirect = User::where('referral_by', $request->telegram_id)->count();
-        // $userTotalDirect = 9999;
+        $Invite_first_friend = User::where('referral_by', $request->telegram_id)
+            ->where('status', 2)->first();
+        // dd($Invite_first_friend);
         return response()->json([
 
             'user_Total_Direct' => $userTotalDirect,
             'user' => $user,
             'task_deatils' => $task_deatils,
+            'Invite_first_friend' => $Invite_first_friend
         ], 200);
     }
 
@@ -457,7 +471,7 @@ class UserController extends Controller
 
         try {
             $user = User::where('id', $request->user_id)->first();
-            if ($request->amount <= 20) {
+            if ($request->amount  < 20) {
 
                 return response()->json([
                     'message' => 'Amount must be at least 20.',
