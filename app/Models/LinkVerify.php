@@ -9,4 +9,9 @@ class LinkVerify extends Model
 {
     use HasFactory;
     protected $table = 'linkverify';
+
+    protected $fillable = [
+        'description',
+
+    ];
 }

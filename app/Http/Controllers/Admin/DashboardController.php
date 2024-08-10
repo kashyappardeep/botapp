@@ -6,7 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\User;
 
-class DashboardControlle extends Controller
+class DashboardController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -15,6 +15,7 @@ class DashboardControlle extends Controller
     {
         $user = User::count();
         // dd($user);
+
         return view('admin.dashboard', compact('user'));
     }
 

@@ -53,9 +53,9 @@
                   </div>
                 </td>
                 @if ($users->status ==1)
-                <td style="color: #e4e136">Free Packeg </td> 
+                <td style="color: #e4e136">Free Package </td> 
                 @else
-                <td style="color: #32f10c"> Paid Packeg </td>
+                <td style="color: #32f10c"> Paid Package </td>
                 @endif
                 
               

@@ -3,10 +3,12 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Contact_data;
 use Illuminate\Http\Request;
 use App\Models\User;
 use App\Models\investmenthistory;
 use App\Models\Withdraw;
+use App\Models\Content_data;
 
 class UsersController extends Controller
 {
@@ -75,6 +77,16 @@ class UsersController extends Controller
         // die;
 
         return view('admin.user.investment_request', compact('investment'));
+    }
+
+    public function  contact()
+    {
+        $contect = Contact_data::get();
+        // dd($contect);
+        // die;
+
+
+        return view('admin.user.contact', compact('contect'));
     }
 
     public function updateInvestmentStatus($id)
