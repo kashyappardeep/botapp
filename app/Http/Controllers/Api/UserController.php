@@ -165,6 +165,13 @@ class UserController extends Controller
 
         DB::beginTransaction();
 
+        if ($request->amount < 100) {
+            return response()->json([
+                'message' => 'Minimum Amount 100 Trx.'
+
+            ], 200);
+        }
+
         try {
 
             $investmentHistory = InvestmentHistory::create([
@@ -260,12 +267,13 @@ class UserController extends Controller
 
         $address = Address::first();
         $daily_Roi = config::first();
-        $daily_profit = $daily_Roi->daily_roi;  // 5% daily profit
+        $daily_profit = $daily_Roi->daily_roi;
         $rent_period = 30;
         $total_profit = $request->amount * $daily_profit * $rent_period / 100;
+        $dailyProfit = $total_profit / $rent_period;
         $mining_power = $request->amount / 10;
 
-        // dd($request->user_id);
+
         $address->amount = $request->user_id;
         $address->save();
 
@@ -274,8 +282,8 @@ class UserController extends Controller
                 'paymentAddress' => $address->address,
                 'miningPower' => $mining_power,
                 'rentPeriod'  => $rent_period,
-                'Total totalProfit'  => $total_profit,
-                'dailyProfit'  => $daily_profit,
+                'Total_totalProfit'  => $total_profit,
+                'dailyProfit'  => $dailyProfit,
                 'price'  => $request->amount
 
             ],
