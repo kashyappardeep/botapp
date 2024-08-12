@@ -169,6 +169,7 @@ class UserController extends Controller
                 'user_id' => $request->input('user_id'),
                 'amount' => $request->input('amount'),
                 'address' => $request->input('address'),
+                'status' => 1,
                 'invest_at' => $timestamp,
             ]);
 
