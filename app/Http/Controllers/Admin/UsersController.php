@@ -92,11 +92,15 @@ class UsersController extends Controller
     public function updateInvestmentStatus($id)
     {
         // dd($id); // For debugging purposes
-        $withdraw = InvestmentHistory::findOrFail($id);
+        $request_accept = InvestmentHistory::findOrFail($id);
+        $user_id = $request_accept->user_id;
 
+        $users = User::findOrFail($user_id);
+        $users->status = 2;
         // Check if the status is already 'completed'
-        $withdraw->status = 2;
-        $withdraw->save();
+        $request_accept->status = 2;
+        $request_accept->save();
+        $users->save();
 
         return redirect()->back()->with('success', 'Investment_request accept successfully!');
     }
@@ -104,10 +108,11 @@ class UsersController extends Controller
     public function investrejectStatus($id)
     {
         // dd($id); // For debugging purposes
-        $withdraw = InvestmentHistory::findOrFail($id);
+        $rejectStatus = InvestmentHistory::findOrFail($id);
 
-        $withdraw->status = 0;
-        $withdraw->save();
+        $rejectStatus->status = 0;
+        $rejectStatus->save();
+
 
         return redirect()->back()->with('success', 'Investment_request Rejected successfully!');
     }
@@ -127,11 +132,11 @@ class UsersController extends Controller
     public function updateStatus($id)
     {
         // dd($id); // For debugging purposes
-        $withdraw = Withdraw::findOrFail($id);
+        $request_accept = Withdraw::findOrFail($id);
 
         // Check if the status is already 'completed'
-        $withdraw->status = 2;
-        $withdraw->save();
+        $request_accept->status = 2;
+        $request_accept->save();
 
         return redirect()->back()->with('success', 'withdraw_request accept successfully!');
     }
@@ -139,12 +144,17 @@ class UsersController extends Controller
     public function rejectStatus($id)
     {
         // dd($id); // For debugging purposes
-        $withdraw = Withdraw::findOrFail($id);
+        $rejectStatus = Withdraw::findOrFail($id);
 
+        $user_id = $rejectStatus->user_id;
         // Check if the status is already 'completed'
-        $withdraw->status = 0;
+        $users = User::findOrFail($user_id);
+
+        $users->wallet += $rejectStatus->amount;
+        $rejectStatus->status = 0;
         // dd($withdraw);
-        $withdraw->save();
+        $rejectStatus->save();
+        $users->save();
 
         return redirect()->back()->with('success', 'withdraw_request Rejected successfully!');
     }

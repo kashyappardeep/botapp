@@ -54,7 +54,7 @@ class UserController extends Controller
             if ($user) {
                 // dd($user);
 
-                $user_investment = InvestmentHistory::where('user_id', $user->id)->sum('amount');
+                $user_investment = InvestmentHistory::where('user_id', $user->id)->where('status', 2)->sum('amount');
 
 
                 $totalPower = $user_investment / 10;
@@ -223,7 +223,7 @@ class UserController extends Controller
 
 
 
-            $user->status = 2;
+            $user->status = 1;
             $user->save();
             //update user_id and amount in address table
             $address = Address::get();
