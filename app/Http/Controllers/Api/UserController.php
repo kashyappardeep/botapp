@@ -58,7 +58,7 @@ class UserController extends Controller
 
 
                 $totalPower = $user_investment / 10;
-                // dd($MiningPower);
+
                 if ($totalPower == 0) {
                     $totalPower = 1;
                 } else {
