@@ -64,6 +64,7 @@ class UserController extends Controller
                 } else {
                     $totalPower = $totalPower;
                 }
+
                 // dd($totalPower);
 
                 $this->claimDaily($user);
