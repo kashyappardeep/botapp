@@ -56,9 +56,14 @@ class UserController extends Controller
 
                 $user_investment = InvestmentHistory::where('user_id', $user->id)->sum('amount');
 
-                $total = $user_investment - 10;
-                $totalPower = $user_investment / 10;
 
+                $totalPower = $user_investment / 10;
+                // dd($MiningPower);
+                if ($totalPower == 0) {
+                    $totalPower = 1;
+                } else {
+                    $totalPower = $totalPower;
+                }
                 // dd($totalPower);
 
                 $this->claimDaily($user);
