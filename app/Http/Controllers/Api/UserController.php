@@ -55,12 +55,14 @@ class UserController extends Controller
                 // dd($user);
 
                 $user_investment = InvestmentHistory::where('user_id', $user->id)->sum('amount');
-                $total = $user_investment - 20;
-                $MiningPower = $total / 10;
-                if ($MiningPower == 0) {
+
+
+                $totalPower = $user_investment / 10;
+
+                if ($totalPower == 0) {
                     $totalPower = 1;
                 } else {
-                    $totalPower = $MiningPower;
+                    $totalPower = $totalPower;
                 }
                 // dd($totalPower);
 
@@ -78,9 +80,10 @@ class UserController extends Controller
 
                 $investmentHistory = InvestmentHistory::create([
                     'user_id' => $user->id,
-                    'amount' => 20,
+                    'amount' => 10,
                     'address' => null,
                     'invest_at' => $timestamp,
+                    'status' => 2
                 ]);
             }
             DB::commit();
@@ -162,12 +165,20 @@ class UserController extends Controller
 
         DB::beginTransaction();
 
+        if ($request->amount < 100) {
+            return response()->json([
+                'message' => 'Minimum Amount 100 Trx.'
+
+            ], 200);
+        }
+
         try {
 
             $investmentHistory = InvestmentHistory::create([
                 'user_id' => $request->input('user_id'),
                 'amount' => $request->input('amount'),
                 'address' => $request->input('address'),
+                'status' => 1,
                 'invest_at' => $timestamp,
             ]);
 
@@ -256,12 +267,13 @@ class UserController extends Controller
 
         $address = Address::first();
         $daily_Roi = config::first();
-        $daily_profit = $daily_Roi->daily_roi;  // 5% daily profit
+        $daily_profit = $daily_Roi->daily_roi;
         $rent_period = 30;
         $total_profit = $request->amount * $daily_profit * $rent_period / 100;
+        $dailyProfit = $total_profit / $rent_period;
         $mining_power = $request->amount / 10;
 
-        // dd($request->user_id);
+
         $address->amount = $request->user_id;
         $address->save();
 
@@ -270,8 +282,8 @@ class UserController extends Controller
                 'paymentAddress' => $address->address,
                 'miningPower' => $mining_power,
                 'rentPeriod'  => $rent_period,
-                'Total totalProfit'  => $total_profit,
-                'dailyProfit'  => $daily_profit,
+                'Total_totalProfit'  => $total_profit,
+                'dailyProfit'  => $dailyProfit,
                 'price'  => $request->amount
 
             ],
@@ -322,7 +334,8 @@ class UserController extends Controller
         $paid_daily_roi = $Config_detail->daily_roi;
         $lastClaim = $user->claimHistories()->latest()->first();
 
-        $user_investment = InvestmentHistory::where('user_id', $id)->get();
+        $user_investment = InvestmentHistory::where('user_id', $id)->where('status', 2)->get();
+        // dd($user_investment);
         $user = User::findOrFail($id);
 
         $claim_amount = 0;
@@ -536,6 +549,7 @@ class UserController extends Controller
         ]);
 
         return response()->json([
+            'message' => 'Sumbit successfully',
             'R_LinkVerify' => $RequestLinkVerify
         ], 200);
     }
