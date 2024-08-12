@@ -11,7 +11,7 @@
   
     <div class="box">
       <div class="box-header" style="display: ruby-text;">
-        <span> <h2>Users  List
+        <span> <h2>Investment Users Request List
           </h2> </span>
        </div>
        
