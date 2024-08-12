@@ -11,7 +11,7 @@
   
     <div class="box">
       <div class="box-header" style="display: ruby-text;">
-        <h2>Users InvestMent Historys </h2> 
+        <h2>Users Content and Earn Data</h2> 
     </div>
        
        
