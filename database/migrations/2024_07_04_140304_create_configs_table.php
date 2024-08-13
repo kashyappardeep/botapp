@@ -17,6 +17,7 @@ return new class extends Migration
             $table->string('admin_wallet_address');
             $table->string('level_of_referral');
             $table->string('gateway_key');
+            $table->string('content_reward');
             $table->timestamps();
         });
     }

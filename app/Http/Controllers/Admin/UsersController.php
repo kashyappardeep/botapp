@@ -84,7 +84,7 @@ class UsersController extends Controller
 
     public function  contact()
     {
-        $contect = Contact_data::get();
+        $contect = Contact_data::where('status', 1)->get();
         // dd($contect);
         // die;
 
