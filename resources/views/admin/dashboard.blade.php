@@ -315,7 +315,7 @@
               </div>
             </div> --}}
           </div>
-          <div class="row">
+          {{-- <div class="row">
             <div class="col-md-12 col-xl-4">
               <div class="box">
                 <div class="box-header">
@@ -606,8 +606,8 @@
                 </div>
               </div>
             </div>
-          </div>
-          <div class="row">
+          </div> --}}
+          {{-- <div class="row">
             <div class="col-md-6 col-xl-4">
               <div class="box light lt">
                 <div class="box-header">
@@ -774,8 +774,8 @@
                 </div>
               </div>
             </div>
-          </div>
-          <div class="row">
+          </div> --}}
+          {{-- <div class="row">
             <div class="col-md-12 col-xl-4">
               <div class="box">
                 <div class="box-header">
@@ -913,7 +913,7 @@
               </div>
             </div>
           </div>
-        </div>
+        </div> --}}
 
         <!-- ############ PAGE END-->
 

@@ -56,7 +56,7 @@
             <ul class="nav" ui-nav>
               
 
-              <li>
+              {{-- <li>
                 <a href="{{url('admin/dashboard')}}">
                   <span class="nav-icon">
                     <i class="material-icons">&#xe3fc;
@@ -65,7 +65,7 @@
                   </span>
                   <span class="nav-text">Dashboard</span>
                 </a>
-              </li>
+              </li> --}}
 
 
               <li>
