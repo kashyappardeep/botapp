@@ -266,7 +266,15 @@ class UserController extends Controller
             return response()->json(['errors' => $validator->errors()], 400);
         }
 
-        $address = Address::first();
+        $addresses = Address::whereNull('user_id')->get();
+
+        if ($addresses->isEmpty()) {
+            dd('no data found');
+        } else {
+
+            $address = Address::whereNull('user_id')->first();
+            // dd($address);
+        }
         $daily_Roi = config::first();
         $daily_profit = $daily_Roi->daily_roi;
         $rent_period = 30;
@@ -274,8 +282,9 @@ class UserController extends Controller
         $dailyProfit = $total_profit / $rent_period;
         $mining_power = $request->amount / 10;
 
-
-        $address->amount = $request->user_id;
+        // dd($address);
+        $address->user_id = $request->user_id;
+        $address->amount = $request->amount;
         $address->save();
 
         return response()->json(
