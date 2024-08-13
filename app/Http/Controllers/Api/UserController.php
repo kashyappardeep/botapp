@@ -214,17 +214,17 @@ class UserController extends Controller
             return response()->json(['errors' => $validator->errors()], 400);
         }
 
-        // $addresses = Address::whereNull('user_id')->get();
+        $addresses = Address::whereNull('user_id')->first();
+        // dd($addresses);
+        $status = 1;
+        if ($addresses === null) {
+            $status = 2;
+            $config = Config::first();
+            $address = $config->admin_wallet_address;
+        } else {
+            $address = $addresses->address;
+        }
 
-
-        // if ($addresses->isEmpty()) {
-        //     $config = config::first();
-        //     $address = $config->admin_wallet_address;
-        // } else {
-
-        //     $address = Address::whereNull('user_id')->first();
-        // }
-        $address = Address::first();
         $daily_Roi = config::first();
         $daily_profit = $daily_Roi->daily_roi;
         $rent_period = 30;
@@ -232,14 +232,20 @@ class UserController extends Controller
         $dailyProfit = $total_profit / $rent_period;
         $mining_power = $request->amount / 10;
 
-        // dd($address);
-        $address->user_id = $request->user_id;
-        $address->amount = $request->amount;
-        $address->save();
 
+        if ($status == 1) {
+            $address = Address::find($addresses->id);
+            $address->user_id = $request->user_id;
+            $address->amount = $request->amount;
+            $address->save();
+            $address = $address->address;
+        } else {
+            $address = $address;
+        }
+        // dd($address);
         return response()->json(
             [
-                'paymentAddress' => $address->address,
+                'paymentAddress' => $address,
                 'miningPower' => $mining_power,
                 'rentPeriod'  => $rent_period,
                 'Total_totalProfit'  => $total_profit,

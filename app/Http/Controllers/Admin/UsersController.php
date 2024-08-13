@@ -116,7 +116,9 @@ class UsersController extends Controller
                 }
                 echo 'level', $level->level;
                 $bonusAmount = $request_accept->amount * $level->level_p / 100;
-                $referrer->wallet += $bonusAmount;
+                echo 'bonusAmount', $bonusAmount;
+                Log::warning('bonusAmount', ['bonusAmount' => $bonusAmount]);
+                $referrer->wallet = $referrer->wallet + $bonusAmount;
                 $referrer->save();
 
                 $TransactionHistory =  TransactionHistory::create([
