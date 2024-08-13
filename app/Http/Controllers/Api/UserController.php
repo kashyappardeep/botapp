@@ -214,16 +214,17 @@ class UserController extends Controller
             return response()->json(['errors' => $validator->errors()], 400);
         }
 
-        $addresses = Address::whereNull('user_id')->get();
+        // $addresses = Address::whereNull('user_id')->get();
 
 
-        if ($addresses->isEmpty()) {
-            $config = config::first();
-            $address = $config->admin_wallet_address;
-        } else {
+        // if ($addresses->isEmpty()) {
+        //     $config = config::first();
+        //     $address = $config->admin_wallet_address;
+        // } else {
 
-            $address = Address::whereNull('user_id')->first();
-        }
+        //     $address = Address::whereNull('user_id')->first();
+        // }
+        $address = Address::first();
         $daily_Roi = config::first();
         $daily_profit = $daily_Roi->daily_roi;
         $rent_period = 30;
