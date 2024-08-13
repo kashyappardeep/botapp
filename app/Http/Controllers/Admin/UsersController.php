@@ -109,11 +109,12 @@ class UsersController extends Controller
             // dd($levels);
             if ($currentUser && $currentUser->referral_by) {
                 $referrer = User::where('telegram_id', $currentUser->referral_by)->first();
+                // dd($referrer);
                 if (!$referrer) {
                     Log::warning('Referrer not found', ['referral_by' => $currentUser->referral_by]);
                     break;
                 }
-                // echo 'level', $level->level;
+                echo 'level', $level->level;
                 $bonusAmount = $request_accept->amount * $level->level_p / 100;
                 $referrer->wallet += $bonusAmount;
                 $referrer->save();

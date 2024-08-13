@@ -20,7 +20,7 @@ use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
 use App\Models\Level;
 use App\Models\UserTask;
-
+use Illuminate\Support\Facades\Log;
 
 class UserController extends Controller
 {
@@ -182,6 +182,10 @@ class UserController extends Controller
                 'status' => 1,
                 'invest_at' => $timestamp,
             ]);
+
+
+
+
 
             DB::commit();
             return response()->json([
