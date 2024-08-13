@@ -20,7 +20,7 @@ use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
 use App\Models\Level;
 use App\Models\UserTask;
-use Illuminate\Support\Facades\Log;
+
 
 class UserController extends Controller
 {
@@ -183,62 +183,6 @@ class UserController extends Controller
                 'invest_at' => $timestamp,
             ]);
 
-            //user change status 2 = Paid Packeg
-            $user = User::findOrFail($request->input('user_id'));
-            $levels = Level::all();
-            // dd($levels);
-            $currentUser = $user;
-            Log::info('Initial user data:', ['currentUser' => $currentUser->toArray()]);
-
-            foreach ($levels as $level) {
-                // dd($levels);
-                if ($currentUser && $currentUser->referral_by) {
-                    $referrer = User::where('telegram_id', $currentUser->referral_by)->first();
-                    if (!$referrer) {
-                        Log::warning('Referrer not found', ['referral_by' => $currentUser->referral_by]);
-                        break;
-                    }
-                    // echo 'level', $level->level;
-                    $bonusAmount = $request->input('amount') * $level->level / 100;
-                    $referrer->wallet += $bonusAmount;
-                    $referrer->save();
-
-                    $TransactionHistory =  TransactionHistory::create([
-                        'amount' => $bonusAmount,
-                        'level' => $level->level,
-                        'to' => $referrer->id,
-                        'by' => $user->id,
-                        'type' => "1"
-                    ]);
-                    // dd($TransactionHistory);
-                    // echo 'TransactionHistory', $TransactionHistory;
-                    $currentUser = $referrer;
-                    // echo 'curent_user', $currentUser;
-                    // Log::info('Updated user data:', ['currentUser' => $currentUser->toArray()]);
-                } else {
-                    Log::warning('Referrer not found or currentUser is invalid', ['currentUser' => $currentUser]);
-                    break;
-                }
-            }
-            // dd($currentUser);
-
-
-
-            $user->status = 1;
-            $user->save();
-            //update user_id and amount in address table
-            $address = Address::get();
-            // dd($address);
-            foreach ($address as $address) {
-                if ($address->user_id !== null) {
-                    $address->user_id = $request->input('user_id');
-                    $address->amount = $request->input('amount');
-                    $address->save();
-                }
-            }
-
-
-
             DB::commit();
             return response()->json([
                 'message' => 'Your transaction will get automatically confirmed within 10 minutes.',
@@ -268,12 +212,13 @@ class UserController extends Controller
 
         $addresses = Address::whereNull('user_id')->get();
 
+
         if ($addresses->isEmpty()) {
-            $address = Address::whereNull('user_id')->first();
+            $config = config::first();
+            $address = $config->admin_wallet_address;
         } else {
 
             $address = Address::whereNull('user_id')->first();
-            // dd($address);
         }
         $daily_Roi = config::first();
         $daily_profit = $daily_Roi->daily_roi;
