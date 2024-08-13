@@ -491,12 +491,6 @@ class UserController extends Controller
     {
         $LinkVerify = LinkVerify::get();
         // dd($LinkVerify);
-        $content_reward = config::first();
-        $reward = $content_reward->content_reward;
-        // dd($reward);
-        foreach ($LinkVerify as $link) {
-            $link->setAttribute('reward', $reward);
-        }
 
         return response()->json([
             'LinkVerify' => $LinkVerify
@@ -524,7 +518,7 @@ class UserController extends Controller
 
 
         return response()->json([
-            'message' => 'Your provided link is under review. A reward will be sent to your wallet based on eligibility.',
+            'message' => 'Sumbit successfully',
             'R_LinkVerify' => $RequestLinkVerify
         ], 200);
     }
