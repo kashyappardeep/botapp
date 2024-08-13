@@ -518,7 +518,7 @@ class UserController extends Controller
 
 
         return response()->json([
-            'message' => 'Sumbit successfully',
+            'message' => 'Your provided link is under review. A reward will be sent to your wallet based on eligibility.',
             'R_LinkVerify' => $RequestLinkVerify
         ], 200);
     }
