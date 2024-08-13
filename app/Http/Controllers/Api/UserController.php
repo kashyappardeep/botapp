@@ -269,7 +269,7 @@ class UserController extends Controller
         $addresses = Address::whereNull('user_id')->get();
 
         if ($addresses->isEmpty()) {
-            dd('no data found');
+            $address = Address::whereNull('user_id')->first();
         } else {
 
             $address = Address::whereNull('user_id')->first();
