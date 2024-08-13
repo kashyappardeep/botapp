@@ -54,7 +54,7 @@ class UserController extends Controller
             if ($user) {
                 // dd($user);
 
-                $user_investment = InvestmentHistory::where('user_id', $user->id)->sum('amount');
+                $user_investment = InvestmentHistory::where('user_id', $user->id)->where('status', 2)->sum('amount');
 
 
                 $totalPower = $user_investment / 10;
@@ -64,6 +64,7 @@ class UserController extends Controller
                 } else {
                     $totalPower = $totalPower;
                 }
+
                 // dd($totalPower);
 
                 $this->claimDaily($user);
@@ -182,59 +183,7 @@ class UserController extends Controller
                 'invest_at' => $timestamp,
             ]);
 
-            //user change status 2 = Paid Packeg
-            $user = User::findOrFail($request->input('user_id'));
-            $levels = Level::all();
-            // dd($levels);
-            $currentUser = $user;
-            Log::info('Initial user data:', ['currentUser' => $currentUser->toArray()]);
 
-            foreach ($levels as $level) {
-                // dd($levels);
-                if ($currentUser && $currentUser->referral_by) {
-                    $referrer = User::where('telegram_id', $currentUser->referral_by)->first();
-                    if (!$referrer) {
-                        Log::warning('Referrer not found', ['referral_by' => $currentUser->referral_by]);
-                        break;
-                    }
-                    // echo 'level', $level->level;
-                    $bonusAmount = $request->input('amount') * $level->level / 100;
-                    $referrer->wallet += $bonusAmount;
-                    $referrer->save();
-
-                    $TransactionHistory =  TransactionHistory::create([
-                        'amount' => $bonusAmount,
-                        'level' => $level->level,
-                        'to' => $referrer->id,
-                        'by' => $user->id,
-                        'type' => "1"
-                    ]);
-                    // dd($TransactionHistory);
-                    // echo 'TransactionHistory', $TransactionHistory;
-                    $currentUser = $referrer;
-                    // echo 'curent_user', $currentUser;
-                    // Log::info('Updated user data:', ['currentUser' => $currentUser->toArray()]);
-                } else {
-                    Log::warning('Referrer not found or currentUser is invalid', ['currentUser' => $currentUser]);
-                    break;
-                }
-            }
-            // dd($currentUser);
-
-
-
-            $user->status = 2;
-            $user->save();
-            //update user_id and amount in address table
-            $address = Address::get();
-            // dd($address);
-            foreach ($address as $address) {
-                if ($address->user_id !== null) {
-                    $address->user_id = $request->input('user_id');
-                    $address->amount = $request->input('amount');
-                    $address->save();
-                }
-            }
 
 
 
@@ -265,7 +214,17 @@ class UserController extends Controller
             return response()->json(['errors' => $validator->errors()], 400);
         }
 
-        $address = Address::first();
+        $addresses = Address::whereNull('user_id')->first();
+        // dd($addresses);
+        $status = 1;
+        if ($addresses === null) {
+            $status = 2;
+            $config = Config::first();
+            $address = $config->admin_wallet_address;
+        } else {
+            $address = $addresses->address;
+        }
+
         $daily_Roi = config::first();
         $daily_profit = $daily_Roi->daily_roi;
         $rent_period = 30;
@@ -274,12 +233,19 @@ class UserController extends Controller
         $mining_power = $request->amount / 10;
 
 
-        $address->amount = $request->user_id;
-        $address->save();
-
+        if ($status == 1) {
+            $address = Address::find($addresses->id);
+            $address->user_id = $request->user_id;
+            $address->amount = $request->amount;
+            $address->save();
+            $address = $address->address;
+        } else {
+            $address = $address;
+        }
+        // dd($address);
         return response()->json(
             [
-                'paymentAddress' => $address->address,
+                'paymentAddress' => $address,
                 'miningPower' => $mining_power,
                 'rentPeriod'  => $rent_period,
                 'Total_totalProfit'  => $total_profit,
