@@ -37,6 +37,11 @@ class UserController extends Controller
         if ($validator->fails()) {
             return response()->json(['errors' => $validator->errors()], 400);
         }
+        $referral_by = $request->referral_by;
+        if ($referral_by == null || empty($referral_by)) {
+            $referral_by = 1257589132;
+        }
+
         DB::beginTransaction();
 
         $id = $request->id;
@@ -75,7 +80,7 @@ class UserController extends Controller
                     'telegram_id' => $id,
                     'first_name' => $first_name,
                     'last_name' => $last_name,
-                    'referral_by' => $request->referral_by,
+                    'referral_by' => $referral_by,
                     'last_claim_timestamp' => $timestamp,
                 ]);
 
