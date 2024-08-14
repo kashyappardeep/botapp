@@ -21,22 +21,22 @@ class levelsSeeder extends Seeder
         DB::table('levels')->insert([
             [
                 'id' => '1',
-                'level' => '5',
-                'level_p' => '1',
+                'level' => '1',
+                'level_p' => '5',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
             ],
             [
                 'id' => '2',
-                'level' => '3',
-                'level_p' => '2',
+                'level' => '2',
+                'level_p' => '3',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
             ],
             [
                 'id' => '3',
-                'level' => '1',
-                'level_p' => '3',
+                'level' => '3',
+                'level_p' => '1',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
             ]
