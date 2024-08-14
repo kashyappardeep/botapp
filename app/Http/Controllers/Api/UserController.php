@@ -269,26 +269,53 @@ class UserController extends Controller
             return response()->json(['errors' => $validator->errors()], 400);
         }
 
-        $transactions = TransactionHistory::with('userBy')->where('to', $request->user_id)->get();
-        // dd($transactions);
-        // Prepare an array to hold the formatted transaction data
-        $formattedTransactions = $transactions;
+        $Id = $request->user_id;
+        $user_data = User::where('id', $Id)->first();
+        $userId = $user_data->telegram_id;
 
-        // Iterate over each transaction and format the data
-        // foreach ($transactions as $transaction) {
-        //     $formattedTransactions[] = [
-        //         'to' => $transaction->to,
-        //         'by' => $transaction->by,
-        //         'amount' => $transaction->amount,
-        //         'type' => $transaction->type,
-        //         'created_at' => $transaction->created_at->format('Y-m-d H:i:s'),
-        //         'updated_at' => $transaction->updated_at->format('Y-m-d H:i:s'),
-        //     ];
-        // }
+        $level1Users = User::where('referral_by', $userId)->pluck('telegram_id');
+        //dd($level1Users->toArray());
+        $level1count = $level1Users->count();
+        $level2Users = User::whereIn('referral_by', $level1Users)->pluck('telegram_id');
+        // dd($level2Users->toArray());
+        $level2count = $level2Users->count();
+        $level3Users = User::whereIn('referral_by', $level2Users)->pluck('telegram_id');
+        // dd($level3Users->toArray());
+        $level3count = $level3Users->count();
+        $downlineUsers = $level1Users->merge($level2Users)->merge($level3Users);
 
-        // Return the formatted transactions as JSON response
-        return response()->json($formattedTransactions, 200);
+
+        // dd($downlineUsers->toArray());
+        $idss = User::whereIn('telegram_id', $downlineUsers)->pluck('id');
+
+
+        $results = TransactionHistory::with('userBy')
+            ->select('by', 'level', DB::raw('SUM(amount) as total_profit'))
+            ->where('to', $user_data->id)
+            ->whereIn('by', $idss)
+            ->where('type', 2)
+            ->groupBy('by', 'level')
+            ->get();
+
+        $total_referral = $level1count + $level2count + $level3count;
+        // dd($results->toArray());
+        return response()->json(
+            [
+                'transactions' => $results,
+                'level1count' => $level1count,
+                'level2count' => $level2count,
+                'level3count' => $level3count,
+                'total_referral' => $total_referral
+
+
+            ],
+            200
+        );
     }
+
+
+
+
 
     private function claimDaily($user)
     {

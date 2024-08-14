@@ -126,7 +126,7 @@ class UsersController extends Controller
                     'level' => $level->level,
                     'to' => $referrer->id,
                     'by' => $user->id,
-                    'type' => "1"
+                    'type' => "2"
                 ]);
                 // dd($TransactionHistory);
                 // echo 'TransactionHistory', $TransactionHistory;

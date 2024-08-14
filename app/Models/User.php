@@ -37,9 +37,9 @@ class User extends Authenticatable
         return $this->hasMany(ClaimHistory::class);
     }
 
-    public function TransactionHistory()
+    public function Referral()
     {
-        return $this->hasMany(TransactionHistory::class);
+        return $this->hasMany(TransactionHistory::class, 'by', 'id');
     }
 
     public function UserTask()

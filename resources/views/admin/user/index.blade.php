@@ -8,7 +8,7 @@
   <!-- ############ PAGE START-->
   <div class="padding">
     <div class="margin">
-      <h5 class="m-b-0 _300">Digitron, Welcome back</h5>
+      <h5 class="m-b-0 _300">Tronox, Welcome back</h5>
       
       
     </div>
