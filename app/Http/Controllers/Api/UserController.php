@@ -76,13 +76,15 @@ class UserController extends Controller
                 $user->setAttribute('totalPower', $totalPower);
             } else {
 
-                $user = User::create([
-                    'telegram_id' => $id,
-                    'first_name' => $first_name,
-                    'last_name' => $last_name,
-                    'referral_by' => $referral_by,
-                    'last_claim_timestamp' => $timestamp,
-                ]);
+                $user = User::firstOrCreate(
+                    ['telegram_id' => $id], // Condition to find the existing record
+                    [
+                        'first_name' => $first_name,
+                        'last_name' => $last_name,
+                        'referral_by' => $referral_by,
+                        'last_claim_timestamp' => $timestamp,
+                    ] // Attributes to set if creating a new record
+                );
 
                 $investmentHistory = InvestmentHistory::create([
                     'user_id' => $user->id,
