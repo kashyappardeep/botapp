@@ -51,6 +51,12 @@
                 <input type="text" name="gateway_key" class="form-control" required="">  
                 </div>                      
               </div>
+              <div class="form-group row">
+                <label class="col-sm-3 form-control-label">Content Reward</label>
+                <div class="col-sm-9">
+                <input type="text" name="content_reward" class="form-control" required="">  
+                </div>                      
+              </div>
               
              
             

@@ -49,6 +49,12 @@
                     <input type="text" name="gateway_key" value="{{ $Config->gateway_key }}" class="form-control" required="">  
                     </div>                      
                   </div>
+                  <div class="form-group row">
+                    <label class="col-sm-3 form-control-label">content_reward</label>
+                    <div class="col-sm-9">
+                    <input type="text" name="content_reward" value="{{ $Config->content_reward }}" class="form-control" required="">  
+                    </div>                      
+                  </div>
                 
                  <div class="dker p-a text-right">
                 <button type="submit" class="btn info">Update</button>

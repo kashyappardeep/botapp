@@ -39,6 +39,7 @@ class ConfigController extends Controller
                 'admin_wallet_address' => 'required',
                 'level_of_referral' => 'required',
                 'gateway_key' => 'required',
+                'content_reward' => 'required',
 
             ]);
             if ($validator->fails()) {
@@ -49,7 +50,8 @@ class ConfigController extends Controller
                 'daily_roi' => $request->daily_roi,
                 'admin_wallet_address' => $request->admin_wallet_address,
                 'level_of_referral' => $request->level_of_referral,
-                'gateway_key' => $request->gateway_key
+                'gateway_key' => $request->gateway_key,
+                'content_reward' => $request->content_reward,
             ]);
             // dd($Config);
             return redirect()->back()->with('success', 'Config created successfully!');
@@ -89,6 +91,7 @@ class ConfigController extends Controller
         $config->admin_wallet_address = $request->admin_wallet_address;
         $config->level_of_referral = $request->level_of_referral;
         $config->gateway_key = $request->gateway_key;
+        $config->content_reward = $request->content_reward;
 
         // Save the changes to the database
         $config->save();
