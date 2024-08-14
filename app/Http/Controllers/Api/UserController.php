@@ -491,8 +491,10 @@ class UserController extends Controller
     {
         $LinkVerify = LinkVerify::get();
         // dd($LinkVerify);
-
+        $config = config::first();
+        $reward = $config->content_reward;
         return response()->json([
+            'reward' => $reward,
             'LinkVerify' => $LinkVerify
         ], 200);
     }
