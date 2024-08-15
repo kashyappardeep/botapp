@@ -35,9 +35,13 @@
           <tbody>
             @foreach ($Withdraw as $Withdraw)
             <tr>
-             
-           <td> {{ $Withdraw->user->first_name ?? 'N/A' }}</td>
-              <td>{{$Withdraw->address}}</td>
+              @if ($Withdraw && $Withdraw->user && $Withdraw->user->first_name)
+    <td>{{ $Withdraw->user->first_name}}</td>
+@else
+    <td>{{$Withdraw->user->telegram_id}}</td>
+@endif
+                
+                <td>{{$Withdraw->address}}</td>
                 <td>{{$Withdraw->amount}}</td>
                 <td>{{$Withdraw->created_at}}</td>
                 @if ($Withdraw->status ==1)
