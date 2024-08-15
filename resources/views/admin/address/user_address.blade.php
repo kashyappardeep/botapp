@@ -25,7 +25,6 @@
             
             
               <th>User Name </th>
-              <th>Telegram Id </th>
               
               <th>Address</th>
               <th>Amount</th>
@@ -40,12 +39,8 @@
           <tbody>
             @foreach ($address as $address)
             <tr>
-              @if ($address && $address->user && $address->user->first_name)
-    <td>{{ $address->user->first_name}}</td>
-@else
-    <td>{{$address->user->telegram_id}}</td>
-@endif
-<td>{{$address->user->telegram_id}}</td>
+              
+                <td>{{$address->user->first_name }}</td>
                 <td>{{$address->address}}</td>
                 <td>{{$address->amount}}</td>
                 {{-- <td>{{$address->created_at}}</td> --}}
