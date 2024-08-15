@@ -12,6 +12,7 @@ use App\Models\TransactionHistory;
 use App\Models\Level;
 use App\Models\Withdraw;
 use App\Models\Content_data;
+use Carbon\Carbon;
 
 class UsersController extends Controller
 {
@@ -28,6 +29,8 @@ class UsersController extends Controller
     /**
      * Show the form for creating a new resource.
      */
+
+
     public function create()
     {
         //
@@ -72,6 +75,15 @@ class UsersController extends Controller
     {
         //
     }
+
+    // public function indianTimeZon($utcTimestamp)
+    // {
+    //     $istTimestamp = Carbon::createFromFormat('Y-m-d H:i:s', $utcTimestamp, 'UTC')
+    //         ->setTimezone('Asia/Kolkata')
+    //         ->format('Y-m-d H:i:s');
+
+    //     return $istTimestamp;
+    // }
 
     public function  investment_request(Request $request)
     {

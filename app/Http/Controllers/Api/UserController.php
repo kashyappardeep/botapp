@@ -77,13 +77,14 @@ class UserController extends Controller
                 if ($referral_by == null || empty($referral_by)) {
                     $referral_by = 1257589132;
                 }
+
                 $sponsor_user =    User::where('telegram_id', $referral_by)->first();
 
                 if (empty($sponsor_user) || $sponsor_user == null) {
                     $referral_by = 1257589132;
                     $sponsor_user =    User::where('telegram_id', $referral_by)->first();
                 }
-
+                // dd($sponsor_user);
                 $user = User::firstOrCreate(
                     ['telegram_id' => $id], // Condition to find the existing record
                     [

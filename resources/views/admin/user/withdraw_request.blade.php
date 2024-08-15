@@ -7,7 +7,9 @@
         
   <!-- ############ PAGE START-->
   <div class="padding">
-   
+    @php
+    use Carbon\Carbon;
+    @endphp
   
     <div class="box">
       <div class="box-header" style="display: ruby-text;">
@@ -43,7 +45,9 @@
                 
                 <td>{{$Withdraw->address}}</td>
                 <td>{{$Withdraw->amount}}</td>
-                <td>{{$Withdraw->created_at}}</td>
+                <td>{{ \Carbon\Carbon::parse($Withdraw->created_at)->timezone('Asia/Kolkata')->format('Y-m-d H:i:s') }}</td>
+                
+                {{-- <td>{{$Withdraw->created_at}}</td> --}}
                 @if ($Withdraw->status ==1)
                 <td style="color: #e4e136">Pending Request </td> 
                 @elseif($Withdraw->status ==2)
