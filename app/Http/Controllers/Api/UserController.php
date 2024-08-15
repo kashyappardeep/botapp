@@ -255,7 +255,7 @@ class UserController extends Controller
                 'paymentAddress' => $address,
                 'miningPower' => $mining_power,
                 'rentPeriod'  => $rent_period,
-                'Total_totalProfit'  => $total_profit,
+                'totalProfit'  => $total_profit,
                 'dailyProfit'  => $dailyProfit,
                 'price'  => $request->amount
 
