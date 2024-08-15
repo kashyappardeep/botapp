@@ -37,9 +37,7 @@
             <tr>
              
               <td>{{ $Withdraw->user->first_name}}</td>
-
-                
-                <td>{{$Withdraw->address}}</td>
+              <td>{{$Withdraw->address}}</td>
                 <td>{{$Withdraw->amount}}</td>
                 <td>{{$Withdraw->created_at}}</td>
                 @if ($Withdraw->status ==1)
