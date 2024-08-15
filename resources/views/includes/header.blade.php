@@ -34,7 +34,7 @@
 </head>
 
 <body>
-  <div class="app" id="app">
+  <div class="pace-done grey" ui-class="grey">
 
     <!-- ############ LAYOUT START-->
 

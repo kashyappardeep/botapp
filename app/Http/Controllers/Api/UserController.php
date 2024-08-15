@@ -37,10 +37,7 @@ class UserController extends Controller
         if ($validator->fails()) {
             return response()->json(['errors' => $validator->errors()], 400);
         }
-        $referral_by = $request->referral_by;
-        if ($referral_by == null || empty($referral_by)) {
-            $referral_by = 1257589132;
-        }
+
 
         DB::beginTransaction();
 
@@ -76,6 +73,17 @@ class UserController extends Controller
                 $user->setAttribute('totalPower', $totalPower);
             } else {
 
+                $referral_by = $request->referral_by;
+                if ($referral_by == null || empty($referral_by)) {
+                    $referral_by = 1257589132;
+                }
+                $sponsor_user =    User::where('telegram_id', $referral_by)->first();
+
+                if (empty($sponsor_user) || $sponsor_user == null) {
+                    $referral_by = 1257589132;
+                    $sponsor_user =    User::where('telegram_id', $referral_by)->first();
+                }
+
                 $user = User::firstOrCreate(
                     ['telegram_id' => $id], // Condition to find the existing record
                     [
@@ -91,7 +99,16 @@ class UserController extends Controller
                     'amount' => 10,
                     'address' => null,
                     'invest_at' => $timestamp,
-                    'status' => 2
+                    'status' => 2,
+                    'type' => 1
+
+                ]);
+                $TransactionHistory =  TransactionHistory::create([
+                    'amount' => 0,
+                    'level' => 1,
+                    'to' => $sponsor_user->id,
+                    'by' => $user->id,
+                    'type' => "2"
                 ]);
             }
             DB::commit();
@@ -187,7 +204,9 @@ class UserController extends Controller
                 'amount' => $request->input('amount'),
                 'address' => $request->input('address'),
                 'status' => 1,
+                'type' => 2,
                 'invest_at' => $timestamp,
+
             ]);
 
 
@@ -284,7 +303,7 @@ class UserController extends Controller
         //dd($level1Users->toArray());
         $level1count = $level1Users->count();
         $level2Users = User::whereIn('referral_by', $level1Users)->pluck('telegram_id');
-        // dd($level2Users->toArray());
+        //dd($level2Users->toArray());
         $level2count = $level2Users->count();
         $level3Users = User::whereIn('referral_by', $level2Users)->pluck('telegram_id');
         // dd($level3Users->toArray());
