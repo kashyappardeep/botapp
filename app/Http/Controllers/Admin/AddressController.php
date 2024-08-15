@@ -15,7 +15,7 @@ class AddressController extends Controller
      */
     public function index()
     {
-        $address = Address::get();
+        $address = Address::with('user')->get();
         // dd($address);
         // die;
 

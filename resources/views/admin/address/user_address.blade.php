@@ -11,7 +11,7 @@
   
     <div class="box">
         <div class="box-header" style="display: ruby-text;">
-            <span> <h2>Confin List
+            <span> <h2>Address List
               </h2> </span>
               <a href="{{route('address.create')}}"><button type="button" class="btn btn-sm info">Add +</button> </a>
            </div>
@@ -24,9 +24,13 @@
             <tr style="background: #302e2e;">
             
             
-              <th>User Id </th>
+              <th>User Name </th>
+              <th>Telegram Id </th>
               
               <th>Address</th>
+              <th>Amount</th>
+              {{-- <th>Date And Time</th> --}}
+
               <th>Update/Edit</th>
               <th>Delete</th>
               
@@ -36,9 +40,15 @@
           <tbody>
             @foreach ($address as $address)
             <tr>
-             
-                <td>{{$address->user_id}}</td>
+              @if ($address && $address->user && $address->user->first_name)
+    <td>{{ $address->user->first_name}}</td>
+@else
+    <td>{{$address->user->telegram_id}}</td>
+@endif
+<td>{{$address->user->telegram_id}}</td>
                 <td>{{$address->address}}</td>
+                <td>{{$address->amount}}</td>
+                {{-- <td>{{$address->created_at}}</td> --}}
               
                 
               <td>
