@@ -8,7 +8,9 @@
   <!-- ############ PAGE START-->
   <div class="padding">
    
-  
+    @php
+    use Carbon\Carbon;
+    @endphp
     <div class="box">
       <div class="box-header" style="display: ruby-text;">
         <h2>Users Content and Earn Data</h2> 
@@ -36,7 +38,9 @@
               <td>{{ $contect->link }}</td>
               <td>{{ $contect->telegram_id }}</td>
               <td>{{ $contect->linkverify_id }}</td>
-              <td>{{ $contect->created_at }}</td>
+              <td>{{ \Carbon\Carbon::parse($contect->created_at)->timezone('Asia/Kolkata')->format('Y-m-d H:i:s') }}</td>
+                
+              {{-- <td>{{ $contect->created_at }}</td> --}}
               @if ($contect->status ==1)
                 <td style="color: #e4e136">Pending Request </td> 
                 @elseif($contect->status ==2)
