@@ -73,12 +73,15 @@ class UsersController extends Controller
         //
     }
 
-    public function  investment_request()
+    public function  investment_request(Request $request)
     {
-        $investment = InvestmentHistory::with('user')->get();
-        // dd($investment);
-        // die;
 
+
+        $status = $request->get('status', 1); // Defaults to 1 if status is not set
+        $investment = InvestmentHistory::with('user')
+            ->where('status', $status)
+            ->get();
+        // dd($investment);
         return view('admin.user.investment_request', compact('investment'));
     }
 

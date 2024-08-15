@@ -12,12 +12,23 @@
     <div class="box">
       <div class="box-header" style="display: ruby-text;">
         <span> <h2>Investment Users Request List
-          </h2> </span>
+          </h2>
+          
+          <form method="GET" action="{{ route('admin.investment_request') }}">
+            
+            <select name="status" class="btn btn-sm info" onchange="this.form.submit()">
+              <option value="" {{ is_null(request('1')) || request('1') === '' ? 'selected' : '' }}>Select Request</option>
+              <option value="1" {{ request('status') == '1' ? 'selected' : '' }}>Pending Request</option>
+              <option value="2" {{ request('status') == '2' ? 'selected' : '' }}>Complete</option>
+              <option value="0" {{ request('status') === '0' ? 'selected' : '' }}>Rejected</option>
+          </select>
+        </form> </span>
+          
        </div>
-       
+      
        
       <div class="table-responsive">
-        <table class="table table-bordered m-a-0">
+      <table class="table table-bordered m-a-0">
          
           <thead>
             <tr style="background: #302e2e;">
@@ -26,7 +37,9 @@
               <th>Name </th>
               <th>address</th>
               <th>amount</th>
+              <th>Date And Time</th>
               <th>Status</th>
+              
               <th>Verify</th>
              
             </tr>
@@ -35,13 +48,14 @@
             @foreach ($investment as $investment)
             <tr>
               @if ($investment && $investment->user && $investment->user->first_name)
-    <td>{{ $investment->user->first_name}}</td>
-@else
-    <td>{{$investment->id}}</td>
-@endif
+            <td>{{ $investment->user->first_name}}</td>
+                @else
+                  <td>{{$investment->id}}</td>
+                  @endif
                 
                 <td>{{$investment->address}}</td>
                 <td>{{$investment->amount}}</td>
+                <td>{{$investment->created_at}}</td>
                 @if ($investment->status ==1)
                 <td style="color: #e4e136">Pending Request </td> 
                 @elseif($investment->status ==2)
@@ -85,8 +99,8 @@
             </tr>
             @endforeach
            
-          </tbody>
-        </table>
+        </tbody>
+      </table>
       
       </div>
     </div>

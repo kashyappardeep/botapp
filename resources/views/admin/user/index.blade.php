@@ -34,6 +34,7 @@
               <th>Wallet</th>
               <th>Investment</th>
               <th>Status</th>
+              <th>Date And Time</th>
              
             </tr>
           </thead>
@@ -62,7 +63,7 @@
                 @else
                 <td style="color: #32f10c"> Paid Package </td>
                 @endif
-                
+                <td>{{$users->created_at}}</td>
               
             </tr>
             @endforeach

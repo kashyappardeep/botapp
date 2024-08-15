@@ -172,11 +172,11 @@ class UserController extends Controller
         $timestamp = $dateTime->timestamp;
 
         DB::beginTransaction();
-
-        if ($request->amount < 100) {
+        $min_investment = Config::first();
+        // dd($min_investment->min_investment);
+        if ($request->amount < $min_investment->min_investment) {
             return response()->json([
-                'message' => 'Minimum Amount 100 Trx.'
-
+                'message' => 'Minimum Amount ' . $min_investment->min_investment . ' Trx.'
             ], 200);
         }
 
@@ -488,10 +488,12 @@ class UserController extends Controller
 
         try {
             $user = User::where('id', $request->user_id)->first();
-            if ($request->amount  < 20) {
+            $min_withdrawal = Config::first();
+            // dd($min_withdrawal->min_withdrawal);
+            if ($request->amount  < $min_withdrawal->min_withdrawal) {
 
                 return response()->json([
-                    'message' => 'Amount must be at least 20.',
+                    'message' => 'Amount must be at least ' . $min_withdrawal->min_withdrawal . ' Trx',
 
                 ], 200);
             }

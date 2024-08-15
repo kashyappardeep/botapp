@@ -24,6 +24,7 @@
               <th>Link</th>
               <th>Telegram Id</th>
               <th>Link Verify Id</th>
+              <th>Date And Time</th>
               <th>Status</th>
              
             </tr>
@@ -35,7 +36,14 @@
               <td>{{ $contect->link }}</td>
               <td>{{ $contect->telegram_id }}</td>
               <td>{{ $contect->linkverify_id }}</td>
-              <td>{{ $contect->status }}</td>
+              <td>{{ $contect->created_at }}</td>
+              @if ($contect->status ==1)
+                <td style="color: #e4e136">Pending Request </td> 
+                @elseif($contect->status ==2)
+                <td style="color: #32f10c"> Complete </td>
+                @else
+                <td style="color: #f82b02">Rrejected </td>
+                @endif
              </tr>
             @endforeach
            

@@ -29,6 +29,8 @@
               <th>level_of_referral</th>
               <th>gateway_key</th>
               <th>content_reward</th>
+              <th>min_withdrawal</th>
+              <th>min_investment</th>
               <th>Edit</th>
               <th>Delete</th>
               
@@ -53,6 +55,8 @@
                 <td>{{$Config->gateway_key}}</td>
               @endif
               <td>{{$Config->content_reward}}</td>
+              <td>{{$Config->min_withdrawal}}</td>
+              <td>{{$Config->min_investment}}</td>
               <td>
                 <a href="{{route('Config.update',$Config->id)}}">
                   <i class="fa fa-edit text-success"></i></a>

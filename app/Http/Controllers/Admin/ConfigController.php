@@ -40,6 +40,8 @@ class ConfigController extends Controller
                 'level_of_referral' => 'required',
                 'gateway_key' => 'required',
                 'content_reward' => 'required',
+                'min_withdrawal' => 'required',
+                'min_investment' => 'required',
 
             ]);
             if ($validator->fails()) {
@@ -52,6 +54,8 @@ class ConfigController extends Controller
                 'level_of_referral' => $request->level_of_referral,
                 'gateway_key' => $request->gateway_key,
                 'content_reward' => $request->content_reward,
+                'min_withdrawal' => $request->min_withdrawal,
+                'min_investment' => $request->min_investment,
             ]);
             // dd($Config);
             return redirect()->back()->with('success', 'Config created successfully!');
@@ -92,6 +96,8 @@ class ConfigController extends Controller
         $config->level_of_referral = $request->level_of_referral;
         $config->gateway_key = $request->gateway_key;
         $config->content_reward = $request->content_reward;
+        $config->min_withdrawal = $request->min_withdrawal;
+        $config->min_investment = $request->min_investment;
 
         // Save the changes to the database
         $config->save();

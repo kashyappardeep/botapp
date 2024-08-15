@@ -26,6 +26,7 @@
               <th>Name </th>
               <th>address</th>
               <th>amount</th>
+              <th>Date and time</th>
               <th>Status</th>
               <th>Verify</th>
              
@@ -37,11 +38,12 @@
               @if ($Withdraw && $Withdraw->user && $Withdraw->user->first_name)
     <td>{{ $Withdraw->user->first_name}}</td>
 @else
-    <td>{{$Withdraw->id}}</td>
+    <td>{{$Withdraw->user->telegram_id}}</td>
 @endif
                 
                 <td>{{$Withdraw->address}}</td>
                 <td>{{$Withdraw->amount}}</td>
+                <td>{{$Withdraw->created_at}}</td>
                 @if ($Withdraw->status ==1)
                 <td style="color: #e4e136">Pending Request </td> 
                 @elseif($Withdraw->status ==2)
