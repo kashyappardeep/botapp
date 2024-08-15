@@ -36,7 +36,7 @@
             @foreach ($Withdraw as $Withdraw)
             <tr>
              
-              <td>{{ $Withdraw->user->first_name}}</td>
+            {{ $Withdraw->user->first_name ?? 'N/A' }}
               <td>{{$Withdraw->address}}</td>
                 <td>{{$Withdraw->amount}}</td>
                 <td>{{$Withdraw->created_at}}</td>
