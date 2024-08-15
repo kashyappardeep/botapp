@@ -40,7 +40,7 @@
             @foreach ($address as $address)
             <tr>
               
-                <td>{{$address->user->first_name }}</td>
+                <td>{{$address->user->first_name ?? 'N/A'  }}</td>
                 <td>{{$address->address}}</td>
                 <td>{{$address->amount}}</td>
                 {{-- <td>{{$address->created_at}}</td> --}}
