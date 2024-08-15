@@ -57,7 +57,13 @@
                 
                 <td>{{$investment->address}}</td>
                 <td>{{$investment->amount}}</td>
-                <td>{{ \Carbon\Carbon::parse($investment->created_at)->timezone('Asia/Kolkata')->format('Y-m-d H:i:s') }}</td>
+                @if ($investment->created_at)
+                {{ \Carbon\Carbon::parse($investment->created_at)->timezone('Asia/Kolkata')->format('Y-m-d H:i:s') }}
+              @else
+                No Date
+              @endif
+            </td>
+                {{-- <td>{{ \Carbon\Carbon::parse($investment->created_at)->timezone('Asia/Kolkata')->format('Y-m-d H:i:s') }}</td> --}}
                   {{-- <td>{{$investment->created_at}}</td> --}}
                 @if ($investment->status ==1)
                 <td style="color: #e4e136">Pending Request </td> 

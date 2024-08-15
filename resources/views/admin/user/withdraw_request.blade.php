@@ -45,7 +45,14 @@
                 
                 <td>{{$Withdraw->address}}</td>
                 <td>{{$Withdraw->amount}}</td>
-                <td>{{ \Carbon\Carbon::parse($Withdraw->created_at)->timezone('Asia/Kolkata')->format('Y-m-d H:i:s') }}</td>
+                <td>
+                  @if ($Withdraw->created_at)
+                    {{ \Carbon\Carbon::parse($Withdraw->created_at)->timezone('Asia/Kolkata')->format('Y-m-d H:i:s') }}
+                  @else
+                    No Date
+                  @endif
+                </td>
+                {{-- <td>{{ \Carbon\Carbon::parse($Withdraw->created_at)->timezone('Asia/Kolkata')->format('Y-m-d H:i:s') }}</td> --}}
                 
                 {{-- <td>{{$Withdraw->created_at}}</td> --}}
                 @if ($Withdraw->status ==1)

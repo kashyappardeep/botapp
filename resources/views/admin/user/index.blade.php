@@ -12,7 +12,9 @@
       
       
     </div>
-   
+    @php
+                use Carbon\Carbon;
+                @endphp
   
     <div class="box">
       <div class="box-header" style="display: ruby-text;">
@@ -63,8 +65,15 @@
                 @else
                 <td style="color: #32f10c"> Paid Package </td>
                 @endif
-                <td>{{$users->created_at}}</td>
-              
+                {{-- <td>{{$users->created_at}}</td> --}}
+               
+                <td>
+                  @if ($users->created_at)
+                    {{ \Carbon\Carbon::parse($users->created_at)->timezone('Asia/Kolkata')->format('Y-m-d H:i:s') }}
+                  @else
+                    No Date
+                  @endif
+                </td>
             </tr>
             @endforeach
            
