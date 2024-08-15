@@ -43,9 +43,9 @@
               @if ($address && $address->user && $address->user->first_name)
     <td>{{ $address->user->first_name}}</td>
 @else
-    <td>{{$address->user->telegram_id}}</td>
+    <td>{{$address->user->telegram_id ?? 'N/A' }}</td>
 @endif
-<td>{{$address->user->telegram_id}}</td>
+<td>{{$address->user->telegram_id ?? 'N/A' }}</td>
                 <td>{{$address->address}}</td>
                 <td>{{$address->amount}}</td>
                 {{-- <td>{{$address->created_at}}</td> --}}
