@@ -35,11 +35,9 @@
           <tbody>
             @foreach ($Withdraw as $Withdraw)
             <tr>
-              @if ($Withdraw && $Withdraw->user && $Withdraw->user->first_name)
-    <td>{{ $Withdraw->user->first_name}}</td>
-@else
-    <td>{{$Withdraw->user->telegram_id}}</td>
-@endif
+             
+              <td>{{ $Withdraw->user->first_name}}</td>
+
                 
                 <td>{{$Withdraw->address}}</td>
                 <td>{{$Withdraw->amount}}</td>
