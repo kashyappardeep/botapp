@@ -324,14 +324,14 @@ class UserController extends Controller
 
         $idss =  array_merge($ids1, $ids2, $ids3);
         // dd($idss->toArray());
+        if ($idss) {
+            // TransactionHistory::select()
+            $unionQuery = implode(' UNION ALL ', array_map(function ($id) {
+                return "SELECT $id as `by`";
+            }, $idss));
 
-        // TransactionHistory::select()
-        $unionQuery = implode(' UNION ALL ', array_map(function ($id) {
-            return "SELECT $id as `by`";
-        }, $idss));
-
-        // Full SQL query
-        $query = "
+            // Full SQL query
+            $query = "
             SELECT u.by, IFNULL(SUM(t.amount), 0) AS total_profit, users.first_name 
             FROM (
                 $unionQuery
@@ -346,43 +346,58 @@ class UserController extends Controller
         ";
 
 
-        // Execute the query
-        $results = DB::select($query);
+            // Execute the query
+            $results = DB::select($query);
 
 
 
-        foreach ($results as $key => $value) {
-            // echo "<pre>";
-            // print_r($ids1);
-            // die;
-            if (in_array($value->by,  $ids1,  $strict = false)) {
+            foreach ($results as $key => $value) {
+                // echo "<pre>";
+                // print_r($ids1);
+                // die;
+                if (in_array($value->by,  $ids1,  $strict = false)) {
 
-                $level = 1;
-            } elseif (in_array($value->by,  $ids2,  $strict = false)) {
-                $level = 2;
-            } else {
-                $level = 3;
+                    $level = 1;
+                } elseif (in_array($value->by,  $ids2,  $strict = false)) {
+                    $level = 2;
+                } else {
+                    $level = 3;
+                }
+
+                $value->level =  $level;
             }
 
-            $value->level =  $level;
+
+
+            $total_referral = $level1count + $level2count + $level3count;
+            return response()->json(
+                [
+                    'transactions' => $results,
+                    'level1count' => $level1count,
+                    'level2count' => $level2count,
+                    'level3count' => $level3count,
+                    'total_referral' => $total_referral
+
+
+                ],
+                200
+            );
+        } else {
+            return response()->json(
+                [
+                    'transactions' => null,
+                    'level1count' => 0,
+                    'level2count' => 0,
+                    'level3count' => 0,
+                    'total_referral' => 0
+
+
+                ],
+                200
+            );
         }
-
-
-
-        $total_referral = $level1count + $level2count + $level3count;
         // dd($results->toArray());
-        return response()->json(
-            [
-                'transactions' => $results,
-                'level1count' => $level1count,
-                'level2count' => $level2count,
-                'level3count' => $level3count,
-                'total_referral' => $total_referral
 
-
-            ],
-            200
-        );
     }
 
 
