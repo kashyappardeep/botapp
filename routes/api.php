@@ -11,6 +11,7 @@ Route::namespace('\App\Http\Controllers\Api')->group(function () {
     Route::post('/wallet_histroy', 'UserController@wallet_histroy');
     Route::post('/task', 'UserController@user_task');
     Route::post('/task_claim', 'UserController@task_claim');
+    Route::post('/Bost_history', 'UserController@Bost_history');
     Route::post('/withdrow', 'UserController@withdrow');
     Route::post('/RequestLinkVerify', 'UserController@RequestLinkVerify');
     Route::get('/LinkVerify', 'UserController@LinkVerify');

@@ -185,16 +185,25 @@ class UserController extends Controller
         if ($validator->fails()) {
             return response()->json(['errors' => $validator->errors()], 400);
         }
+
+        $address = Address::where('address', $request->address)->first();
+
+        if ($address) {
+            $address->user_id = $request->user_id;
+            $address->amount = $request->amount;
+
+            $address->save();
+        }
         $dateTime = Carbon::createFromFormat('Y-m-d H:i:s', Carbon::now());
         // Convert the datetime to a timestamp
         $timestamp = $dateTime->timestamp;
 
         DB::beginTransaction();
-        $min_investment = Config::first();
+        $Config_data = Config::first();
         // dd($min_investment->min_investment);
-        if ($request->amount < $min_investment->min_investment) {
+        if ($request->amount < $Config_data->min_investment) {
             return response()->json([
-                'message' => 'Minimum Amount ' . $min_investment->min_investment . ' Trx.'
+                'message' => 'Minimum Amount ' . $Config_data->min_investment . ' Trx.'
             ], 200);
         }
 
@@ -229,6 +238,7 @@ class UserController extends Controller
 
     public function order_details(Request $request)
     {
+        // Log::info('testt');
 
         $validator = Validator::make($request->all(), [
             'user_id' => 'required|exists:users,id',
@@ -242,14 +252,13 @@ class UserController extends Controller
         }
 
         $addresses = Address::whereNull('user_id')->first();
-        // dd($addresses);
-        $status = 1;
+
         if ($addresses === null) {
-            $status = 2;
+
             $config = Config::first();
-            $address = $config->admin_wallet_address;
+            $address = $config->admin_wallet_address; // Assume this is a string
         } else {
-            $address = $addresses->address;
+            $address = $addresses->address; // This is a string as well
         }
 
         $daily_Roi = config::first();
@@ -260,15 +269,7 @@ class UserController extends Controller
         $mining_power = $request->amount / 10;
 
 
-        if ($status == 1) {
-            $address = Address::find($addresses->id);
-            $address->user_id = $request->user_id;
-            $address->amount = $request->amount;
-            $address->save();
-            $address = $address->address;
-        } else {
-            $address = $address;
-        }
+
         // dd($address);
         return response()->json(
             [
@@ -286,7 +287,7 @@ class UserController extends Controller
 
     public function transactions(Request $request)
     {
-
+        // Log::info('apiii l');
         $validator = Validator::make($request->all(), [
             'user_id' => 'required|exists:users,id',
             'type'  => 'required'
@@ -298,31 +299,75 @@ class UserController extends Controller
 
         $Id = $request->user_id;
         $user_data = User::where('id', $Id)->first();
-        $userId = $user_data->telegram_id;
+        $telegram_id = $user_data->telegram_id;
 
-        $level1Users = User::where('referral_by', $userId)->pluck('telegram_id');
-        //dd($level1Users->toArray());
-        $level1count = $level1Users->count();
-        $level2Users = User::whereIn('referral_by', $level1Users)->pluck('telegram_id');
-        //dd($level2Users->toArray());
-        $level2count = $level2Users->count();
-        $level3Users = User::whereIn('referral_by', $level2Users)->pluck('telegram_id');
-        // dd($level3Users->toArray());
-        $level3count = $level3Users->count();
-        $downlineUsers = $level1Users->merge($level2Users)->merge($level3Users);
+        $users1 = User::where('referral_by', $telegram_id)->get(['id', 'telegram_id']);
+        $telegramIds1 = $users1->pluck('telegram_id');
+        $ids1 = $users1->pluck('id')->toArray();
+
+        //  dd($telegramIds1);
 
 
-        // dd($downlineUsers->toArray());
-        $idss = User::whereIn('telegram_id', $downlineUsers)->pluck('id');
+
+        $users2 = User::wherein('referral_by', $telegramIds1)->get(['id', 'telegram_id']);
+        $telegramIds2 = $users2->pluck('telegram_id');
+        $ids2 = $users2->pluck('id')->toArray();
+
+        $users3 = User::wherein('referral_by', $telegramIds2)->get(['id', 'telegram_id']);
+        $telegramIds3 = $users3->pluck('telegram_id');
+        $ids3 = $users3->pluck('id')->toArray();
 
 
-        $results = TransactionHistory::with('userBy')
-            ->select('by', 'level', DB::raw('SUM(amount) as total_profit'))
-            ->where('to', $user_data->id)
-            ->whereIn('by', $idss)
-            ->where('type', 2)
-            ->groupBy('by', 'level')
-            ->get();
+        $level1count = $telegramIds1->count();
+        $level2count = $telegramIds2->count();
+        $level3count = $telegramIds3->count();
+
+        $idss =  array_merge($ids1, $ids2, $ids3);
+        // dd($idss->toArray());
+
+        // TransactionHistory::select()
+        $unionQuery = implode(' UNION ALL ', array_map(function ($id) {
+            return "SELECT $id as `by`";
+        }, $idss));
+
+        // Full SQL query
+        $query = "
+            SELECT u.by, IFNULL(SUM(t.amount), 0) AS total_profit, users.first_name 
+            FROM (
+                $unionQuery
+            ) as u
+            LEFT JOIN transactions_history t 
+            ON u.by = t.by 
+            AND t.to = " . $request->user_id . " 
+            AND t.type = 2 
+            LEFT JOIN users 
+            ON u.by = users.id 
+            GROUP BY u.by, users.first_name;
+        ";
+
+
+        // Execute the query
+        $results = DB::select($query);
+
+
+
+        foreach ($results as $key => $value) {
+            // echo "<pre>";
+            // print_r($ids1);
+            // die;
+            if (in_array($value->by,  $ids1,  $strict = false)) {
+
+                $level = 1;
+            } elseif (in_array($value->by,  $ids2,  $strict = false)) {
+                $level = 2;
+            } else {
+                $level = 3;
+            }
+
+            $value->level =  $level;
+        }
+
+
 
         $total_referral = $level1count + $level2count + $level3count;
         // dd($results->toArray());
@@ -383,7 +428,7 @@ class UserController extends Controller
 
 
             $one_day_roi = $investment_amount * $paid_daily_roi  / 100;
-            $investment_claim_amount  = $one_day_roi / 86400 * $differenceInSeconds;
+            $investment_claim_amount = round($one_day_roi / 86400 * $differenceInSeconds, 6);
 
             $claim_amount += $investment_claim_amount;
         }
@@ -466,7 +511,7 @@ class UserController extends Controller
 
     public function wallet_histroy(Request $request)
     {
-
+        // Log::info('wwwwww');
         $validator = Validator::make($request->all(), [
             'user_id' => 'required|exists:users,id',
 
@@ -579,5 +624,33 @@ class UserController extends Controller
             'message' => 'Your provided link is under review. A reward will be sent to your wallet based on eligibility.',
             'R_LinkVerify' => $RequestLinkVerify
         ], 200);
+    }
+
+    public function Bost_history(Request $request)
+    {
+
+        $validator = Validator::make($request->all(), [
+            'user_id' => 'required|exists:users,id',
+
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()], 400);
+        }
+        try {
+            $user = User::where('id', $request->user_id)->first();
+            $bost = InvestmentHistory::where('user_id', $request->user_id)
+                ->where('type', 2)->get();
+
+            // dd($TransactionHistory);
+
+            return response()->json([
+                'bost' => $bost,
+                'user_details' => $user,
+
+            ], 200);
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'Failed to wallet_history'], 500);
+        }
     }
 }

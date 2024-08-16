@@ -14,7 +14,16 @@
     <div class="box">
       <div class="box-header" style="display: ruby-text;">
         <span> <h2>Withdraw Users Request List
-          </h2> </span>
+          </h2>
+          <form method="GET" action="{{ route('admin.withdraw_request') }}">
+            
+            <select name="status" class="btn btn-sm info" onchange="this.form.submit()">
+              <option value="" {{ is_null(request('1')) || request('1') === '' ? 'selected' : '' }}>Select Request</option>
+              <option value="1" {{ request('status') == '1' ? 'selected' : '' }}>Pending Request</option>
+              <option value="2" {{ request('status') == '2' ? 'selected' : '' }}>Complete</option>
+              <option value="0" {{ request('status') === '0' ? 'selected' : '' }}>Rejected</option>
+          </select>
+        </form>  </span>
        </div>
        
        
@@ -26,6 +35,7 @@
             
             
               <th>Name </th>
+              <th>Telegram Id </th>
               <th>address</th>
               <th>amount</th>
               <th>Date and time</th>
@@ -37,12 +47,9 @@
           <tbody>
             @foreach ($Withdraw as $Withdraw)
             <tr>
-              @if ($Withdraw && $Withdraw->user && $Withdraw->user->first_name)
-    <td>{{ $Withdraw->user->first_name}}</td>
-@else
-    <td>{{$Withdraw->user->telegram_id}}</td>
-@endif
-                
+                                      
+                <td>{{ $Withdraw->user->first_name}}</td>
+                <td>{{$Withdraw->user->telegram_id}}</td>
                 <td>{{$Withdraw->address}}</td>
                 <td>{{$Withdraw->amount}}</td>
                 <td>

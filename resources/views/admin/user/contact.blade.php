@@ -14,6 +14,15 @@
       <div class="box">
         <div class="box-header" style="display: ruby-text;">
           <h2>Users Content and Earn Data</h2> 
+          <form method="GET" action="{{ route('admin.contact_request') }}">
+            
+            <select name="status" class="btn btn-sm info" onchange="this.form.submit()">
+              <option value="" {{ is_null(request('1')) || request('1') === '' ? 'selected' : '' }}>Select Request</option>
+              <option value="1" {{ request('status') == '1' ? 'selected' : '' }}>Pending Request</option>
+              <option value="2" {{ request('status') == '2' ? 'selected' : '' }}>Complete</option>
+              <option value="0" {{ request('status') === '0' ? 'selected' : '' }}>Rejected</option>
+          </select>
+        </form> 
         </div>
         
         <div class="table-responsive">
@@ -25,6 +34,7 @@
                 <th>Link Verify Id</th>
                 <th>Date And Time</th>
                 <th>Status</th>
+                <th>Verify</th>
               </tr>
             </thead>
             <tbody>
@@ -48,6 +58,37 @@
                 @else
                   <td style="color: #f82b02">Rejected</td>
                 @endif
+                <td style="    display: flex;">
+                  @if($contect->status ==1)
+                  <form action="" method="POST">
+                    @csrf
+                    @method('POST') <!-- Change to POST if your route uses POST -->
+                    <button type="submit" class="open-modal" data-id="" data-toggle="modal" data-target="#inputModal" style="background: none;">
+                        <i class="fa fa-check" style="color: #00c853;"></i>
+                    </button>
+                </form>
+                @else
+                <button type="submit" class="open-modal" data-id="" data-toggle="modal" data-target="#inputModal" style="background: none;">
+                  <i class="fa fa-check" style="color: #00c853;"></i>
+              </button>
+              @endif
+                
+                  &nbsp;
+                  @if($contect->status ==1)
+                 <form action="{{ route('admin.contact_reject_Status', $contect->id) }}" method="POST">
+                      @csrf
+                      @method('POST')
+                      <input type="hidden" name="status" value="2">
+                  <button type="submit" style="background: none;">
+                      <i class="fa fa-remove" style="color: red;"></i>
+                  </button>
+              </form>
+              @else
+              <button type="submit" class="open-modal" data-id="" data-toggle="modal" data-target="#inputModal" style="background: none;">
+                <i class="fa fa-remove" style="color: #f60505;"></i>
+            </button>
+            @endif
+              </td> 
               </tr>
               @endforeach
             </tbody>

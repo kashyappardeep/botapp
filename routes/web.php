@@ -25,9 +25,10 @@ Route::prefix('admin')->group(function () {
         Route::post('status_change/{id}', [UsersController::class, 'updateStatus'])->name('admin.status_change');
         Route::post('reject_Status/{id}', [UsersController::class, 'rejectStatus'])->name('admin.reject_Status');
         Route::get('user_investment/{id}', [UsersController::class, 'user_investment'])->name('admin.user_investment');
-        // Route::get('/contact', [UserController::class, 'contact'])->name('user.contact');
-        // routes/web.php
-        Route::get('/contact', [UsersController::class, 'contact'])->name('admin.user.contact');
+
+        Route::get('/contact_request', [UsersController::class, 'contact'])->name('admin.contact_request');
+        Route::post('contact_change/{id}', [UsersController::class, 'updatecontacttStatus'])->name('admin.contact_status_change');
+        Route::post('contact_Status/{id}', [UsersController::class, 'contactrejectStatus'])->name('admin.contact_reject_Status');
 
 
 

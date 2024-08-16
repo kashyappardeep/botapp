@@ -37,6 +37,7 @@
             
             
               <th>Name </th>
+              <th>Telegram Id </th>
               <th>address</th>
               <th>amount</th>
               <th>Date And Time</th>
@@ -49,19 +50,17 @@
           <tbody>
             @foreach ($investment as $investment)
             <tr>
-              @if ($investment && $investment->user && $investment->user->first_name)
-            <td>{{ $investment->user->first_name}}</td>
-                @else
-                  <td>{{$investment->id}}</td>
-                  @endif
+              
+                  <td>{{ $investment->user->first_name}}</td>
+                  <td>{{ $investment->user->telegram_id}}</td>
                 
                 <td>{{$investment->address}}</td>
                 <td>{{$investment->amount}}</td>
-                @if ($investment->created_at)
+               <td> @if ($investment->created_at)
                 {{ \Carbon\Carbon::parse($investment->created_at)->timezone('Asia/Kolkata')->format('Y-m-d H:i:s') }}
               @else
                 No Date
-              @endif
+              @endif</td>
             </td>
                 {{-- <td>{{ \Carbon\Carbon::parse($investment->created_at)->timezone('Asia/Kolkata')->format('Y-m-d H:i:s') }}</td> --}}
                   {{-- <td>{{$investment->created_at}}</td> --}}

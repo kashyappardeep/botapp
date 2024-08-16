@@ -124,7 +124,7 @@
                 </a>
               </li>
               <li>
-                <a href="{{route('admin.user.contact')}}">
+                <a href="{{route('admin.contact_request')}}">
                   <span class="nav-icon">
                     <i class="fa fa-users">
                     </i>
