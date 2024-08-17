@@ -103,9 +103,11 @@ class UsersController extends Controller
         // $contect = Contact_data::where('status', 1)->get();
         $status = $request->get('status', 1);
         // dd($request->all()); // Defaults to 1 if status is not set
-        $contect = Contact_data::with('user')
+        $contect = Contact_data::with('user', 'linkVerify')
             ->where('status', $status)
             ->get();
+
+        // dd($contect);
 
 
         return view('admin.user.contact', compact('contect'));
@@ -198,7 +200,10 @@ class UsersController extends Controller
     {
         // dd($id); // For debugging purposes
         $rejectStatus = InvestmentHistory::findOrFail($id);
-
+        $address = Address::where('address', $rejectStatus->address)->first();
+        $address->user_id = null;
+        $address->amount = null;
+        $address->save();
         $rejectStatus->status = 0;
         $rejectStatus->save();
 
@@ -248,7 +253,7 @@ class UsersController extends Controller
 
     public function user_investment($id)
     {
-        $investment = InvestmentHistory::where('user_id', $id)->get();
+        $investment = InvestmentHistory::with('user')->where('user_id', $id)->get();
         // dd($investment);
         return view('admin.user.user_investment', compact('investment'));
     }

@@ -38,8 +38,8 @@
             
               <th>Name </th>
               <th>Telegram Id </th>
-              <th>address</th>
-              <th>amount</th>
+              <th>Address</th>
+              <th>Amount</th>
               <th>Date And Time</th>
               <th>Status</th>
               

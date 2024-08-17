@@ -42,7 +42,11 @@
               <tr>
                 <td>{{ $contect->link }}</td>
                 <td>{{ $contect->telegram_id }}</td>
-                <td>{{ $contect->linkverify_id }}</td>
+                <td>@if($contect->linkVerify)
+                  {{ $contect->linkVerify->description }}
+              @else
+                  No Description Available
+              @endif</td>
                 <td>
                   @if ($contect->created_at)
                     {{ \Carbon\Carbon::parse($contect->created_at)->timezone('Asia/Kolkata')->format('Y-m-d H:i:s') }}
@@ -60,7 +64,7 @@
                 @endif
                 <td style="    display: flex;">
                   @if($contect->status ==1)
-                  <form action="" method="POST">
+                  <form action="{{ route('admin.contact_status_change', $contect->id) }}" method="POST">
                     @csrf
                     @method('POST') <!-- Change to POST if your route uses POST -->
                     <button type="submit" class="open-modal" data-id="" data-toggle="modal" data-target="#inputModal" style="background: none;">

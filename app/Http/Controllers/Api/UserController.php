@@ -109,7 +109,8 @@ class UserController extends Controller
                     'level' => 1,
                     'to' => $sponsor_user->id,
                     'by' => $user->id,
-                    'type' => "2"
+                    'type' => "2",
+                    'status' => 2
                 ]);
             }
             DB::commit();
@@ -160,7 +161,8 @@ class UserController extends Controller
         $TransactionHistory =  TransactionHistory::create([
             'user_id' => $user->id,
             'amount' => $data->claimable_amt,
-            'type' => 0
+            'type' => 0,
+            'status' => 2
         ]);
         $user->wallet += $data->claimable_amt;
         $user->claimable_amt = 0;
@@ -332,7 +334,7 @@ class UserController extends Controller
 
             // Full SQL query
             $query = "
-            SELECT u.by, IFNULL(SUM(t.amount), 0) AS total_profit, users.first_name 
+            SELECT u.by, IFNULL(SUM(t.amount), 0) AS total_profit, users.first_name ,users.status
             FROM (
                 $unionQuery
             ) as u
@@ -342,7 +344,7 @@ class UserController extends Controller
             AND t.type = 2 
             LEFT JOIN users 
             ON u.by = users.id 
-            GROUP BY u.by, users.first_name;
+            GROUP BY u.by, users.first_name,users.status;
         ";
 
 
@@ -419,6 +421,7 @@ class UserController extends Controller
         $user = User::findOrFail($id);
 
         $claim_amount = 0;
+        $per_day_roi_rate = 0;
 
         foreach ($user_investment as $investment) {
 
@@ -446,9 +449,18 @@ class UserController extends Controller
             $investment_claim_amount = round($one_day_roi / 86400 * $differenceInSeconds, 6);
 
             $claim_amount += $investment_claim_amount;
+            $per_day_roi_rate += $one_day_roi;
         }
 
+
+        $per_10_milliseconds_rate = number_format($per_day_roi_rate / 8640000, 8);
         $user->claimable_amt = $claim_amount;
+        $user->roi_rate = $per_10_milliseconds_rate;
+        // Log::info('per day roi');
+        // Log::info($per_day_roi_rate);
+        // Log::info(' per_10_milliseconds_rate roi');
+        // Log::info($per_10_milliseconds_rate);
+
         $user->save();
 
         return $user;
@@ -509,6 +521,7 @@ class UserController extends Controller
                 'amount' => $task_deatils->amount,
                 'type' => $task_deatils->type,
                 'task_id' => $request->task_id,
+                'status' => 2
             ]);
 
             $user->wallet += $task_deatils->amount;
@@ -539,8 +552,7 @@ class UserController extends Controller
 
             $user = User::where('id', $request->user_id)->first();
             $TransactionHistory = TransactionHistory::where('user_id', $request->user_id)->get();
-
-            // dd($TransactionHistory);
+            // dd($Withdraw_hist);
 
             return response()->json([
                 'TransactionHistory' => $TransactionHistory,
@@ -579,11 +591,16 @@ class UserController extends Controller
             }
 
             if ($request->amount <= $user->wallet) {
-                $Withdraw =  Withdraw::create([
+                $Withdraw =  TransactionHistory::create([
                     'user_id' => $request->user_id,
                     'amount' => $request->amount,
                     'address' => $request->address,
+                    'type' => 3,
+
+
+
                 ]);
+
 
                 $user->wallet -= $request->amount;
                 $user->save();
@@ -618,7 +635,7 @@ class UserController extends Controller
     {
 
         $validator = Validator::make($request->all(), [
-            'telegram_id' => 'required',
+            'telegram_id' => 'required|exists:users,telegram_id',
             'linkverify_id' => 'required',
             'link' => 'required',
 
@@ -627,18 +644,26 @@ class UserController extends Controller
             return response()->json(['errors' => $validator->errors()], 400);
         }
         // dd($request->all());
-        $RequestLinkVerify =  ContentData::create([
-            'telegram_id' => $request->telegram_id,
-            'linkverify_id' => $request->linkverify_id,
-            'link' => $request->link,
-        ]);
+        $user = User::where('telegram_id', $request->telegram_id)->first();
+        if ($user) {
+            $RequestLinkVerify =  ContentData::create([
+                'telegram_id' => $request->telegram_id,
+                'linkverify_id' => $request->linkverify_id,
+                'link' => $request->link,
+            ]);
 
 
 
-        return response()->json([
-            'message' => 'Your provided link is under review. A reward will be sent to your wallet based on eligibility.',
-            'R_LinkVerify' => $RequestLinkVerify
-        ], 200);
+            return response()->json([
+                'message' => 'Your provided link is under review. A reward will be sent to your wallet based on eligibility.',
+                'R_LinkVerify' => $RequestLinkVerify
+            ], 200);
+        } else {
+            return response()->json([
+                'message' => 'click (My invite link or my ID 123467890 is indicated under the video)',
+
+            ], 200);
+        }
     }
 
     public function Bost_history(Request $request)

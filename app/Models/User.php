@@ -60,6 +60,6 @@ class User extends Authenticatable
 
     public function Contact_data()
     {
-        return $this->hasMany(Contact_data::class);
+        return $this->hasMany(Contact_data::class, 'telegram_id', 'telegram_id');
     }
 }
