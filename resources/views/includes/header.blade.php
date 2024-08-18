@@ -157,19 +157,17 @@
                 </a>
               </li>
               <li class="hidden-folded">
-                <form id="logout-form" action="" method="POST" style="display: none;">
-                  @csrf
-                  <button type="submit">Logout</button>
-              </form>
-                <a href="#" onclick="event.preventDefault(); document.getElementById('logout-form').submit();" >
-                  <span class="nav-icon">
-                    <i class="fa fa-sign-out">
-                    </i>
-                  </span>
-                  <span class="nav-text">Sign out</span>
+                <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
+                    @csrf
+                    <button type="submit">Logout</button>
+                </form>
+                <a href="#" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                    <span class="nav-icon">
+                        <i class="fa fa-sign-out"></i>
+                    </span>
+                    <span class="nav-text">Sign out</span>
                 </a>
-               
-              </li>
+            </li>
               
 
             </ul>

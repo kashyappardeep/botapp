@@ -9,15 +9,16 @@ use App\Http\Controllers\Admin\ConfigController;
 use App\Http\Controllers\Admin\LevelController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\VerifyController;
+use Illuminate\Support\Facades\Auth;
 
 Route::get('/', function () {
     return view('welcome');
 });
-
+Route::get('login', [AdminController::class, 'showLoginForm'])->name('login');
 Route::prefix('admin')->group(function () {
     Route::get('login', [AdminController::class, 'showLoginForm'])->name('admin.login');
     Route::post('login', [AdminController::class, 'login']);
-    Route::post('logout', [AdminController::class, 'logout'])->name('admin.logout');
+    // Route::post('logout', [AdminController::class, 'logout'])->name('admin.logout');
 
     Route::middleware('auth:admin')->group(function () {
 
@@ -53,6 +54,10 @@ Route::prefix('admin')->group(function () {
 
 
 
+        Route::post('/logout', function () {
+            Auth::logout();
+            return redirect('admin/login');
+        })->name('logout');
 
         // Route::post('invist_status_change/{id}', [UsersController::class, 'updateInvestmentStatus'])->name('admin.invist_status_change');
         // Route::post('invest_reject_Status/{id}', [UsersController::class, 'investrejectStatus'])->name('admin.invest_reject_Status');
