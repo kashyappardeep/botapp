@@ -218,9 +218,9 @@ class UsersController extends Controller
     public function withdraw_request(Request $request)
     {
 
-        $status = $request->get('status', 1); // Defaults to 1 if status is not set
+        // Defaults to 1 if status is not set
         $Withdraw = TransactionHistory::with('user')
-            ->where('status', $status)
+            ->where('type', 3)
             ->get();
         // $Withdraw = Withdraw::with('user')->get();
         // dd($Withdraw);
