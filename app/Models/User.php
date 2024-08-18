@@ -10,15 +10,7 @@ class User extends Authenticatable
 {
     use HasFactory, Notifiable;
 
-    protected $fillable = [
-        'telegram_id',
-        'first_name',
-        'last_name',
-        'referral_by',
-        'wallet',
-        'last_claim_timestamp',
-    ];
-
+    protected $guarded = [];
     protected $hidden = [
         'password',
         'remember_token',

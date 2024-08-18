@@ -39,7 +39,7 @@ class UserController extends Controller
         }
 
 
-        DB::beginTransaction();
+
 
         $id = $request->id;
         $first_name = $request->first_name;
@@ -69,7 +69,7 @@ class UserController extends Controller
 
                 // dd($totalPower);
 
-                $this->claimDaily($user);
+                $user =  $this->claimDaily($user);
                 $user->setAttribute('totalPower', $totalPower);
             } else {
 
@@ -85,6 +85,7 @@ class UserController extends Controller
                     $sponsor_user =    User::where('telegram_id', $referral_by)->first();
                 }
                 // dd($sponsor_user);
+                //  DB::beginTransaction();
                 $user = User::firstOrCreate(
                     ['telegram_id' => $id], // Condition to find the existing record
                     [
@@ -92,8 +93,12 @@ class UserController extends Controller
                         'last_name' => $last_name,
                         'referral_by' => $referral_by,
                         'last_claim_timestamp' => $timestamp,
+                        'claimable_amt' => 0.00000000,
+                        'roi_rate' => 0.00000006,
+                        'status' => 1
                     ] // Attributes to set if creating a new record
                 );
+
 
                 $investmentHistory = InvestmentHistory::create([
                     'user_id' => $user->id,
@@ -113,9 +118,9 @@ class UserController extends Controller
                     'status' => 2
                 ]);
             }
-            DB::commit();
+            // DB::commit();
 
-
+            //  $user = User::where('telegram_id', $id)->first();
             return response()->json([
                 'user' => $user,
 
@@ -418,7 +423,7 @@ class UserController extends Controller
 
         $user_investment = InvestmentHistory::where('user_id', $id)->where('status', 2)->get();
         // dd($user_investment);
-        $user = User::findOrFail($id);
+        $user = User::find($id);
 
         $claim_amount = 0;
         $per_day_roi_rate = 0;
@@ -446,23 +451,39 @@ class UserController extends Controller
 
 
             $one_day_roi = $investment_amount * $paid_daily_roi  / 100;
-            $investment_claim_amount = round($one_day_roi / 86400 * $differenceInSeconds, 6);
+            Log::info('per day roi');
+            Log::info($one_day_roi);
+            $investment_claim_amount = number_format(($one_day_roi / 86400 * $differenceInSeconds), 8);
 
+            Log::info("differenceInSeconds");
+            Log::info($differenceInSeconds);
             $claim_amount += $investment_claim_amount;
+            Log::info("claim_amount");
+            Log::info($claim_amount);
             $per_day_roi_rate += $one_day_roi;
         }
 
 
-        $per_10_milliseconds_rate = number_format($per_day_roi_rate / 8640000, 8);
+        $per_10_milliseconds_rate = number_format($per_day_roi_rate / 86400, 8);
+
+        Log::info("claim_amounttt");
+        Log::info($claim_amount);
+
         $user->claimable_amt = $claim_amount;
+        Log::info('perrr day roi');
+        Log::info($claim_amount);
+        if ($per_10_milliseconds_rate == 0.00000000) {
+            $per_10_milliseconds_rate = 0.00000006;
+        }
         $user->roi_rate = $per_10_milliseconds_rate;
-        // Log::info('per day roi');
-        // Log::info($per_day_roi_rate);
+
+
+
         // Log::info(' per_10_milliseconds_rate roi');
         // Log::info($per_10_milliseconds_rate);
 
         $user->save();
-
+        // $user = User::find($id);
         return $user;
     }
 

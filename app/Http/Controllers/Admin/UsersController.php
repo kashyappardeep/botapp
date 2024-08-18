@@ -143,9 +143,12 @@ class UsersController extends Controller
         $user_id = $request_accept->user_id;
         $user = User::findOrFail($user_id);
         $address = Address::where('address', $request_accept->address)->first();
-        $address->user_id = null;
-        $address->amount = null;
-        $address->save();
+        if ($address) {
+            $address->user_id = null;
+            $address->amount = null;
+            $address->save();
+        }
+
 
         $levels = Level::all();
         // dd($levels);
@@ -201,9 +204,11 @@ class UsersController extends Controller
         // dd($id); // For debugging purposes
         $rejectStatus = InvestmentHistory::findOrFail($id);
         $address = Address::where('address', $rejectStatus->address)->first();
-        $address->user_id = null;
-        $address->amount = null;
-        $address->save();
+        if ($address) {
+            $address->user_id = null;
+            $address->amount = null;
+            $address->save();
+        }
         $rejectStatus->status = 0;
         $rejectStatus->save();
 
@@ -214,7 +219,7 @@ class UsersController extends Controller
     {
 
         $status = $request->get('status', 1); // Defaults to 1 if status is not set
-        $Withdraw = Withdraw::with('user')
+        $Withdraw = TransactionHistory::with('user')
             ->where('status', $status)
             ->get();
         // $Withdraw = Withdraw::with('user')->get();
@@ -224,7 +229,7 @@ class UsersController extends Controller
     public function updateStatus($id)
     {
         // dd($id); // For debugging purposes
-        $request_accept = Withdraw::findOrFail($id);
+        $request_accept = TransactionHistory::findOrFail($id);
 
         // Check if the status is already 'completed'
         $request_accept->status = 2;
@@ -236,7 +241,7 @@ class UsersController extends Controller
     public function rejectStatus($id)
     {
         // dd($id); // For debugging purposes
-        $rejectStatus = Withdraw::findOrFail($id);
+        $rejectStatus = TransactionHistory::findOrFail($id);
 
         $user_id = $rejectStatus->user_id;
         // Check if the status is already 'completed'
