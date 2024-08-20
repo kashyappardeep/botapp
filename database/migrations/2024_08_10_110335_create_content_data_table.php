@@ -17,6 +17,7 @@ return new class extends Migration
             $table->unsignedBigInteger('linkverify_id');
             $table->string('link');
             $table->string('status')->default(1)->comment('1=>pending ,2=> complete');
+            $table->string('type')->default(1)->comment('1=>instagram ,2=> facebook');
             $table->timestamps();
         });
     }

@@ -15,4 +15,6 @@ Route::namespace('\App\Http\Controllers\Api')->group(function () {
     Route::post('/withdrow', 'UserController@withdrow');
     Route::post('/RequestLinkVerify', 'UserController@RequestLinkVerify');
     Route::get('/LinkVerify', 'UserController@LinkVerify');
+    Route::get('/earn_by_facebook', 'UserController@earn_by_facebook');
+    Route::post('/RequestFbPopup', 'UserController@RequestFbPopup');
 });
