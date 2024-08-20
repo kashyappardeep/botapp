@@ -14,4 +14,5 @@ Route::namespace('\App\Http\Controllers\Api')->group(function () {
     Route::post('/withdrow', 'UserController@withdrow');
     Route::post('/RequestLinkVerify', 'UserController@RequestLinkVerify');
     Route::get('/LinkVerify', 'UserController@LinkVerify');
+    Route::post('/Bost_history', 'UserController@Bost_history');
 });

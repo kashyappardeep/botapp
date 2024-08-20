@@ -524,4 +524,32 @@ class UserController extends Controller
             'R_LinkVerify' => $RequestLinkVerify
         ], 200);
     }
+
+    public function Bost_history(Request $request)
+    {
+
+        $validator = Validator::make($request->all(), [
+            'user_id' => 'required|exists:users,id',
+
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()], 400);
+        }
+        try {
+            $user = User::where('id', $request->user_id)->first();
+            $bost = InvestmentHistory::where('user_id', $request->user_id)
+                ->where('type', 2)->get();
+
+            // dd($TransactionHistory);
+
+            return response()->json([
+                'bost' => $bost,
+                'user_details' => $user,
+
+            ], 200);
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'Failed to wallet_history'], 500);
+        }
+    }
 }
