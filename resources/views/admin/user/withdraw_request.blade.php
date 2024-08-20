@@ -7,7 +7,9 @@
         
   <!-- ############ PAGE START-->
   <div class="padding">
-   
+    @php
+    use Carbon\Carbon;
+    @endphp
   
     <div class="box">
       <div class="box-header" style="display: ruby-text;">
@@ -24,8 +26,10 @@
             
             
               <th>Name </th>
+              <th>Telegram Id </th>
               <th>address</th>
               <th>amount</th>
+              <th>Date and time</th>
               <th>Status</th>
               <th>Verify</th>
              
@@ -34,14 +38,21 @@
           <tbody>
             @foreach ($Withdraw as $Withdraw)
             <tr>
-              @if ($Withdraw && $Withdraw->user && $Withdraw->user->first_name)
-    <td>{{ $Withdraw->user->first_name}}</td>
-@else
-    <td>{{$Withdraw->id}}</td>
-@endif
-                
+                                      
+                <td>{{ $Withdraw->user->first_name}}</td>
+                <td>{{$Withdraw->user->telegram_id}}</td>
                 <td>{{$Withdraw->address}}</td>
                 <td>{{$Withdraw->amount}}</td>
+                <td>
+                  @if ($Withdraw->created_at)
+                    {{ \Carbon\Carbon::parse($Withdraw->created_at)->timezone('Asia/Kolkata')->format('Y-m-d H:i:s') }}
+                  @else
+                    No Date
+                  @endif
+                </td>
+                {{-- <td>{{ \Carbon\Carbon::parse($Withdraw->created_at)->timezone('Asia/Kolkata')->format('Y-m-d H:i:s') }}</td> --}}
+                
+                {{-- <td>{{$Withdraw->created_at}}</td> --}}
                 @if ($Withdraw->status ==1)
                 <td style="color: #e4e136">Pending Request </td> 
                 @elseif($Withdraw->status ==2)

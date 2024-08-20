@@ -17,11 +17,17 @@ class TransactionHistory extends Model
         'level',
         'amount',
         'type',
-        'task_id'
+        'task_id',
+        'address',
+        'status'
     ];
     public function user()
     {
         return $this->belongsTo(User::class);
+    }
+    public function Withdraw()
+    {
+        return $this->belongsTo(Withdraw::class, 'user_id', 'id');
     }
     public function userBy()
     {

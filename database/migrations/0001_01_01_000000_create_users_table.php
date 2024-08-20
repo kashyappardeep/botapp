@@ -17,9 +17,10 @@ return new class extends Migration
             $table->string('first_name')->nullable();
             $table->string('last_name')->nullable();
             $table->string('referral_by')->nullable();
-            $table->string('status')->default('1')->comment('1=>free Packeg ,2=> paid Packeg');
-            $table->decimal('wallet', 8, 2)->default(0);
-            $table->decimal('claimable_amt', 8, 2)->default(0);
+            $table->string('status')->default(1)->comment('1=>free , 2=>paid');
+            $table->decimal('wallet', 12, 2)->default(0);
+            $table->decimal('roi_rate', 18, 8)->default(0);
+            $table->decimal('claimable_amt', 18, 8)->default(0);
             $table->string('last_claim_timestamp');
             $table->timestamps(); // This adds `created_at` and `updated_at` columns
 

@@ -11,7 +11,9 @@ use App\Models\InvestmentHistory;
 use App\Models\TransactionHistory;
 use App\Models\Level;
 use App\Models\Withdraw;
+use App\Models\Address;
 use App\Models\Content_data;
+use Carbon\Carbon;
 
 class UsersController extends Controller
 {
@@ -20,7 +22,7 @@ class UsersController extends Controller
      */
     public function index()
     {
-        $users = User::get();
+        $users = User::orderBy('created_at', 'desc')->paginate(20);
 
 
         return view('admin.user.index', compact('users'));
@@ -28,6 +30,8 @@ class UsersController extends Controller
     /**
      * Show the form for creating a new resource.
      */
+
+
     public function create()
     {
         //
@@ -73,32 +77,78 @@ class UsersController extends Controller
         //
     }
 
-    public function  investment_request()
-    {
-        $investment = InvestmentHistory::with('user')->get();
-        // dd($investment);
-        // die;
+    // public function indianTimeZon($utcTimestamp)
+    // {
+    //     $istTimestamp = Carbon::createFromFormat('Y-m-d H:i:s', $utcTimestamp, 'UTC')
+    //         ->setTimezone('Asia/Kolkata')
+    //         ->format('Y-m-d H:i:s');
 
+    //     return $istTimestamp;
+    // }
+
+    public function  investment_request(Request $request)
+    {
+
+        $status = $request->get('status', 1); // Defaults to 1 if status is not set
+        $investment = InvestmentHistory::with('user')
+            ->where('status', $status)
+            ->get();
+        // dd($investment);
         return view('admin.user.investment_request', compact('investment'));
     }
 
-    public function  contact()
+    public function  contact(Request $request)
     {
-        $contect = Contact_data::where('status', 1)->get();
+
+        // $contect = Contact_data::where('status', 1)->get();
+        $status = $request->get('status', 1);
+        // dd($request->all()); // Defaults to 1 if status is not set
+        $contect = Contact_data::with('user', 'linkVerify')
+            ->where('status', $status)
+            ->get();
+
         // dd($contect);
-        // die;
 
 
         return view('admin.user.contact', compact('contect'));
+    }
+    public function updatecontacttStatus($id)
+    {
+        // dd($id); // For debugging purposes
+        $request_accept = Contact_data::findOrFail($id);
+
+        // Check if the status is already 'completed'
+        $request_accept->status = 2;
+        $request_accept->save();
+
+        return redirect()->back()->with('success', 'Contact_data accept successfully!');
+    }
+    public function contactrejectStatus($id)
+    {
+        // dd($id); // For debugging purposes
+        $rejectStatus = Contact_data::findOrFail($id);
+
+        $rejectStatus->status = 0;
+        $rejectStatus->save();
+
+
+        return redirect()->back()->with('success', 'Contact_data Rejected successfully!');
     }
 
     public function updateInvestmentStatus($id)
     {
         // dd($id); // For debugging purposes
         $request_accept = InvestmentHistory::findOrFail($id);
-
+        // dd($request_accept);
         $user_id = $request_accept->user_id;
         $user = User::findOrFail($user_id);
+        $address = Address::where('address', $request_accept->address)->first();
+        if ($address) {
+            $address->user_id = null;
+            $address->amount = null;
+            $address->save();
+        }
+
 
         $levels = Level::all();
         // dd($levels);
@@ -118,7 +168,7 @@ class UsersController extends Controller
                 $bonusAmount = $request_accept->amount * $level->level_p / 100;
                 echo 'bonusAmount', $bonusAmount;
                 Log::warning('bonusAmount', ['bonusAmount' => $bonusAmount]);
-                $referrer->wallet = $referrer->wallet + $bonusAmount;
+                $referrer->wallet += $bonusAmount;
                 $referrer->save();
 
                 $TransactionHistory =  TransactionHistory::create([
@@ -126,7 +176,7 @@ class UsersController extends Controller
                     'level' => $level->level,
                     'to' => $referrer->id,
                     'by' => $user->id,
-                    'type' => "1"
+                    'type' => "2"
                 ]);
                 // dd($TransactionHistory);
                 // echo 'TransactionHistory', $TransactionHistory;
@@ -153,30 +203,33 @@ class UsersController extends Controller
     {
         // dd($id); // For debugging purposes
         $rejectStatus = InvestmentHistory::findOrFail($id);
-
+        $address = Address::where('address', $rejectStatus->address)->first();
+        if ($address) {
+            $address->user_id = null;
+            $address->amount = null;
+            $address->save();
+        }
         $rejectStatus->status = 0;
         $rejectStatus->save();
 
 
         return redirect()->back()->with('success', 'Investment_request Rejected successfully!');
     }
-
-
-
-
-
-
-
-    public function withdraw_request()
+    public function withdraw_request(Request $request)
     {
-        $Withdraw = Withdraw::with('user')->get();
+
+        // Defaults to 1 if status is not set
+        $Withdraw = TransactionHistory::with('user')
+            ->where('type', 3)
+            ->get();
+        // $Withdraw = Withdraw::with('user')->get();
         // dd($Withdraw);
         return view('admin.user.withdraw_request', compact('Withdraw'));
     }
     public function updateStatus($id)
     {
         // dd($id); // For debugging purposes
-        $request_accept = Withdraw::findOrFail($id);
+        $request_accept = TransactionHistory::findOrFail($id);
 
         // Check if the status is already 'completed'
         $request_accept->status = 2;
@@ -188,7 +241,7 @@ class UsersController extends Controller
     public function rejectStatus($id)
     {
         // dd($id); // For debugging purposes
-        $rejectStatus = Withdraw::findOrFail($id);
+        $rejectStatus = TransactionHistory::findOrFail($id);
 
         $user_id = $rejectStatus->user_id;
         // Check if the status is already 'completed'
@@ -205,7 +258,7 @@ class UsersController extends Controller
 
     public function user_investment($id)
     {
-        $investment = InvestmentHistory::where('user_id', $id)->get();
+        $investment = InvestmentHistory::with('user')->where('user_id', $id)->get();
         // dd($investment);
         return view('admin.user.user_investment', compact('investment'));
     }

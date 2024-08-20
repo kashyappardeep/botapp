@@ -15,4 +15,8 @@ class Withdraw extends Model
     {
         return $this->belongsTo(User::class);
     }
+    public function TransactionHistory()
+    {
+        return $this->hasMany(TransactionHistory::class, 'user_id', 'id');
+    }
 }

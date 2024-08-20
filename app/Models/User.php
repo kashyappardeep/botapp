@@ -10,15 +10,7 @@ class User extends Authenticatable
 {
     use HasFactory, Notifiable;
 
-    protected $fillable = [
-        'telegram_id',
-        'first_name',
-        'last_name',
-        'referral_by',
-        'wallet',
-        'last_claim_timestamp',
-    ];
-
+    protected $guarded = [];
     protected $hidden = [
         'password',
         'remember_token',
@@ -37,9 +29,9 @@ class User extends Authenticatable
         return $this->hasMany(ClaimHistory::class);
     }
 
-    public function TransactionHistory()
+    public function Referral()
     {
-        return $this->hasMany(TransactionHistory::class);
+        return $this->hasMany(TransactionHistory::class, 'by', 'id');
     }
 
     public function UserTask()
@@ -60,6 +52,6 @@ class User extends Authenticatable
 
     public function Contact_data()
     {
-        return $this->hasMany(Contact_data::class);
+        return $this->hasMany(Contact_data::class, 'telegram_id', 'telegram_id');
     }
 }

@@ -18,6 +18,8 @@ return new class extends Migration
             $table->string('level_of_referral');
             $table->string('gateway_key');
             $table->string('content_reward');
+            $table->string('min_withdrawal');
+            $table->string('min_investment');
             $table->timestamps();
         });
     }

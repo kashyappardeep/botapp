@@ -55,6 +55,18 @@
                     <input type="text" name="content_reward" value="{{ $Config->content_reward }}" class="form-control" required="">  
                     </div>                      
                   </div>
+                  <div class="form-group row">
+                    <label class="col-sm-3 form-control-label">min_withdrawal</label>
+                    <div class="col-sm-9">
+                    <input type="text" name="min_withdrawal" value="{{ $Config->min_withdrawal }}" class="form-control" required="">  
+                    </div>                      
+                  </div>
+                  <div class="form-group row">
+                    <label class="col-sm-3 form-control-label">min_investment</label>
+                    <div class="col-sm-9">
+                    <input type="text" name="min_investment" value="{{ $Config->min_investment }}" class="form-control" required="">  
+                    </div>                      
+                  </div>
                 
                  <div class="dker p-a text-right">
                 <button type="submit" class="btn info">Update</button>

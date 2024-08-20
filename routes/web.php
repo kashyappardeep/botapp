@@ -9,15 +9,16 @@ use App\Http\Controllers\Admin\ConfigController;
 use App\Http\Controllers\Admin\LevelController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\VerifyController;
+use Illuminate\Support\Facades\Auth;
 
 Route::get('/', function () {
     return view('welcome');
 });
-
+Route::get('login', [AdminController::class, 'showLoginForm'])->name('login');
 Route::prefix('admin')->group(function () {
     Route::get('login', [AdminController::class, 'showLoginForm'])->name('admin.login');
     Route::post('login', [AdminController::class, 'login']);
-    Route::post('logout', [AdminController::class, 'logout'])->name('admin.logout');
+    // Route::post('logout', [AdminController::class, 'logout'])->name('admin.logout');
 
     Route::middleware('auth:admin')->group(function () {
 
@@ -25,9 +26,10 @@ Route::prefix('admin')->group(function () {
         Route::post('status_change/{id}', [UsersController::class, 'updateStatus'])->name('admin.status_change');
         Route::post('reject_Status/{id}', [UsersController::class, 'rejectStatus'])->name('admin.reject_Status');
         Route::get('user_investment/{id}', [UsersController::class, 'user_investment'])->name('admin.user_investment');
-        // Route::get('/contact', [UserController::class, 'contact'])->name('user.contact');
-        // routes/web.php
-        Route::get('/contact', [UsersController::class, 'contact'])->name('admin.user.contact');
+
+        Route::get('/contact_request', [UsersController::class, 'contact'])->name('admin.contact_request');
+        Route::post('contact_change/{id}', [UsersController::class, 'updatecontacttStatus'])->name('admin.contact_status_change');
+        Route::post('contact_Status/{id}', [UsersController::class, 'contactrejectStatus'])->name('admin.contact_reject_Status');
 
 
 
@@ -52,6 +54,10 @@ Route::prefix('admin')->group(function () {
 
 
 
+        Route::post('/logout', function () {
+            Auth::logout();
+            return redirect('admin/login');
+        })->name('logout');
 
         // Route::post('invist_status_change/{id}', [UsersController::class, 'updateInvestmentStatus'])->name('admin.invist_status_change');
         // Route::post('invest_reject_Status/{id}', [UsersController::class, 'investrejectStatus'])->name('admin.invest_reject_Status');

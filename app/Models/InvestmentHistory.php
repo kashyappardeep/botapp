@@ -15,6 +15,7 @@ class InvestmentHistory extends Model
         'amount',
         'address',
         'status',
+        'type',
         'invest_at'
     ];
 

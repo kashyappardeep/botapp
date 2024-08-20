@@ -12,7 +12,7 @@
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-barstyle" content="black-translucent">
   <link rel="apple-touch-icon" href="{{asset('assets/images/logo.png')}}">
-  <meta name="apple-mobile-web-app-title" content="Digitron">
+  <meta name="apple-mobile-web-app-title" content="Tronox">
   <!-- for Chrome on Android, multi-resolution icon of 196x196 -->
   <meta name="mobile-web-app-capable" content="yes">
   <link rel="shortcut icon" sizes="196x196" href="{{asset('assets/images/logo.png')}}">
@@ -34,7 +34,7 @@
 </head>
 
 <body>
-  <div class="app" id="app">
+  <div class="pace-done grey" ui-class="grey">
 
     <!-- ############ LAYOUT START-->
 
@@ -46,7 +46,7 @@
           <a class="navbar-brand">
             
             <img src="{{asset('assets/images/fans.png')}}" alt="." class="">
-            <span class="hidden-folded inline">Digitron</span>
+            <span class="hidden-folded inline">Tronox</span>
           </a>
           <!-- / brand -->
         </div>
@@ -124,7 +124,7 @@
                 </a>
               </li>
               <li>
-                <a href="{{route('admin.user.contact')}}">
+                <a href="{{route('admin.contact_request')}}">
                   <span class="nav-icon">
                     <i class="fa fa-users">
                     </i>
@@ -157,19 +157,17 @@
                 </a>
               </li>
               <li class="hidden-folded">
-                <form id="logout-form" action="" method="POST" style="display: none;">
-                  @csrf
-                  <button type="submit">Logout</button>
-              </form>
-                <a href="#" onclick="event.preventDefault(); document.getElementById('logout-form').submit();" >
-                  <span class="nav-icon">
-                    <i class="fa fa-sign-out">
-                    </i>
-                  </span>
-                  <span class="nav-text">Sign out</span>
+                <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
+                    @csrf
+                    <button type="submit">Logout</button>
+                </form>
+                <a href="#" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                    <span class="nav-icon">
+                        <i class="fa fa-sign-out"></i>
+                    </span>
+                    <span class="nav-text">Sign out</span>
                 </a>
-               
-              </li>
+            </li>
               
 
             </ul>

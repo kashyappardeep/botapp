@@ -8,7 +8,9 @@
   <!-- ############ PAGE START-->
   <div class="padding">
    
-  
+    @php
+    use Carbon\Carbon;
+    @endphp
     <div class="box">
         <div class="box-header" style="display: ruby-text;">
              <h2>User Investment Histroy
@@ -36,10 +38,17 @@
             <tr>
              
                 <td>{{$investment->user_id}}</td>
-                <td>{{$investment->telegram_id}}</td>
+                <td>{{$investment->user->telegram_id}}</td>
                 <td>{{$investment->amount}}</td>
                 <td>{{$investment->address}}</td>
-                <td>{{$investment->invest_at}}</td>
+                {{-- <td>{{$investment->invest_at}}</td> --}}
+                <td>
+                  @if ($investment->created_at)
+                    {{ \Carbon\Carbon::parse($investment->created_at)->timezone('Asia/Kolkata')->format('Y-m-d H:i:s') }}
+                  @else
+                    No Date
+                  @endif
+                </td>
                </tr>
             @endforeach
            

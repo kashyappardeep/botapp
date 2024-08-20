@@ -17,9 +17,12 @@ return new class extends Migration
             $table->unsignedBigInteger('to')->nullable();
             $table->unsignedBigInteger('by')->nullable();
             $table->unsignedBigInteger('task_id')->nullable();
+            $table->string('address')->nullable();
+            $table->string('status')->default(1)->comment('1=>pending ,2=> complete');
+
             $table->decimal('amount', 15, 2)->nullable();
             $table->string('level')->nullable();
-            $table->string('type')->default(1)->comment('1=>task ,2=> referral_by');
+            $table->string('type')->default(1)->comment('0=>claim ,1=>task ,2=> referral_by ,3 => withdraw');
 
             $table->timestamps();
         });
