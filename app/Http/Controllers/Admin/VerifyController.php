@@ -56,7 +56,7 @@ class VerifyController extends Controller
             'type' => $request->type,  // Ensure 'description' is passed
             'status' => $request->status // Ensure 'description' is passed
         ]);
-
+        // dd($data);
         // Redirect back with success message
         return redirect()->back()->with('success', 'Verification added successfully!');
     }

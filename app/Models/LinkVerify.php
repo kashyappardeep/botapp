@@ -11,7 +11,7 @@ class LinkVerify extends Model
 
     protected $table = 'linkverify';
     protected $primaryKey = 'id';
-    protected $fillable = ['description'];
+    protected $fillable = ['description', 'type', 'status'];
 
     // Relationship with User model (if needed)
     public function user()
