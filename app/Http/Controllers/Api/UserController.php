@@ -687,15 +687,15 @@ class UserController extends Controller
             ], 200);
         }
     }
-    // public function earn_by_facebook()
-    // {
-    //     $LinkVerify = LinkVerify::where('type', 2)->where('status', 2)->first();
-    //     // dd($LinkVerify);
+    public function earn_by_facebook()
+    {
+        $LinkVerify = LinkVerify::where('type', 2)->where('status', 2)->get();
+        // dd($LinkVerify);
 
-    //     return response()->json([
-    //         'LinkVerify' => $LinkVerify
-    //     ], 200);
-    // }
+        return response()->json([
+            'LinkVerify' => $LinkVerify
+        ], 200);
+    }
 
     public function RequestFbPopup(Request $request)
     {

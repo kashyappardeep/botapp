@@ -41,6 +41,8 @@ class VerifyController extends Controller
         // Use Validator facade for validation
         $validator = Validator::make($request->all(), [
             'description' => 'required|string|max:255',
+            'type' => 'required',
+            'status' => 'required',
         ]);
 
         // If validation fails, redirect back with errors
@@ -51,6 +53,8 @@ class VerifyController extends Controller
         // Create the LinkVerify entry in the database
         $data = LinkVerify::create([
             'description' => $request->description,  // Ensure 'description' is passed
+            'type' => $request->type,  // Ensure 'description' is passed
+            'status' => $request->status // Ensure 'description' is passed
         ]);
 
         // Redirect back with success message
@@ -87,6 +91,8 @@ class VerifyController extends Controller
 
         // $address->user_id = $request->user_id;
         $data->description = $request->description;
+        $data->type = $request->type;
+        $data->status = $request->status;
         // dd($data);
 
 

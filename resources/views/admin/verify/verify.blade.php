@@ -27,17 +27,28 @@
               
               
               <th>Description</th>
+              <th>Type</th>
+              <th>Status</th>
               <th>Update/Edit</th>
               <th>Delete</th>
-              
-             
-            </tr>
+             </tr>
           </thead>
           <tbody>
             @foreach ($data as $data)
             <tr>
              
                 <td>{{$data->description}}</td>
+                @if ($data->type == 1)
+                <td>Instagram</td>
+                @else
+                <td>Earn by facebook</td>
+                @endif
+                
+                @if ($data->status == 2)
+                <td style="color: #00c753">Active</td>
+                @else
+                <td style="color: rgb(222, 244, 61)">InActive</td>
+                @endif
                 
               
                 
