@@ -30,7 +30,7 @@
               <th>Type</th>
               <th>Status</th>
               <th>Update/Edit</th>
-              <th>Delete</th>
+              {{-- <th>Delete</th> --}}
              </tr>
           </thead>
           <tbody>
@@ -49,21 +49,17 @@
                 @else
                 <td style="color: rgb(222, 244, 61)">InActive</td>
                 @endif
-                
-              
-                
-              <td>
+               <td>
                 <a href="{{route('verify.edit',$data->id)}}">
                   <i class="fa fa-edit text-success"></i></a>
                 </td>
-                <td>
+                {{-- <td>
                   <form action="{{ route('verify.destroy',$data->id) }}" method="POST">
                     @csrf
                     @method('DELETE')
                     <button type="submit" style="background: none;"><i class="fa fa-trash-o" style="color: red;"></i></button>
                 </form>
-                  {{-- <a href="{{route('fiat_currencies.destroy',$FiatCurrency->id)}}"></a> --}}
-                  </td>
+                  </td> --}}
             </tr>
             @endforeach
            
