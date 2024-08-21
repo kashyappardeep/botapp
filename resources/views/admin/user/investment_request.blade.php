@@ -50,9 +50,18 @@
           <tbody>
             @foreach ($investment as $investment)
             <tr>
-              
-                  <td>{{ $investment->user->first_name}}</td>
-                  <td>{{ $investment->user->telegram_id}}</td>
+              @if ($investment->user->first_name !== null) 
+              <td>{{ $investment->user->first_name}}</td>
+            @else 
+            <td>...</td>
+            @endif
+            @if ($investment->user->telegram_id !== null) 
+            <td>{{ $investment->user->telegram_id}}</td>
+            @else 
+            <td>...</td>
+            @endif
+                  
+                 
                 
                 <td>{{$investment->address}}</td>
                 <td>{{$investment->amount}}</td>
