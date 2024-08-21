@@ -687,22 +687,21 @@ class UserController extends Controller
             ], 200);
         }
     }
-    public function earn_by_facebook()
-    {
-        $LinkVerify = LinkVerify::where('type', 2)->where('status', 2)->first();
-        // dd($LinkVerify);
+    // public function earn_by_facebook()
+    // {
+    //     $LinkVerify = LinkVerify::where('type', 2)->where('status', 2)->first();
+    //     // dd($LinkVerify);
 
-        return response()->json([
-            'LinkVerify' => $LinkVerify
-        ], 200);
-    }
+    //     return response()->json([
+    //         'LinkVerify' => $LinkVerify
+    //     ], 200);
+    // }
 
     public function RequestFbPopup(Request $request)
     {
 
         $validator = Validator::make($request->all(), [
             'telegram_id' => 'required|exists:users,telegram_id',
-            'linkverify_id' => 'required',
             'link' => 'required',
 
 
@@ -715,7 +714,6 @@ class UserController extends Controller
         if ($user) {
             $RequestLinkVerify =  Contact_data::create([
                 'telegram_id' => $request->telegram_id,
-                'linkverify_id' => $request->linkverify_id,
                 'link' => $request->link,
                 'type' => 2
             ]);
