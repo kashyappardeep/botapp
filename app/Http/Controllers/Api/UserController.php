@@ -642,7 +642,7 @@ class UserController extends Controller
 
     public function LinkVerify()
     {
-        $LinkVerify = LinkVerify::get();
+        $LinkVerify = LinkVerify::where('type', 1)->where('status', 2)->get();
         // dd($LinkVerify);
         $config = config::first();
         $reward = $config->content_reward;
