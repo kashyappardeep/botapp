@@ -9,5 +9,5 @@ class ContentData extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['link', 'linkverify_id', 'telegram_id'];
+    protected $fillable = ['link', 'linkverify_id', 'telegram_id', 'status', 'type'];
 }
