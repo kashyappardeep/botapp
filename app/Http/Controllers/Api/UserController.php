@@ -27,7 +27,7 @@ class UserController extends Controller
     {
 
         $validator = Validator::make($request->all(), [
-            'id' => 'required|max:255',
+            'id' => 'required|max:255|unique:users',
             'last_name' => 'nullable|string|max:255',
             'first_name' => 'nullable|string|max:255',
             'referral_by' => 'nullable',
@@ -38,7 +38,7 @@ class UserController extends Controller
         }
 
 
-
+        // dd($request->all());
 
         $id = $request->id;
         $first_name = $request->first_name;
@@ -84,7 +84,7 @@ class UserController extends Controller
                     $sponsor_user =    User::where('telegram_id', $referral_by)->first();
                 }
                 // dd($sponsor_user);
-                //  DB::beginTransaction();
+                DB::beginTransaction();
                 $user = User::firstOrCreate(
                     ['telegram_id' => $id], // Condition to find the existing record
                     [
@@ -117,7 +117,7 @@ class UserController extends Controller
                     'status' => 2
                 ]);
             }
-            // DB::commit();
+            DB::commit();
 
             //  $user = User::where('telegram_id', $id)->first();
             return response()->json([
