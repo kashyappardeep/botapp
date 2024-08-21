@@ -95,7 +95,7 @@
       <div class="app-footer">
         <div class="p-a text-xs">
           <div class="pull-right text-muted">
-            © Copyright <strong>Tronox</strong> <span class="hidden-xs-down">- Built with Love v1.1.3</span>
+            © Copyright <strong>Digitron</strong> <span class="hidden-xs-down">- Built with Love v1.1.3</span>
             <a ui-scroll-to="content"><i class="fa fa-long-arrow-up p-x-sm"></i></a>
           </div>
           <div class="nav">
@@ -111,7 +111,7 @@
         <!-- ############ PAGE START-->
         <div class="padding">
           <div class="margin">
-            <h5 class="m-b-0 _300">Tronox, Welcome back</h5>
+            <h5 class="m-b-0 _300">Digitron, Welcome back</h5>
             <small class="text-muted">Awesome uikit for your next project</small>
             
           </div>
