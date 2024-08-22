@@ -64,13 +64,13 @@
                 @endif
                 <td style="    display: flex;">
                   @if($contect->status ==1)
-                  <form action="{{ route('admin.contact_status_change', $contect->id) }}" method="POST">
+                  <form action="{{ route('admin.ShowcontacttStatus', $contect->id) }}" method="GET">
                     @csrf
-                    @method('POST') <!-- Change to POST if your route uses POST -->
                     <button type="submit" class="open-modal" data-id="" data-toggle="modal" data-target="#inputModal" style="background: none;">
                         <i class="fa fa-check" style="color: #00c853;"></i>
                     </button>
                 </form>
+                
                 @else
                 <button type="submit" class="open-modal" data-id="" data-toggle="modal" data-target="#inputModal" style="background: none;">
                   <i class="fa fa-check" style="color: #00c853;"></i>

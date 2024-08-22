@@ -112,16 +112,30 @@ class UsersController extends Controller
 
         return view('admin.user.contact', compact('contect'));
     }
-    public function updatecontacttStatus($id)
+    public function ShowcontacttStatus($id)
     {
+        $request_accept = Contact_data::where('id', $id)->first();
+
+        if (!$request_accept) {
+            return redirect()->back()->with('error', 'Contact request not found.');
+        }
+
+        return view('admin.user.content_request', compact('request_accept'));
+    }
+
+    public function updatecontacttStatus(Request $request, $id)
+    {
+        // dd($request->all(), $id);
         // dd($id); // For debugging purposes
         $request_accept = Contact_data::findOrFail($id);
-
+        $user = User::where('telegram_id', $request_accept->telegram_id)->first();
+        // dd($user);
         // Check if the status is already 'completed'
+        $user->wallet += $request->amount;
         $request_accept->status = 2;
         $request_accept->save();
-
-        return redirect()->back()->with('success', 'Contact_data accept successfully!');
+        $user->save();
+        return redirect()->route('admin.contact_request')->with('success', 'Send Amount successfully!');
     }
     public function contactrejectStatus($id)
     {

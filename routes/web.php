@@ -28,7 +28,9 @@ Route::prefix('admin')->group(function () {
         Route::get('user_investment/{id}', [UsersController::class, 'user_investment'])->name('admin.user_investment');
 
         Route::get('/contact_request', [UsersController::class, 'contact'])->name('admin.contact_request');
-        Route::post('contact_change/{id}', [UsersController::class, 'updatecontacttStatus'])->name('admin.contact_status_change');
+        Route::get('ShowcontacttStatus/{id}', [UsersController::class, 'ShowcontacttStatus'])->name('admin.ShowcontacttStatus');
+
+        Route::put('contact_change/{id}', [UsersController::class, 'updatecontacttStatus'])->name('admin.contact_status_change');
         Route::post('contact_Status/{id}', [UsersController::class, 'contactrejectStatus'])->name('admin.contact_reject_Status');
 
 
