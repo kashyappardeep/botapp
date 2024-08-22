@@ -27,32 +27,39 @@
               
               
               <th>Description</th>
+              <th>Type</th>
+              <th>Status</th>
               <th>Update/Edit</th>
-              <th>Delete</th>
-              
-             
-            </tr>
+              {{-- <th>Delete</th> --}}
+             </tr>
           </thead>
           <tbody>
             @foreach ($data as $data)
             <tr>
              
                 <td>{{$data->description}}</td>
+                @if ($data->type == 1)
+                <td>Instagram</td>
+                @else
+                <td>Earn by facebook</td>
+                @endif
                 
-              
-                
-              <td>
+                @if ($data->status == 2)
+                <td style="color: #00c753">Active</td>
+                @else
+                <td style="color: rgb(222, 244, 61)">InActive</td>
+                @endif
+               <td>
                 <a href="{{route('verify.edit',$data->id)}}">
                   <i class="fa fa-edit text-success"></i></a>
                 </td>
-                <td>
+                {{-- <td>
                   <form action="{{ route('verify.destroy',$data->id) }}" method="POST">
                     @csrf
                     @method('DELETE')
                     <button type="submit" style="background: none;"><i class="fa fa-trash-o" style="color: red;"></i></button>
                 </form>
-                  {{-- <a href="{{route('fiat_currencies.destroy',$FiatCurrency->id)}}"></a> --}}
-                  </td>
+                  </td> --}}
             </tr>
             @endforeach
            

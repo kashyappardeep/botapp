@@ -3,7 +3,7 @@
 
 <head>
   <meta charset="utf-8" />
-  <title>Digitron Admin | Dashboard</title>
+  <title>BotApp Admin | Dashboard</title>
   <meta name="description" content="Admin, Dashboard, Bootstrap, Bootstrap 4, Angular, AngularJS" />
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimal-ui" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -56,7 +56,7 @@
             <ul class="nav" ui-nav>
               
 
-              {{-- <li>
+              <li>
                 <a href="{{url('admin/dashboard')}}">
                   <span class="nav-icon">
                     <i class="material-icons">&#xe3fc;
@@ -65,7 +65,7 @@
                   </span>
                   <span class="nav-text">Dashboard</span>
                 </a>
-              </li> --}}
+              </li>
 
 
               <li>

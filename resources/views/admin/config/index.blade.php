@@ -27,7 +27,7 @@
               <th>daily_roi </th>
               <th>admin_wallet_address</th>
               <th>level_of_referral</th>
-              <th>gateway_key</th>
+              <th>task_amount</th>
               <th>content_reward</th>
               <th>min_withdrawal</th>
               <th>min_investment</th>
@@ -49,11 +49,8 @@
                 <td>{{$Config->level_of_referral}}</td>
               @endif
               
-                @if ($Config->gateway_key == null)
-                <td>....</td>
-                @else
-                <td>{{$Config->gateway_key}}</td>
-              @endif
+                
+              <td>{{$Config->task_amount}}</td>
               <td>{{$Config->content_reward}}</td>
               <td>{{$Config->min_withdrawal}}</td>
               <td>{{$Config->min_investment}}</td>

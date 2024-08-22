@@ -76,6 +76,27 @@ class LinkVerifySeeder extends Seeder
 
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
+            ], [
+                'id' => '9',
+                'description' => 'You post about Digitron on your Facebook page.',
+                'status' => 2, 'type' => 2,
+
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now(),
+            ], [
+                'id' => '10',
+                'description' => 'Use the hashtags of Digitron, such as - #Digitron, #Freetron, and #Tronoxfreetron.',
+                'status' => 2, 'type' => 2,
+
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now(),
+            ], [
+                'id' => '10',
+                'description' => 'Use your referral line in the given post.',
+                'type' => 2,
+
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now(),
             ]
         ]);
     }

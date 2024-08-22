@@ -4,7 +4,7 @@
 <div id="content" class="app-content box-shadow-z0" role="main">
   @include('includes.head')
   <div ui-view="" class="app-body" id="view">
-  
+    
     <!-- ############ PAGE START -->
     <div class="padding">
       @php
@@ -31,6 +31,7 @@
               <tr style="background: #302e2e;">
                 <th>Link</th>
                 <th>Telegram Id</th>
+                <th>Type</th>
                 <th>Link Verify Id</th>
                 <th>Date And Time</th>
                 <th>Status</th>
@@ -42,6 +43,11 @@
               <tr>
                 <td>{{ $contect->link }}</td>
                 <td>{{ $contect->telegram_id }}</td>
+                @if ($contect->type == 1)
+                <td>Instagram</td>
+                @else
+                <td>Facebook</td>
+                @endif
                 <td>@if($contect->linkVerify)
                   {{ $contect->linkVerify->description }}
               @else
@@ -64,13 +70,13 @@
                 @endif
                 <td style="    display: flex;">
                   @if($contect->status ==1)
-                  <form action="{{ route('admin.contact_status_change', $contect->id) }}" method="POST">
+                  <form action="{{ route('admin.ShowcontacttStatus', $contect->id) }}" method="GET">
                     @csrf
-                    @method('POST') <!-- Change to POST if your route uses POST -->
                     <button type="submit" class="open-modal" data-id="" data-toggle="modal" data-target="#inputModal" style="background: none;">
                         <i class="fa fa-check" style="color: #00c853;"></i>
                     </button>
                 </form>
+                
                 @else
                 <button type="submit" class="open-modal" data-id="" data-toggle="modal" data-target="#inputModal" style="background: none;">
                   <i class="fa fa-check" style="color: #00c853;"></i>
