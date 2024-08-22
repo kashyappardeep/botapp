@@ -32,12 +32,12 @@
                     <input type="text" name="telegram_id" value="{{ $request_accept->telegram_id }}" class="form-control" required="" readonly>  
                     </div>                      
                   </div>
-                  <div class="form-group row">
+                  {{-- <div class="form-group row">
                     <label class="col-sm-3 form-control-label">Amount</label>
                     <div class="col-sm-9">
                     <input type="text" name="amount"  class="form-control" required="" placeholder="Enter Send Amount">  
                     </div>                      
-                  </div>
+                  </div> --}}
                  
                   
                   

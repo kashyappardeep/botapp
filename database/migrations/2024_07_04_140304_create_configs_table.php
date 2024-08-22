@@ -16,7 +16,8 @@ return new class extends Migration
             $table->string('daily_roi');
             $table->string('admin_wallet_address');
             $table->string('level_of_referral');
-            $table->string('gateway_key');
+            $table->string('gateway_key')->nullable();
+            $table->string('task_amount');
             $table->string('content_reward');
             $table->string('min_withdrawal');
             $table->string('min_investment');

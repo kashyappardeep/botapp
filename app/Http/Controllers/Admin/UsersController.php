@@ -10,7 +10,7 @@ use App\Models\User;
 use App\Models\InvestmentHistory;
 use App\Models\TransactionHistory;
 use App\Models\Level;
-use App\Models\Withdraw;
+use App\Models\Config;
 use App\Models\Address;
 use App\Models\Content_data;
 use Carbon\Carbon;
@@ -130,8 +130,8 @@ class UsersController extends Controller
         $request_accept = Contact_data::findOrFail($id);
         $user = User::where('telegram_id', $request_accept->telegram_id)->first();
         // dd($user);
-        // Check if the status is already 'completed'
-        $user->wallet += $request->amount;
+        $confing_data = Config::first();
+        $user->wallet += $confing_data->task_amount;
         $request_accept->status = 2;
         $request_accept->save();
         $user->save();

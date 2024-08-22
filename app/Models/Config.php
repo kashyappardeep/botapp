@@ -14,5 +14,10 @@ class Config extends Model
         'admin_wallet_address',
         'level_of_referral',
         'gateway_key',
+        'task_amount',
+        'content_reward',
+        'min_withdrawal',
+        'min_investment'
+
     ];
 }
