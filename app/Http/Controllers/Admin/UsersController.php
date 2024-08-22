@@ -22,7 +22,7 @@ class UsersController extends Controller
      */
     public function index()
     {
-        $users = User::orderBy('created_at', 'desc')->paginate(1000);
+        $users = User::orderBy('created_at', 'desc')->paginate(500);
 
 
         return view('admin.user.index', compact('users'));
@@ -217,10 +217,11 @@ class UsersController extends Controller
     }
     public function withdraw_request(Request $request)
     {
-
+        $status = $request->get('status', 1);
         // Defaults to 1 if status is not set
         $Withdraw = TransactionHistory::with('user')
             ->where('type', 3)
+            ->where('status', $status)
             ->get();
         // $Withdraw = Withdraw::with('user')->get();
         // dd($Withdraw);

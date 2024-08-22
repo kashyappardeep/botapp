@@ -10,7 +10,7 @@ class Contact_data extends Model
     use HasFactory;
 
     protected $table = 'content_data';
-    protected $fillable = ['telegram_id', 'linkverify_id', 'link', 'status'];
+    protected $fillable = ['telegram_id', 'linkverify_id', 'link', 'status', 'type'];
 
     // Relationship with User model
     public function user()

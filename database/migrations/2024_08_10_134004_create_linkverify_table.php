@@ -14,6 +14,8 @@ return new class extends Migration
         Schema::create('linkverify', function (Blueprint $table) {
             $table->id();
             $table->string('description');
+            $table->string('status')->default(1)->comment('1=>Active ,2=> InActive');
+            $table->string('type')->default(1)->comment('1=>instagram ,2=> facebook');
             $table->timestamps();
         });
     }

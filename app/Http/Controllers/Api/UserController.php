@@ -9,9 +9,8 @@ use App\Models\Task;
 use App\Models\Config;
 use App\Models\InvestmentHistory;
 use App\Models\TransactionHistory;
-use App\Models\Withdraw;
 use App\Models\LinkVerify;
-use App\Models\ContentData;
+use App\Models\Contact_data;
 
 use App\Models\ClaimHistory;
 use App\Models\Address;
@@ -28,7 +27,7 @@ class UserController extends Controller
     {
 
         $validator = Validator::make($request->all(), [
-            'id' => 'required|max:255',
+            'id' => 'required|max:255|unique:users',
             'last_name' => 'nullable|string|max:255',
             'first_name' => 'nullable|string|max:255',
             'referral_by' => 'nullable',
@@ -39,7 +38,7 @@ class UserController extends Controller
         }
 
 
-
+        // dd($request->all());
 
         $id = $request->id;
         $first_name = $request->first_name;
@@ -85,7 +84,7 @@ class UserController extends Controller
                     $sponsor_user =    User::where('telegram_id', $referral_by)->first();
                 }
                 // dd($sponsor_user);
-                //  DB::beginTransaction();
+                DB::beginTransaction();
                 $user = User::firstOrCreate(
                     ['telegram_id' => $id], // Condition to find the existing record
                     [
@@ -118,7 +117,7 @@ class UserController extends Controller
                     'status' => 2
                 ]);
             }
-            // DB::commit();
+            DB::commit();
 
             //  $user = User::where('telegram_id', $id)->first();
             return response()->json([
@@ -643,7 +642,7 @@ class UserController extends Controller
 
     public function LinkVerify()
     {
-        $LinkVerify = LinkVerify::get();
+        $LinkVerify = LinkVerify::where('type', 1)->where('status', 2)->get();
         // dd($LinkVerify);
         $config = config::first();
         $reward = $config->content_reward;
@@ -652,6 +651,7 @@ class UserController extends Controller
             'LinkVerify' => $LinkVerify
         ], 200);
     }
+
     public function RequestLinkVerify(Request $request)
     {
 
@@ -667,10 +667,11 @@ class UserController extends Controller
         // dd($request->all());
         $user = User::where('telegram_id', $request->telegram_id)->first();
         if ($user) {
-            $RequestLinkVerify =  ContentData::create([
+            $RequestLinkVerify =  Contact_data::create([
                 'telegram_id' => $request->telegram_id,
                 'linkverify_id' => $request->linkverify_id,
                 'link' => $request->link,
+                'type' => 1
             ]);
 
 
@@ -686,7 +687,50 @@ class UserController extends Controller
             ], 200);
         }
     }
+    public function earn_by_facebook()
+    {
+        $LinkVerify = LinkVerify::where('type', 2)->where('status', 2)->get();
+        // dd($LinkVerify);
 
+        return response()->json([
+            'LinkVerify' => $LinkVerify
+        ], 200);
+    }
+
+    public function RequestFbPopup(Request $request)
+    {
+
+        $validator = Validator::make($request->all(), [
+            'telegram_id' => 'required|exists:users,telegram_id',
+            'link' => 'required',
+
+
+        ]);
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()], 400);
+        }
+        // dd($request->all());
+        $user = User::where('telegram_id', $request->telegram_id)->first();
+        if ($user) {
+            $RequestLinkVerify =  Contact_data::create([
+                'telegram_id' => $request->telegram_id,
+                'link' => $request->link,
+                'type' => 2
+            ]);
+
+
+
+            return response()->json([
+                'message' => 'Your provided link is under review. A reward will be sent to your wallet based on eligibility.',
+                'R_LinkVerify' => $RequestLinkVerify
+            ], 200);
+        } else {
+            return response()->json([
+                'message' => 'click (My invite link or my ID 123467890 is indicated under the video)',
+
+            ], 200);
+        }
+    }
     public function Bost_history(Request $request)
     {
 
