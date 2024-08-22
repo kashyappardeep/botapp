@@ -31,6 +31,7 @@
               <tr style="background: #302e2e;">
                 <th>Link</th>
                 <th>Telegram Id</th>
+                <th>Type</th>
                 <th>Link Verify Id</th>
                 <th>Date And Time</th>
                 <th>Status</th>
@@ -42,6 +43,11 @@
               <tr>
                 <td>{{ $contect->link }}</td>
                 <td>{{ $contect->telegram_id }}</td>
+                @if ($contect->type == 1)
+                <td>Instagram</td>
+                @else
+                <td>Facebook</td>
+                @endif
                 <td>@if($contect->linkVerify)
                   {{ $contect->linkVerify->description }}
               @else

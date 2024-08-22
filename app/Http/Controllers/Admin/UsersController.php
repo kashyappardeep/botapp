@@ -131,10 +131,18 @@ class UsersController extends Controller
         $user = User::where('telegram_id', $request_accept->telegram_id)->first();
         // dd($user);
         $confing_data = Config::first();
+
+        $TransactionHistory =  TransactionHistory::create([
+            'user_id' => $user->id,
+            'amount' => $confing_data->task_amount,
+            'type' => 1,
+            'status' => 2
+        ]);
         $user->wallet += $confing_data->task_amount;
         $request_accept->status = 2;
         $request_accept->save();
         $user->save();
+
         return redirect()->route('admin.contact_request')->with('success', 'Send Amount successfully!');
     }
     public function contactrejectStatus($id)

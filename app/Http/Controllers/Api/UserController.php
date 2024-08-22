@@ -664,6 +664,16 @@ class UserController extends Controller
         if ($validator->fails()) {
             return response()->json(['errors' => $validator->errors()], 400);
         }
+        $contact_data = Contact_data::where('telegram_id', $request->telegram_id)
+            ->latest('created_at')
+            ->first();
+
+        // Check if there was a previous entry and if it was within the last 24 hours
+        if ($contact_data && $contact_data->created_at->diffInHours(Carbon::now()) < 24) {
+            return response()->json([
+                'message' => 'You can submit one link per day ',
+            ], 200);
+        }
         // dd($request->all());
         $user = User::where('telegram_id', $request->telegram_id)->first();
         if ($user) {
@@ -692,6 +702,7 @@ class UserController extends Controller
         $LinkVerify = LinkVerify::where('type', 2)->where('status', 2)->get();
         // dd($LinkVerify);
 
+
         return response()->json([
             'LinkVerify' => $LinkVerify
         ], 200);
@@ -709,6 +720,23 @@ class UserController extends Controller
         if ($validator->fails()) {
             return response()->json(['errors' => $validator->errors()], 400);
         }
+        $contact_data = Contact_data::where('telegram_id', $request->telegram_id)
+            ->latest('created_at')
+            ->first();
+
+        // Check if there was a previous entry and if it was within the last 24 hours
+        if ($contact_data && $contact_data->created_at->diffInHours(Carbon::now()) < 24) {
+            return response()->json([
+                'message' => 'You can submit one link per day',
+            ], 200);
+        }
+        // dd($contact_data);
+        if ($contact_data) {
+            return response()->json([
+                'message' => '',
+
+            ], 200);
+        }
         // dd($request->all());
         $user = User::where('telegram_id', $request->telegram_id)->first();
         if ($user) {
@@ -717,9 +745,6 @@ class UserController extends Controller
                 'link' => $request->link,
                 'type' => 2
             ]);
-
-
-
             return response()->json([
                 'message' => 'Your provided link is under review. A reward will be sent to your wallet based on eligibility.',
                 'R_LinkVerify' => $RequestLinkVerify
