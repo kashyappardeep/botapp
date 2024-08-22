@@ -34,7 +34,7 @@
               
             </div>
             <div class="form-group row">
-                <label class="col-sm-3 form-control-label">Admin Wallit</label>
+                <label class="col-sm-3 form-control-label">Admin Wallet</label>
                 <div class="col-sm-9">
                   <input type="text" name="admin_wallet_address" class="form-control" required="">
                 </div>                     
@@ -46,9 +46,9 @@
                 </div>                      
               </div>
               <div class="form-group row">
-                <label class="col-sm-3 form-control-label">Gateway Key</label>
+                <label class="col-sm-3 form-control-label">Task Amount</label>
                 <div class="col-sm-9">
-                <input type="text" name="gateway_key" class="form-control" required="">  
+                <input type="text" name="task_amount" class="form-control" required="">  
                 </div>                      
               </div>
               <div class="form-group row">

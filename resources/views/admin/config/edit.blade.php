@@ -44,9 +44,9 @@
                     </div>                      
                   </div>
                   <div class="form-group row">
-                    <label class="col-sm-3 form-control-label">gateway_key</label>
+                    <label class="col-sm-3 form-control-label">task_amount</label>
                     <div class="col-sm-9">
-                    <input type="text" name="gateway_key" value="{{ $Config->gateway_key }}" class="form-control" required="">  
+                    <input type="text" name="task_amount" value="{{ $Config->task_amount }}" class="form-control" required="">  
                     </div>                      
                   </div>
                   <div class="form-group row">

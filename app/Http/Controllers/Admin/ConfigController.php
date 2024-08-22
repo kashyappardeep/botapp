@@ -38,7 +38,8 @@ class ConfigController extends Controller
                 'daily_roi' => 'required',
                 'admin_wallet_address' => 'required',
                 'level_of_referral' => 'required',
-                'gateway_key' => 'required',
+                'task_amount' => 'required',
+                'gateway_key' => 'nullable|string',
                 'content_reward' => 'required',
                 'min_withdrawal' => 'required',
                 'min_investment' => 'required',
@@ -52,13 +53,14 @@ class ConfigController extends Controller
                 'daily_roi' => $request->daily_roi,
                 'admin_wallet_address' => $request->admin_wallet_address,
                 'level_of_referral' => $request->level_of_referral,
+                'task_amount' => $request->task_amount,
                 'gateway_key' => $request->gateway_key,
                 'content_reward' => $request->content_reward,
                 'min_withdrawal' => $request->min_withdrawal,
                 'min_investment' => $request->min_investment,
             ]);
             // dd($Config);
-            return redirect()->back()->with('success', 'Config created successfully!');
+            return redirect()->route('Config.index')->with('success', 'Config created successfully!');
         } catch (ValidationException $error) {
 
             return redirect()->back()->withErrors($error->errors())->withInput();
@@ -94,6 +96,7 @@ class ConfigController extends Controller
         $config->daily_roi = $request->daily_roi;
         $config->admin_wallet_address = $request->admin_wallet_address;
         $config->level_of_referral = $request->level_of_referral;
+        $config->task_amount = $request->task_amount;
         $config->gateway_key = $request->gateway_key;
         $config->content_reward = $request->content_reward;
         $config->min_withdrawal = $request->min_withdrawal;
@@ -109,6 +112,11 @@ class ConfigController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        $record = Config::findOrFail($id); // Replace 'ModelName' with your actual model class
+
+        // Delete the record
+        $record->delete();
+
+        return redirect()->back()->with('success', 'Config Record deleted Successfully!');
     }
 }

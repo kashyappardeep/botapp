@@ -27,6 +27,7 @@
               <th>daily_roi </th>
               <th>admin_wallet_address</th>
               <th>level_of_referral</th>
+              <th>task_amount</th>
               <th>content_reward</th>
               <th>min_withdrawal</th>
               <th>min_investment</th>
@@ -49,6 +50,7 @@
               @endif
               
                 
+              <td>{{$Config->task_amount}}</td>
               <td>{{$Config->content_reward}}</td>
               <td>{{$Config->min_withdrawal}}</td>
               <td>{{$Config->min_investment}}</td>
