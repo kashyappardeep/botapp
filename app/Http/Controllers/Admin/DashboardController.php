@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\User;
+use App\Models\InvestmentHistory;
+use App\Models\TransactionHistory;
 
 class DashboardController extends Controller
 {
@@ -13,10 +15,14 @@ class DashboardController extends Controller
      */
     public function index()
     {
-        $user = User::count();
+        $user = User::get()->count();
+        $inactive = User::where('status', 1)->get()->count();
+        $active = User::where('status', 2)->get()->count();
+        $total_invest = InvestmentHistory::where('status', 2)->where('type', 2)->sum('amount');
+        $total_Withdrawal = TransactionHistory::where('status', 2)->where('type', 3)->sum('amount');
         // dd($user);
 
-        return view('admin.dashboard', compact('user'));
+        return view('admin.dashboard', compact('user', 'inactive', 'active', 'total_invest', 'total_Withdrawal'));
     }
 
     /**
