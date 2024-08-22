@@ -183,7 +183,32 @@
                   
                     </div>
                   </div>  </a>
-             
+
+
+                  <div class="col-xs-4">
+                    <div class="box p-a">
+                      <div class="pull-left m-r">
+                        <i class="fa fa-university text-2x text-success m-y-sm"></i>
+                      </div>
+                      <div class="clear">
+                        <div class="text-muted">24 Hours Ago Investment</div>
+                        <h4 class="m-a-0 text-md _600">{{$twentyFourHoursinvest}}</h4>
+                       
+                      </div>
+                    </div>
+                  </div>
+                   <div class="col-xs-4">
+                  <div class="box p-a">
+                    <div class="pull-left m-r">
+                      <i class="fa fa-university text-2x text-success m-y-sm"></i>
+                    </div>
+                    <div class="clear">
+                      <div class="text-muted">24 Hours Ago Withdrawal</div>
+                      <h4 class="m-a-0 text-md _600">{{$twentyFourHoursWithdrawal}}</h4>
+                     
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
           

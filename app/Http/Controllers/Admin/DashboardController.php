@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\User;
+use Carbon\Carbon;
 use App\Models\InvestmentHistory;
 use App\Models\TransactionHistory;
 
@@ -15,15 +16,45 @@ class DashboardController extends Controller
      */
     public function index()
     {
-        $user = User::get()->count();
-        $inactive = User::where('status', 1)->get()->count();
-        $active = User::where('status', 2)->get()->count();
-        $total_invest = InvestmentHistory::where('status', 2)->where('type', 2)->sum('amount');
-        $total_Withdrawal = TransactionHistory::where('status', 2)->where('type', 3)->sum('amount');
-        // dd($user);
+        // Count total users
+        $user = User::count();
 
-        return view('admin.dashboard', compact('user', 'inactive', 'active', 'total_invest', 'total_Withdrawal'));
+        // Count inactive users
+        $inactive = User::where('status', 1)->count();
+
+        // Count active users
+        $active = User::where('status', 2)->count();
+
+        // Total investment amount
+        $total_invest = InvestmentHistory::where('status', 2)
+            ->where('type', 2)
+            ->sum('amount');
+
+        // Total withdrawal amount
+        $total_Withdrawal = TransactionHistory::where('status', 2)
+            ->where('type', 3)
+            ->sum('amount');
+
+        // Calculate time range for the past 24 hours
+        $now = Carbon::now();
+        $twentyFourHoursAgo = $now->copy()->subHours(24);
+
+        // Sum of investments in the past 24 hours
+        $twentyFourHoursinvest = InvestmentHistory::where('status', 2)
+            ->where('type', 2)
+            ->whereBetween('created_at', [$twentyFourHoursAgo, $now])
+            ->sum('amount');
+
+        // Sum of withdrawals in the past 24 hours
+        $twentyFourHoursWithdrawal = TransactionHistory::where('status', 2)
+            ->where('type', 3)
+            ->whereBetween('created_at', [$twentyFourHoursAgo, $now])
+            ->sum('amount');
+
+        // Return the view with the data
+        return view('admin.dashboard', compact('twentyFourHoursWithdrawal', 'twentyFourHoursinvest', 'user', 'inactive', 'active', 'total_invest', 'total_Withdrawal'));
     }
+
 
     /**
      * Show the form for creating a new resource.
