@@ -191,7 +191,7 @@
                         <i class="fa fa-university text-2x text-success m-y-sm"></i>
                       </div>
                       <div class="clear">
-                        <div class="text-muted">24 Hours Ago Investment</div>
+                        <div class="text-muted">24 Hours Investment</div>
                         <h4 class="m-a-0 text-md _600">{{$twentyFourHoursinvest}}</h4>
                        
                       </div>
@@ -203,7 +203,7 @@
                       <i class="fa fa-university text-2x text-success m-y-sm"></i>
                     </div>
                     <div class="clear">
-                      <div class="text-muted">24 Hours Ago Withdrawal</div>
+                      <div class="text-muted">24 Hours Withdrawal</div>
                       <h4 class="m-a-0 text-md _600">{{$twentyFourHoursWithdrawal}}</h4>
                      
                     </div>
