@@ -597,11 +597,18 @@ class UserController extends Controller
         if ($validator->fails()) {
             return response()->json(['errors' => $validator->errors()], 400);
         }
-
+        $user = User::where('id', $request->user_id)->first();
+        // dd($user->status);
+        if ($user->status == 1) {
+            return response()->json([
+                'message' => 'Boost your account to unlock your  withdrawal!'
+            ], 200);
+        }
         try {
-            $user = User::where('id', $request->user_id)->first();
+
+
             $min_withdrawal = Config::first();
-            // dd($min_withdrawal->min_withdrawal);
+
             if ($request->amount  < $min_withdrawal->min_withdrawal) {
 
                 return response()->json([
@@ -664,14 +671,17 @@ class UserController extends Controller
         if ($validator->fails()) {
             return response()->json(['errors' => $validator->errors()], 400);
         }
+        // $contact_data = Contact_data::where('telegram_id', $request->telegram_id)
+        //     ->latest('created_at')
+        //     ->first();
         $contact_data = Contact_data::where('telegram_id', $request->telegram_id)
-            ->latest('created_at')
             ->first();
 
         // Check if there was a previous entry and if it was within the last 24 hours
-        if ($contact_data && $contact_data->created_at->diffInHours(Carbon::now()) < 24) {
+        // if ($contact_data && $contact_data->created_at->diffInHours(Carbon::now()) < 24) {
+        if ($contact_data) {
             return response()->json([
-                'message' => 'You can submit one link per day ',
+                'message' => 'You already submitted this task, please wait for the next task.',
             ], 200);
         }
         // dd($request->all());
