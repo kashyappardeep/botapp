@@ -17,4 +17,7 @@ Route::namespace('\App\Http\Controllers\Api')->group(function () {
     Route::get('/LinkVerify', 'UserController@LinkVerify');
     Route::get('/earn_by_facebook', 'UserController@earn_by_facebook');
     Route::post('/RequestFbPopup', 'UserController@RequestFbPopup');
+    Route::post('/DailyTaskUserlist', 'UserController@DailyTaskUserlist');
+    Route::post('/showusertaskrecord', 'UserController@showusertaskrecord');
+    Route::get('/DailyTask', 'UserController@DailyTask');
 });

@@ -141,6 +141,24 @@
                   <span class="nav-text">Verify Link</span>
                 </a>
               </li>
+              <li>
+                <a href="{{route('DailyTasks.index')}}">
+                  <span class="nav-icon">
+                    <i class="fa fa-users">
+                    </i>
+                  </span>
+                  <span class="nav-text">Daily Tasks</span>
+                </a>
+              </li>
+              <li>
+                <a href="{{route('TaskUserlist.index')}}">
+                  <span class="nav-icon">
+                    <i class="fa fa-users">
+                    </i>
+                  </span>
+                  <span class="nav-text">Daily TaskUser list</span>
+                </a>
+              </li>
                
              <li class="nav-header hidden-folded">
                 <small class="text-muted">Components</small>

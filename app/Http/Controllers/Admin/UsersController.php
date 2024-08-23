@@ -135,7 +135,7 @@ class UsersController extends Controller
         $TransactionHistory =  TransactionHistory::create([
             'user_id' => $user->id,
             'amount' => $request->amount,
-            'type' => 1,
+            'type' => 4,
             'status' => 2
         ]);
         $user->wallet += $request->amount;

@@ -17,7 +17,8 @@ use App\Models\Address;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
-use App\Models\Level;
+use App\Models\DailyTask;
+use App\Models\DailyTaskUserlist;
 use App\Models\UserTask;
 use Illuminate\Support\Facades\Log;
 
@@ -709,65 +710,31 @@ class UserController extends Controller
             ], 200);
         }
     }
-    public function earn_by_facebook()
+    public function showusertaskrecord(Request $request)
+
     {
-        $LinkVerify = LinkVerify::where('type', 2)->where('status', 2)->get();
-        // dd($LinkVerify);
-
-
-        return response()->json([
-            'LinkVerify' => $LinkVerify
-        ], 200);
-    }
-
-    public function RequestFbPopup(Request $request)
-    {
-
         $validator = Validator::make($request->all(), [
-            'telegram_id' => 'required|exists:users,telegram_id',
-            'link' => 'required',
-
+            'user_id' => 'required|exists:users,id',
 
         ]);
+
         if ($validator->fails()) {
             return response()->json(['errors' => $validator->errors()], 400);
         }
-        $contact_data = Contact_data::where('telegram_id', $request->telegram_id)
-            ->latest('created_at')
-            ->first();
+        try {
+            $TaskUserlist = DailyTaskUserlist::where('user_id', $request->user_id)->get();
+            // dd($TransactionHistory);
 
-        // Check if there was a previous entry and if it was within the last 24 hours
-        if ($contact_data && $contact_data->created_at->diffInHours(Carbon::now()) < 24) {
             return response()->json([
-                'message' => 'You can submit one link per day',
-            ], 200);
-        }
-        // dd($contact_data);
-        if ($contact_data) {
-            return response()->json([
-                'message' => '',
+                'TaskUserlist' => $TaskUserlist,
 
             ], 200);
-        }
-        // dd($request->all());
-        $user = User::where('telegram_id', $request->telegram_id)->first();
-        if ($user) {
-            $RequestLinkVerify =  Contact_data::create([
-                'telegram_id' => $request->telegram_id,
-                'link' => $request->link,
-                'type' => 2
-            ]);
-            return response()->json([
-                'message' => 'Your provided link is under review. A reward will be sent to your wallet based on eligibility.',
-                'R_LinkVerify' => $RequestLinkVerify
-            ], 200);
-        } else {
-            return response()->json([
-                'message' => 'click (My invite link or my ID 123467890 is indicated under the video)',
-
-            ], 200);
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'Failed to DailyTaskUserlist'], 500);
         }
     }
+
+
     public function Bost_history(Request $request)
     {
 
@@ -794,5 +761,56 @@ class UserController extends Controller
         } catch (\Exception $e) {
             return response()->json(['error' => 'Failed to wallet_history'], 500);
         }
+    }
+
+    public function DailyTask()
+    {
+        $DailyTask = DailyTask::where('status', 1)->first();
+        // dd($LinkVerify);
+
+
+        return response()->json([
+            'DailyTask' => $DailyTask
+        ], 200);
+    }
+    public function DailyTaskUserlist(Request $request)
+    {
+
+
+        $validator = Validator::make($request->all(), [
+            'user_id' => 'required|exists:users,id',
+            'link' => 'required',
+            'amount' => 'required',
+            'type' => 'required',
+            'daily_task_id' => 'required|exists:daily_tasks,id'
+
+
+        ]);
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()], 400);
+        }
+        $user_data = DailyTaskUserlist::where('daily_task_id', $request->daily_task_id)
+            ->where('user_id', $request->user_id)->first();
+        if ($user_data) {
+            return response()->json([
+                'message' => 'You already submitted this daily task, please wait for the next task.',
+            ], 200);
+        }
+
+
+        $TaskUserlist =  DailyTaskUserlist::create([
+            'user_id' => $request->user_id,
+            'daily_task_id' => $request->daily_task_id,
+            'link' => $request->link,
+            'type' => $request->type,
+            'amount' => $request->amount,
+        ]);
+
+
+
+        return response()->json([
+            'message' => 'Your provided link is under review. A reward will be sent to your wallet based on eligibility.',
+            'TaskUserlist' => $TaskUserlist
+        ], 200);
     }
 }

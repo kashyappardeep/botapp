@@ -1,25 +1,22 @@
 <?php
 
-namespace App\Http\Controllers\admin;
+namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use App\Models\DailyTask;
 use Illuminate\Support\Facades\Validator;
 
-use App\Models\LinkVerify;
-
-
-
-class VerifyController extends Controller
+class DailyTaskController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-
-        $data = LinkVerify::get();
-        return view('admin.verify.verify', compact('data'));
+        $DailyTask = DailyTask::get();
+        // dd($DailyTask);
+        return view('admin/dailytasks/index', compact('DailyTask'));
     }
 
     /**
@@ -27,21 +24,19 @@ class VerifyController extends Controller
      */
     public function create()
     {
-        return view('admin.verify.add');
+        return view('admin/dailytasks/add');
     }
 
     /**
      * Store a newly created resource in storage.
      */
-
-
     public function store(Request $request)
     {
-        // Use Validator facade for validation
         $validator = Validator::make($request->all(), [
             'description' => 'required|string|max:255',
             'type' => 'required',
             'status' => 'required',
+            'amount' => 'required',
         ]);
 
         // If validation fails, redirect back with errors
@@ -50,23 +45,22 @@ class VerifyController extends Controller
         }
 
         // Create the LinkVerify entry in the database
-        $data = LinkVerify::create([
-            'description' => $request->description,  // Ensure 'description' is passed
-            'type' => $request->type,  // Ensure 'description' is passed
-            'status' => $request->status // Ensure 'description' is passed
+        $data = DailyTask::create([
+            'description' => $request->description,
+            'type' => $request->type,
+            'status' => $request->status,
+            'amount' => $request->amount
         ]);
         // dd($data);
         // Redirect back with success message
-        return redirect()->back()->with('success', 'Verification added successfully!');
+        return redirect()->route('DailyTasks.index')->with('success', 'Daily Task added successfully!');
     }
-
 
     /**
      * Display the specified resource.
      */
     public function show(string $id)
     {
-        //
     }
 
     /**
@@ -74,9 +68,9 @@ class VerifyController extends Controller
      */
     public function edit(string $id)
     {
-        $data = linkverify::where('id', $id)->first();
-
-        return view('admin.verify.edit', compact('data'));
+        $DailyTask = DailyTask::where('id', $id)->first();
+        // dd($DailyTask);
+        return view('admin/dailytasks/edit', compact('DailyTask'));
     }
 
     /**
@@ -84,7 +78,7 @@ class VerifyController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        $data = LinkVerify::findOrFail($id);
+        $data = DailyTask::findOrFail($id);
 
         // Update the config with the new values
 
@@ -92,12 +86,13 @@ class VerifyController extends Controller
         $data->description = $request->description;
         $data->type = $request->type;
         $data->status = $request->status;
+        $data->amount = $request->amount;
         // dd($data);
 
 
         // Save the changes to the database
         $data->save();
-        return redirect()->route('verify.index')->with('success', 'Description Verify  updated successfully');
+        return redirect()->route('DailyTasks.index')->with('success', 'Daily Tasks updated successfully');
     }
 
     /**
@@ -105,17 +100,15 @@ class VerifyController extends Controller
      */
     public function destroy(string $id)
     {
-        $data = LinkVerify::find($id);
+        $data = DailyTask::findOrFail($id);
 
-        // Check if the record exists
-        if (!$data) {
-            return redirect()->back()->with('error', 'Record not found!');
-        }
 
-        // Delete the record
-        $data->delete();
+        $data->status = 2;
+        // dd($data);
 
-        // Redirect back with a success message
-        return redirect()->back()->with('success', 'Description deleted successfully!');
+
+        // Save the changes to the database
+        $data->save();
+        return redirect()->route('DailyTasks.index')->with('success', 'Daily Tasks Stop successfully');
     }
 }
