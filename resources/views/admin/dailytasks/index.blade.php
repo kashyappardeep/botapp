@@ -41,9 +41,9 @@
                 <td>{{$data->description}}</td>
                 <td>{{$data->amount}}</td>
                 @if ($data->type == 1)
-                <td>Youtube</td>
+                <td> facebook</td>
                 @else
-                <td>facebook</td>
+                <td>Youtube</td>
                 @endif
                 
                 @if ($data->status == 1)

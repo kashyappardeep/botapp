@@ -16,7 +16,7 @@ class TaskUserlist extends Controller
      */
     public function index()
     {
-        $DailyTask = DailyTaskUserlist::with('daily_task')->get();
+        $DailyTask = DailyTaskUserlist::with('daily_task', 'user')->get();
         // dd($DailyTask);
         return view('admin/DailyTaskUserlist/index', compact('DailyTask'));
     }

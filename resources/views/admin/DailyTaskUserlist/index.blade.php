@@ -24,11 +24,15 @@
             
               
               
+              <th>Name</th>
+              <th>Telegram Id</th>
               <th>Description</th>
               <th>Link</th>
               <th>Amount</th>
+              <th>Date</th>
               <th>Type</th>
               <th>Status</th>
+              
               <th>Accept</th>
               <th>Reject</th>
              </tr>
@@ -37,9 +41,12 @@
             @foreach ($DailyTask as $data)
             <tr>
              
+                <td>{{$data->user->first_name}}</td>
+                <td>{{$data->user->telegram_id}}</td>
                 <td>{{$data->daily_task->description}}</td>
                 <td>{{$data->link}}</td>
                 <td>{{$data->amount}}</td>
+                <td>{{$data->created_at}}</td>
                 @if ($data->type == 1)
                 <td>facebook</td>
                 @else
