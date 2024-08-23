@@ -16,6 +16,7 @@ class InvestmentHistory extends Model
         'address',
         'status',
         'type',
+        'tx_hash',
         'invest_at'
     ];
 

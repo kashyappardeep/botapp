@@ -186,6 +186,7 @@ class UserController extends Controller
             'user_id' => 'required|exists:users,id',
             'amount' => 'required|numeric',
             'address' => 'required|string|max:255',
+            'tx_hash' => 'required|string|max:255',
         ]);
 
         if ($validator->fails()) {
@@ -221,6 +222,7 @@ class UserController extends Controller
                 'address' => $request->input('address'),
                 'status' => 1,
                 'type' => 2,
+                'tx_hash' => $request->input('tx_hash'),
                 'invest_at' => $timestamp,
 
             ]);

@@ -40,6 +40,7 @@
               <th>Telegram Id </th>
               <th>Address</th>
               <th>Amount</th>
+              <th>transaction </th>
               <th>Date And Time</th>
               <th>Status</th>
               
@@ -65,6 +66,7 @@
                 
                 <td>{{$investment->address}}</td>
                 <td>{{$investment->amount}}</td>
+                <td>{{$investment->tx_hash}}</td>
                <td> @if ($investment->created_at)
                 {{ \Carbon\Carbon::parse($investment->created_at)->timezone('Asia/Kolkata')->format('Y-m-d H:i:s') }}
               @else
