@@ -60,7 +60,6 @@ class TaskUserlist extends Controller
     public function update(Request $request, string $id)
     {
         $validator = Validator::make($request->all(), [
-            'user_id' => 'required|exists:users,id',
             'amount' => 'required',
 
         ]);
