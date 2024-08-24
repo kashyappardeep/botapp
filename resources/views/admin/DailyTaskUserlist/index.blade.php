@@ -12,7 +12,7 @@
     <div class="box">
         <div class="box-header" style="display: ruby-text;">
             <span> <h2>Daily Tasks List
-              </h2> <form method="GET" action="{{ route('admin.contact_request') }}">
+              </h2> <form method="GET" action="{{ route('DailyTasks.index') }}">
             
                 <select name="status" class="btn btn-sm info" onchange="this.form.submit()">
                   <option value="" {{ is_null(request('1')) || request('1') === '' ? 'selected' : '' }}>Select Request</option>
