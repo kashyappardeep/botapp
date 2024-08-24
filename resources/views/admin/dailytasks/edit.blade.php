@@ -30,7 +30,9 @@
             <div class="form-group row">
               <label class="col-sm-3 form-control-label">Description</label>
               <div class="col-sm-9">
-                <input type="text" name="description" value="{{ $DailyTask->description }}" class="form-control" required="">  
+                <textarea name="description" class="form-control" required="" style="height: 127px;">{{ $DailyTask->description }}</textarea>
+
+                {{-- <input type="text" name="description" value="{{ $DailyTask->description }}" class="form-control" required="">   --}}
               </div>
               
             </div>
