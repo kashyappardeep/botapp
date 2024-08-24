@@ -102,7 +102,7 @@ class UserController extends Controller
 
                 $investmentHistory = InvestmentHistory::create([
                     'user_id' => $user->id,
-                    'amount' => 10,
+                    'amount' => 5,
                     'address' => null,
                     'invest_at' => $timestamp,
                     'status' => 2,
@@ -594,7 +594,6 @@ class UserController extends Controller
             'user_id' => 'required|exists:users,id',
             'address' => 'required',
             'amount' => 'required',
-
         ]);
 
         if ($validator->fails()) {
@@ -602,14 +601,12 @@ class UserController extends Controller
         }
         $user = User::where('id', $request->user_id)->first();
         // dd($user->status);
-        if ($user->status == 1) {
-            return response()->json([
-                'message' => 'Boost your account to unlock your  withdrawal!'
-            ], 200);
-        }
+        // if ($user->status == 1) {
+        //     return response()->json([
+        //         'message' => 'Boost your account to unlock your  withdrawal!'
+        //     ], 200);
+        // }
         try {
-
-
             $min_withdrawal = Config::first();
 
             if ($request->amount  < $min_withdrawal->min_withdrawal) {
@@ -619,6 +616,17 @@ class UserController extends Controller
 
                 ], 200);
             }
+
+            if ($request->amount % 10 !== 0) {
+
+                return response()->json([
+                    'message' => 'The amount must be a multiple of 10.',
+
+                ], 200);
+            }
+
+
+
 
             if ($request->amount <= $user->wallet) {
                 $Withdraw =  TransactionHistory::create([
@@ -636,7 +644,7 @@ class UserController extends Controller
                 $user->save();
 
                 return response()->json([
-                    'message' => 'Withdrawal request sent successfully.',
+                    'message' => 'Your withdrawal will be processed within 24 hours',
                     'Withdraw' => $Withdraw,
                 ], 200);
             } else {
