@@ -14,9 +14,15 @@ class TaskUserlist extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
+
     {
-        $DailyTask = DailyTaskUserlist::with('daily_task', 'user')->get();
+        $status = $request->get('status', 1);
+        // dd($request->all()); // Defaults to 1 if status is not set
+        $DailyTask = DailyTaskUserlist::with('user', 'linkVerify')
+            ->where('status', $status)
+            ->get();
+        // $DailyTask = DailyTaskUserlist::with('daily_task', 'user')->get();
         // dd($DailyTask);
         return view('admin/DailyTaskUserlist/index', compact('DailyTask'));
     }

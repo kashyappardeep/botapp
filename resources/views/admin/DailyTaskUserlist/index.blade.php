@@ -12,7 +12,15 @@
     <div class="box">
         <div class="box-header" style="display: ruby-text;">
             <span> <h2>Daily Tasks List
-              </h2> </span></div>
+              </h2> <form method="GET" action="{{ route('admin.contact_request') }}">
+            
+                <select name="status" class="btn btn-sm info" onchange="this.form.submit()">
+                  <option value="" {{ is_null(request('1')) || request('1') === '' ? 'selected' : '' }}>Select Request</option>
+                  <option value="1" {{ request('status') == '1' ? 'selected' : '' }}>Pending Request</option>
+                  <option value="2" {{ request('status') == '2' ? 'selected' : '' }}>Complete</option>
+                  <option value="0" {{ request('status') === '0' ? 'selected' : '' }}>Rejected</option>
+              </select>
+            </form> </span></div>
        
        
       <div class="table-responsive">
