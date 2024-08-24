@@ -19,7 +19,7 @@ class TaskUserlist extends Controller
     {
         $status = $request->get('status', 1);
         // dd($request->all()); // Defaults to 1 if status is not set
-        $DailyTask = DailyTaskUserlist::with('user', 'linkVerify')
+        $DailyTask = DailyTaskUserlist::with('daily_task', 'user')
             ->where('status', $status)
             ->get();
         // $DailyTask = DailyTaskUserlist::with('daily_task', 'user')->get();
