@@ -18,17 +18,24 @@
     <div class="col-sm-8">
     
      
-        <form ui-jp="parsley" action="{{route('address.address', $address->id)}}" method="post">
-            @csrf @method('PUT')
+        <form action="{{ route('TaskUserlist.update', $TaskUserlist->id) }}" method="POST">
+            @csrf
+            @method('PUT')
             <div class="box">
               <div class="box-header">
-                <h2>Update Address</h2>
+                <h2>Send User Amount</h2>
               </div>
               <div class="box-body">
                 <div class="form-group row">
-                    <label class="col-sm-3 form-control-label">Update Address</address></label>
+                    <label class="col-sm-3 form-control-label">Telegram_Id</label>
                     <div class="col-sm-9">
-                    <input type="text" name="address" value="{{ $address->address }}" class="form-control" required="">  
+                    <input type="text" name="telegram_id" value="{{ $TaskUserlist->user->telegram_id }}" class="form-control" required="" readonly>  
+                    </div>                      
+                  </div>
+                  <div class="form-group row">
+                    <label class="col-sm-3 form-control-label">Amount</label>
+                    <div class="col-sm-9">
+                    <input type="text" name="amount"  class="form-control" required="" placeholder="Enter Send Amount">  
                     </div>                      
                   </div>
                  
@@ -36,7 +43,7 @@
                   
                 
                  <div class="dker p-a text-right">
-                <button type="submit" class="btn info">Update</button>
+                <button type="submit" class="btn info">Send </button>
               </div>
             </div>
           </form>

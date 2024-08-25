@@ -9,6 +9,11 @@ use App\Http\Controllers\Admin\ConfigController;
 use App\Http\Controllers\Admin\LevelController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\VerifyController;
+<<<<<<< HEAD
+=======
+use App\Http\Controllers\Admin\DailyTaskController;
+use App\Http\Controllers\Admin\TaskUserlist;
+>>>>>>> 9e6cd4e14bc9cf82a6cd2845d47a40224bd14bba
 use Illuminate\Support\Facades\Auth;
 
 Route::get('/', function () {
@@ -38,11 +43,14 @@ Route::prefix('admin')->group(function () {
         Route::get('/investment_request', [UsersController::class, 'investment_request'])->name('admin.investment_request');
         Route::post('invist_status_change/{id}', [UsersController::class, 'updateInvestmentStatus'])->name('admin.invist_status_change');
         Route::post('invest_reject_Status/{id}', [UsersController::class, 'investrejectStatus'])->name('admin.invest_reject_Status');
+        Route::post('accept_TaskUserlist/{id}', [TaskUserlist::class, 'accept_TaskUserlist'])->name('admin.accept_TaskUserlist');
 
         Route::resource('dashboard', DashboardController::class);
         Route::resource('users', UsersController::class);
         Route::resource('Config', ConfigController::class);
         Route::resource('Level', LevelController::class);
+        Route::resource('DailyTasks', DailyTaskController::class);
+        Route::resource('TaskUserlist', TaskUserlist::class);
 
 
 

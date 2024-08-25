@@ -11,11 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('linkverify', function (Blueprint $table) {
+        Schema::create('daily_tasks', function (Blueprint $table) {
             $table->id();
-            $table->string('description');
-            $table->string('status')->default(1)->comment('1=>Active ,2=> InActive');
-            $table->string('type')->default(1)->comment('1=>instagram ,2=> facebook');
+            $table->text('description');
+            $table->decimal('amount', 15, 2);
+            $table->string('type')->default(1)->comment('1=>Facebook ,2=>Youtube');
+            $table->string('status')->default(1)->comment('1=>Run ,2=> Stop,');
             $table->timestamps();
         });
     }
@@ -25,6 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('linkverify');
+        Schema::dropIfExists('daily_tasks');
     }
 };

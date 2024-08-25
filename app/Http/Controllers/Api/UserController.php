@@ -17,7 +17,8 @@ use App\Models\Address;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
-use App\Models\Level;
+use App\Models\DailyTask;
+use App\Models\DailyTaskUserlist;
 use App\Models\UserTask;
 use Illuminate\Support\Facades\Log;
 
@@ -101,7 +102,7 @@ class UserController extends Controller
 
                 $investmentHistory = InvestmentHistory::create([
                     'user_id' => $user->id,
-                    'amount' => 10,
+                    'amount' => 5,
                     'address' => null,
                     'invest_at' => $timestamp,
                     'status' => 2,
@@ -186,6 +187,7 @@ class UserController extends Controller
             'user_id' => 'required|exists:users,id',
             'amount' => 'required|numeric',
             'address' => 'required|string|max:255',
+            'tx_hash' => 'required|string|max:255',
         ]);
 
         if ($validator->fails()) {
@@ -221,6 +223,10 @@ class UserController extends Controller
                 'address' => $request->input('address'),
                 'status' => 1,
                 'type' => 2,
+<<<<<<< HEAD
+=======
+                'tx_hash' => $request->input('tx_hash'),
+>>>>>>> 9e6cd4e14bc9cf82a6cd2845d47a40224bd14bba
                 'invest_at' => $timestamp,
 
             ]);
@@ -591,17 +597,27 @@ class UserController extends Controller
             'user_id' => 'required|exists:users,id',
             'address' => 'required',
             'amount' => 'required',
-
         ]);
 
         if ($validator->fails()) {
             return response()->json(['errors' => $validator->errors()], 400);
         }
-
+        $user = User::where('id', $request->user_id)->first();
+        // dd($user->status);
+        // if ($user->status == 1) {
+        //     return response()->json([
+        //         'message' => 'Boost your account to unlock your  withdrawal!'
+        //     ], 200);
+        // }
         try {
+<<<<<<< HEAD
             $user = User::where('id', $request->user_id)->first();
             $min_withdrawal = Config::first();
             // dd($min_withdrawal->min_withdrawal);
+=======
+            $min_withdrawal = Config::first();
+
+>>>>>>> 9e6cd4e14bc9cf82a6cd2845d47a40224bd14bba
             if ($request->amount  < $min_withdrawal->min_withdrawal) {
 
                 return response()->json([
@@ -609,6 +625,17 @@ class UserController extends Controller
 
                 ], 200);
             }
+
+            if ($request->amount % 10 !== 0) {
+
+                return response()->json([
+                    'message' => 'The amount must be a multiple of 10.',
+
+                ], 200);
+            }
+
+
+
 
             if ($request->amount <= $user->wallet) {
                 $Withdraw =  TransactionHistory::create([
@@ -626,7 +653,7 @@ class UserController extends Controller
                 $user->save();
 
                 return response()->json([
-                    'message' => 'Withdrawal request sent successfully.',
+                    'message' => 'Your withdrawal will be processed within 24 hours',
                     'Withdraw' => $Withdraw,
                 ], 200);
             } else {
@@ -664,9 +691,143 @@ class UserController extends Controller
         if ($validator->fails()) {
             return response()->json(['errors' => $validator->errors()], 400);
         }
+<<<<<<< HEAD
         $contact_data = Contact_data::where('telegram_id', $request->telegram_id)
             ->latest('created_at')
             ->first();
+=======
+        // $contact_data = Contact_data::where('telegram_id', $request->telegram_id)
+        //     ->latest('created_at')
+        //     ->first();
+        $contact_data = Contact_data::where('telegram_id', $request->telegram_id)
+            ->first();
+
+        // Check if there was a previous entry and if it was within the last 24 hours
+        // if ($contact_data && $contact_data->created_at->diffInHours(Carbon::now()) < 24) {
+        if ($contact_data) {
+            return response()->json([
+                'message' => 'You already submitted this task, please wait for the next task.',
+            ], 200);
+        }
+        // dd($request->all());
+        $user = User::where('telegram_id', $request->telegram_id)->first();
+        if ($user) {
+            $RequestLinkVerify =  Contact_data::create([
+                'telegram_id' => $request->telegram_id,
+                'linkverify_id' => $request->linkverify_id,
+                'link' => $request->link,
+                'type' => 1
+            ]);
+
+
+
+            return response()->json([
+                'message' => 'Your provided link is under review. A reward will be sent to your wallet based on eligibility.',
+                'R_LinkVerify' => $RequestLinkVerify
+            ], 200);
+        } else {
+            return response()->json([
+                'message' => 'click (My invite link or my ID 123467890 is indicated under the video)',
+
+            ], 200);
+        }
+    }
+    public function showusertaskrecord(Request $request)
+
+    {
+        $validator = Validator::make($request->all(), [
+            'user_id' => 'required|exists:users,id',
+
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()], 400);
+        }
+        try {
+            $TaskUserlist = DailyTaskUserlist::where('user_id', $request->user_id)->get();
+            // dd($TransactionHistory);
+
+            return response()->json([
+                'TaskUserlist' => $TaskUserlist,
+
+            ], 200);
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'Failed to DailyTaskUserlist'], 500);
+        }
+    }
+
+
+    public function Bost_history(Request $request)
+    {
+
+        $validator = Validator::make($request->all(), [
+            'user_id' => 'required|exists:users,id',
+
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()], 400);
+        }
+        try {
+            $user = User::where('id', $request->user_id)->first();
+            $bost = InvestmentHistory::where('user_id', $request->user_id)
+                ->where('type', 2)->get();
+
+            // dd($TransactionHistory);
+
+            return response()->json([
+                'bost' => $bost,
+                'user_details' => $user,
+
+            ], 200);
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'Failed to wallet_history'], 500);
+        }
+    }
+
+    public function DailyTask()
+    {
+        $DailyTask = DailyTask::where('status', 1)->first();
+        // dd($LinkVerify);
+
+
+        return response()->json([
+            'DailyTask' => $DailyTask
+        ], 200);
+    }
+    public function DailyTaskUserlist(Request $request)
+    {
+
+
+        $validator = Validator::make($request->all(), [
+            'user_id' => 'required|exists:users,id',
+            'link' => 'required',
+            'amount' => 'required',
+            'type' => 'required',
+            'daily_task_id' => 'required|exists:daily_tasks,id'
+
+
+        ]);
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()], 400);
+        }
+        $user_data = DailyTaskUserlist::where('daily_task_id', $request->daily_task_id)
+            ->where('user_id', $request->user_id)->first();
+        if ($user_data) {
+            return response()->json([
+                'message' => 'You already submitted this daily task, please wait for the next task.',
+            ], 200);
+        }
+
+
+        $TaskUserlist =  DailyTaskUserlist::create([
+            'user_id' => $request->user_id,
+            'daily_task_id' => $request->daily_task_id,
+            'link' => $request->link,
+            'type' => $request->type,
+            'amount' => $request->amount,
+        ]);
+>>>>>>> 9e6cd4e14bc9cf82a6cd2845d47a40224bd14bba
 
         // Check if there was a previous entry and if it was within the last 24 hours
         if ($contact_data && $contact_data->created_at->diffInHours(Carbon::now()) < 24) {
@@ -704,7 +865,12 @@ class UserController extends Controller
 
 
         return response()->json([
+<<<<<<< HEAD
             'LinkVerify' => $LinkVerify
+=======
+            'message' => 'Your provided link is under review. A reward will be sent to your wallet based on eligibility.',
+            'TaskUserlist' => $TaskUserlist
+>>>>>>> 9e6cd4e14bc9cf82a6cd2845d47a40224bd14bba
         ], 200);
     }
 

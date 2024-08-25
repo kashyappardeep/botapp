@@ -130,6 +130,7 @@ class UsersController extends Controller
         $request_accept = Contact_data::findOrFail($id);
         $user = User::where('telegram_id', $request_accept->telegram_id)->first();
         // dd($user);
+<<<<<<< HEAD
         $confing_data = Config::first();
 
         $TransactionHistory =  TransactionHistory::create([
@@ -139,6 +140,17 @@ class UsersController extends Controller
             'status' => 2
         ]);
         $user->wallet += $confing_data->task_amount;
+=======
+        // $confing_data = Config::first();
+
+        $TransactionHistory =  TransactionHistory::create([
+            'user_id' => $user->id,
+            'amount' => $request->amount,
+            'type' => 4,
+            'status' => 2
+        ]);
+        $user->wallet += $request->amount;
+>>>>>>> 9e6cd4e14bc9cf82a6cd2845d47a40224bd14bba
         $request_accept->status = 2;
         $request_accept->save();
         $user->save();

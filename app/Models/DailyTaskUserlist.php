@@ -5,24 +5,25 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class InvestmentHistory extends Model
+class DailyTaskUserlist extends Model
 {
     use HasFactory;
-    protected $table = 'investment_history';
+    protected $table = 'daily_tasks_userlist';
 
     protected $fillable = [
+        'daily_task_id',
         'user_id',
-        'amount',
-        'address',
         'status',
+        'daily_task_id',
+        'link',
+        'amount',
         'type',
-<<<<<<< HEAD
-=======
-        'tx_hash',
->>>>>>> 9e6cd4e14bc9cf82a6cd2845d47a40224bd14bba
-        'invest_at'
     ];
 
+    public function daily_task()
+    {
+        return $this->belongsTo(DailyTask::class);
+    }
     public function user()
     {
         return $this->belongsTo(User::class);

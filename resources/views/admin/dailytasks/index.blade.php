@@ -11,9 +11,9 @@
   
     <div class="box">
         <div class="box-header" style="display: ruby-text;">
-            <span> <h2>Confin List
+            <span> <h2>Daily Tasks List
               </h2> </span>
-              <a href="{{route('verify.create')}}"><button type="button" class="btn btn-sm info">Add +</button> </a>
+              <a href="{{route('DailyTasks.create')}}"><button type="button" class="btn btn-sm info">Add +</button> </a>
            </div>
        
        
@@ -27,39 +27,43 @@
               
               
               <th>Description</th>
+              <th>Amount</th>
               <th>Type</th>
               <th>Status</th>
               <th>Update/Edit</th>
-              {{-- <th>Delete</th> --}}
+              <th>Stop</th>
              </tr>
           </thead>
           <tbody>
-            @foreach ($data as $data)
+            @foreach ($DailyTask as $data)
             <tr>
              
                 <td>{{$data->description}}</td>
+                <td>{{$data->amount}}</td>
                 @if ($data->type == 1)
-                <td>Instagram</td>
+                <td> facebook</td>
                 @else
-                <td>Earn by facebook</td>
+                <td>Youtube</td>
                 @endif
                 
-                @if ($data->status == 2)
-                <td style="color: #00c753">Active</td>
+                @if ($data->status == 1)
+                <td style="color: #00c753">Run</td>
                 @else
-                <td style="color: rgb(222, 244, 61)">InActive</td>
+                <td style="color: rgb(245, 13, 9)">Stop</td>
                 @endif
-               <td>
-                <a href="{{route('verify.edit',$data->id)}}">
-                  <i class="fa fa-edit text-success"></i></a>
-                </td>
-                {{-- <td>
-                  <form action="{{ route('verify.destroy',$data->id) }}" method="POST">
-                    @csrf
-                    @method('DELETE')
-                    <button type="submit" style="background: none;"><i class="fa fa-trash-o" style="color: red;"></i></button>
-                </form>
-                  </td> --}}
+                <td>
+                  <a href="{{route('DailyTasks.edit',$data->id)}}">
+                    <i class="fa fa-edit text-success"></i></a>
+                  </td>
+                  <td>
+                    <form action="{{ route('DailyTasks.destroy',$data->id) }}" method="POST">
+                      @csrf
+                      @method('DELETE')
+                      <button type="submit" style="background: none;"><i class="fa fa-trash-o" style="color: red;"></i></button>
+                  </form>
+                    {{-- <a href="{{route('fiat_currencies.destroy',$FiatCurrency->id)}}"></a> --}}
+                    </td>
+                 
             </tr>
             @endforeach
            

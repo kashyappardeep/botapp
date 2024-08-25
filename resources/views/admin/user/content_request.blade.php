@@ -32,12 +32,20 @@
                     <input type="text" name="telegram_id" value="{{ $request_accept->telegram_id }}" class="form-control" required="" readonly>  
                     </div>                      
                   </div>
+<<<<<<< HEAD
                   {{-- <div class="form-group row">
+=======
+                  <div class="form-group row">
+>>>>>>> 9e6cd4e14bc9cf82a6cd2845d47a40224bd14bba
                     <label class="col-sm-3 form-control-label">Amount</label>
                     <div class="col-sm-9">
                     <input type="text" name="amount"  class="form-control" required="" placeholder="Enter Send Amount">  
                     </div>                      
+<<<<<<< HEAD
                   </div> --}}
+=======
+                  </div>
+>>>>>>> 9e6cd4e14bc9cf82a6cd2845d47a40224bd14bba
                  
                   
                   
