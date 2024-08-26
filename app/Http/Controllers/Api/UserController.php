@@ -171,6 +171,7 @@ class UserController extends Controller
         ]);
         $user->wallet += $data->claimable_amt;
         $user->claimable_amt = 0;
+
         $user->save();
 
         return response()->json([
@@ -315,19 +316,19 @@ class UserController extends Controller
         $user_data = User::where('id', $Id)->first();
         $telegram_id = $user_data->telegram_id;
 
-        $users1 = User::where('referral_by', $telegram_id)->get(['id', 'telegram_id']);
+        $users1 = User::where('referral_by', $telegram_id)
+            ->where('active_status', 2)->get(['id', 'telegram_id']);
         $telegramIds1 = $users1->pluck('telegram_id');
         $ids1 = $users1->pluck('id')->toArray();
 
         //  dd($telegramIds1);
-
-
-
-        $users2 = User::wherein('referral_by', $telegramIds1)->get(['id', 'telegram_id']);
+        $users2 = User::wherein('referral_by', $telegramIds1)
+            ->where('active_status', 2)->get(['id', 'telegram_id']);
         $telegramIds2 = $users2->pluck('telegram_id');
         $ids2 = $users2->pluck('id')->toArray();
 
-        $users3 = User::wherein('referral_by', $telegramIds2)->get(['id', 'telegram_id']);
+        $users3 = User::wherein('referral_by', $telegramIds2)
+            ->where('active_status', 2)->get(['id', 'telegram_id']);
         $telegramIds3 = $users3->pluck('telegram_id');
         $ids3 = $users3->pluck('id')->toArray();
 
@@ -551,6 +552,7 @@ class UserController extends Controller
             ]);
 
             $user->wallet += $task_deatils->amount;
+            $user->active_status = 2;
             $user->save();
 
 
