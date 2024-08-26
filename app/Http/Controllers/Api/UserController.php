@@ -180,6 +180,11 @@ class UserController extends Controller
         ]);
     }
 
+
+
+
+
+
     public function invest(Request $request)
     {
         // dd($$request->all());
@@ -408,8 +413,6 @@ class UserController extends Controller
         // dd($results->toArray());
 
     }
-
-
 
 
 
