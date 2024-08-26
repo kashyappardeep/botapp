@@ -40,6 +40,8 @@
             </thead>
             <tbody>
               @foreach ($contect as $contect)
+              @if ($contect)
+             
               <tr>
                 <td>{{ $contect->link }}</td>
                 <td>{{ $contect->telegram_id }}</td>
@@ -100,6 +102,9 @@
             @endif
               </td> 
               </tr>
+              @else
+            
+              @endif
               @endforeach
             </tbody>
           </table>

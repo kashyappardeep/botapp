@@ -50,6 +50,7 @@
           </thead>
           <tbody>
             @foreach ($investment as $investment)
+            @if ($investment->user)
             <tr>
               @if ($investment->user !== null) 
               <td>{{ $investment->user->first_name}}</td>
@@ -116,6 +117,9 @@
               </td>
               
             </tr>
+            @else
+            
+        @endif
             @endforeach
            
         </tbody>

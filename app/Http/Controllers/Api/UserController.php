@@ -604,11 +604,11 @@ class UserController extends Controller
         }
         $user = User::where('id', $request->user_id)->first();
         // dd($user->status);
-        // if ($user->status == 1) {
-        //     return response()->json([
-        //         'message' => 'Boost your account to unlock your  withdrawal!'
-        //     ], 200);
-        // }
+        if ($user->status == 1) {
+            return response()->json([
+                'message' => 'Boost your account to unlock your  withdrawal!'
+            ], 200);
+        }
         try {
             $min_withdrawal = Config::first();
 

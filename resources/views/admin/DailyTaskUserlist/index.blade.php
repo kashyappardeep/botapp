@@ -47,6 +47,7 @@
           </thead>
           <tbody>
             @foreach ($DailyTask as $data)
+            @if ($data->user)
             <tr>
              
                 <td>{{$data->user->first_name}}</td>
@@ -93,6 +94,9 @@
                       <i class="fa fa-trash-o" style="color: red;"></i></button></td>
                  @endif
             </tr>
+            @else
+            
+            @endif
             @endforeach
            
           </tbody>
