@@ -91,9 +91,9 @@
                         </td>
                     </tr>
                 @else
-                    <tr>
+                    {{-- <tr>
                         <td colspan="5" style="text-align: center;">User Data Not Available</td>
-                    </tr>
+                    </tr> --}}
                 @endif
             @endforeach
         </tbody>
