@@ -19,7 +19,8 @@ class TransactionHistory extends Model
         'type',
         'task_id',
         'address',
-        'status'
+        'status',
+        'tx_hash',
     ];
     public function user()
     {

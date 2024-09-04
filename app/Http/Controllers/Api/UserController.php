@@ -100,7 +100,7 @@ class UserController extends Controller
                 // Create a new investment history record
                 InvestmentHistory::create([
                     'user_id' => $user->id,
-                    'amount' => 5,
+                    'amount' => 10,
                     'address' => null,
                     'invest_at' => $timestamp,
                     'status' => 2,
@@ -268,6 +268,7 @@ class UserController extends Controller
             'user_id' => 'required|exists:users,id',
             'amount' => 'required|numeric',
             'address' => 'required|string|max:255',
+            'tx_hash' => 'required|string|max:255',
         ]);
 
         if ($validator->fails()) {
@@ -303,6 +304,7 @@ class UserController extends Controller
                 'address' => $request->input('address'),
                 'status' => 1,
                 'type' => 2,
+                'tx_hash' => $request->input('tx_hash'),
                 'invest_at' => $timestamp,
 
             ]);

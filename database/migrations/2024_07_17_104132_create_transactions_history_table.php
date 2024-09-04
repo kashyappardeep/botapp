@@ -21,6 +21,7 @@ return new class extends Migration
             $table->string('status')->default(1)->comment('1=>pending ,2=> complete');
 
             $table->decimal('amount', 15, 2)->nullable();
+            $table->string('tx_hash')->nullable();
             $table->string('level')->nullable();
             $table->string('type')->default(1)->comment('0=>claim ,1=>task ,2=> referral_by ,3 => withdraw');
 
