@@ -25,7 +25,6 @@ class UserController extends Controller
 {
     public function register(Request $request)
     {
-
         $validator = Validator::make($request->all(), [
             'id' => 'required|max:255|unique:users',
             'last_name' => 'nullable|string|max:255',
@@ -37,54 +36,54 @@ class UserController extends Controller
             return response()->json(['errors' => $validator->errors()], 400);
         }
 
-
-        // dd($request->all());
-
         $id = $request->id;
         $first_name = $request->first_name;
         $last_name = $request->last_name;
+
         try {
             $dateTime = Carbon::now();
             $timestamp = $dateTime->timestamp;
 
             $user = User::where('telegram_id', $id)->first();
 
-
-
-
             if ($user) {
-                // dd($user);
+                $user_investment = InvestmentHistory::where('user_id', $user->id)
+                    ->where('status', 2)
+                    ->sum('amount');
 
-                $user_investment = InvestmentHistory::where('user_id', $user->id)->where('status', 2)->sum('amount');
-
+                // Check if user investment is numeric
+                if (!is_numeric($user_investment)) {
+                    return response()->json(['register' => 'Register failed', 'message' => 'User investment is not numeric'], 500);
+                }
 
                 $totalPower = $user_investment / 10;
 
-                if ($totalPower == 0) {
-                    $totalPower = 1;
-                } else {
-                    $totalPower = $totalPower;
+                // Check if totalPower is numeric
+                if (!is_numeric($totalPower)) {
+                    return response()->json(['register' => 'Register failed', 'message' => 'Total power calculation failed'], 500);
                 }
 
-                // dd($totalPower);
+                $totalPower = $totalPower == 0 ? 1 : $totalPower;
 
-                $user =  $this->claimDaily($user);
+                // Claim daily ROI
+                $user = $this->claimDaily($user);
                 $user->setAttribute('totalPower', $totalPower);
             } else {
-
                 $referral_by = $request->referral_by;
                 if ($referral_by == null || empty($referral_by)) {
                     $referral_by = 1257589132;
                 }
 
-                $sponsor_user =    User::where('telegram_id', $referral_by)->first();
+                $sponsor_user = User::where('telegram_id', $referral_by)->first();
 
                 if (empty($sponsor_user) || $sponsor_user == null) {
                     $referral_by = 1257589132;
-                    $sponsor_user =    User::where('telegram_id', $referral_by)->first();
+                    $sponsor_user = User::where('telegram_id', $referral_by)->first();
                 }
-                // dd($sponsor_user);
+
                 DB::beginTransaction();
+
+                // Create a new user if one does not exist
                 $user = User::firstOrCreate(
                     ['telegram_id' => $id], // Condition to find the existing record
                     [
@@ -98,17 +97,18 @@ class UserController extends Controller
                     ] // Attributes to set if creating a new record
                 );
 
-
-                $investmentHistory = InvestmentHistory::create([
+                // Create a new investment history record
+                InvestmentHistory::create([
                     'user_id' => $user->id,
-                    'amount' => 10,
+                    'amount' => 5,
                     'address' => null,
                     'invest_at' => $timestamp,
                     'status' => 2,
                     'type' => 1
-
                 ]);
-                $TransactionHistory =  TransactionHistory::create([
+
+                // Create a new transaction history record
+                TransactionHistory::create([
                     'amount' => 0,
                     'level' => 1,
                     'to' => $sponsor_user->id,
@@ -116,20 +116,102 @@ class UserController extends Controller
                     'type' => "2",
                     'status' => 2
                 ]);
-            }
-            DB::commit();
 
-            //  $user = User::where('telegram_id', $id)->first();
+                DB::commit();
+            }
+
             return response()->json([
                 'user' => $user,
-
             ], 200);
         } catch (\Exception $e) {
-            // Optionally handle the exception
             DB::rollBack();
             return response()->json(['register' => 'Register failed', 'message' => $e->getMessage()], 500);
         }
     }
+
+    private function claimDaily($user)
+    {
+        $id = $user->id;
+        $currentDate = Carbon::now();
+        $Config_detail = Config::first();
+
+        $paid_daily_roi = $Config_detail->daily_roi;
+
+        // Log the daily ROI value
+        Log::info('Paid Daily ROI: ' . $paid_daily_roi);
+
+        if (!is_numeric($paid_daily_roi)) {
+            return response()->json(['register' => 'Register failed', 'message' => 'daily_roi is not numeric'], 500);
+        }
+
+        $lastClaim = $user->claimHistories()->latest()->first();
+        $user_investment = InvestmentHistory::where('user_id', $id)->where('status', 2)->get();
+        $user = User::find($id);
+
+        $claim_amount = 0;
+        $per_day_roi_rate = 0;
+
+        foreach ($user_investment as $investment) {
+            $investment_amount = $investment->amount;
+
+            // Log the investment amount
+            Log::info('Investment Amount: ' . $investment_amount);
+
+            if (!is_numeric($investment_amount)) {
+                return response()->json(['register' => 'Register failed', 'message' => 'investment amount is not numeric'], 500);
+            }
+
+            $lastClaimDate = $investment->invest_at > $lastClaim ? $investment->invest_at : $lastClaim->last_claim_timestamp;
+
+            // Log the last claim date
+            Log::info('Last Claim Date (Timestamp): ' . $lastClaimDate);
+
+            if (!is_numeric($lastClaimDate)) {
+                return response()->json(['register' => 'Register failed', 'message' => 'last claim date is not valid'], 500);
+            }
+
+            $old_date = Carbon::createFromTimestamp($lastClaimDate);
+            $differenceInSeconds = $old_date->diffInSeconds($currentDate);
+
+            // Log the difference in seconds
+            Log::info('Difference in Seconds: ' . $differenceInSeconds);
+
+            $one_day_roi = floatval($investment_amount) * floatval($paid_daily_roi) / 100;
+
+            Log::info('One Day ROI: ' . $one_day_roi);
+
+            $investment_claim_amount = number_format(($one_day_roi / 86400 * floatval($differenceInSeconds)), 8);
+
+            Log::info("Investment Claim Amount: " . $investment_claim_amount);
+
+            $claim_amount += floatval($investment_claim_amount);
+            $per_day_roi_rate += floatval($one_day_roi);
+        }
+
+        // Log total values before further calculations
+        Log::info("Total Claim Amount: " . $claim_amount);
+        Log::info("Total Per Day ROI Rate: " . $per_day_roi_rate);
+
+        if (!is_numeric($per_day_roi_rate)) {
+            return response()->json(['register' => 'Register failed', 'message' => 'per_day_roi_rate is not numeric'], 500);
+        }
+
+        $per_10_milliseconds_rate = number_format($per_day_roi_rate / 86400, 8);
+
+        Log::info("Per 10 Milliseconds Rate: " . $per_10_milliseconds_rate);
+
+        $user->claimable_amt = floatval($claim_amount);
+        $user->roi_rate = floatval($per_10_milliseconds_rate) == 0.00000000 ? 0.00000006 : floatval($per_10_milliseconds_rate);
+
+        Log::info('Final Claimable Amount: ' . $user->claimable_amt);
+        Log::info('Final ROI Rate: ' . $user->roi_rate);
+
+        $user->save();
+
+        return $user;
+    }
+
+
 
 
 
@@ -410,81 +492,7 @@ class UserController extends Controller
 
 
 
-    private function claimDaily($user)
-    {
 
-        $id = $user->id;
-
-        $currentDate = Carbon::now();
-        $Config_detail = Config::first();
-        $paid_daily_roi = $Config_detail->daily_roi;
-        $lastClaim = $user->claimHistories()->latest()->first();
-
-        $user_investment = InvestmentHistory::where('user_id', $id)->where('status', 2)->get();
-        // dd($user_investment);
-        $user = User::find($id);
-
-        $claim_amount = 0;
-        $per_day_roi_rate = 0;
-
-        foreach ($user_investment as $investment) {
-
-            $investment_amount = $investment->amount;
-            // dd($claim_amount);
-
-            if ($investment->invest_at > $lastClaim) {
-                // Last claim date found
-
-                $lastClaimDate = $investment->invest_at;
-            } else {
-
-
-
-                $lastClaimDate = $lastClaim->last_claim_timestamp;
-            }
-
-            $old_date = Carbon::createFromTimestamp($lastClaimDate);
-
-            $differenceInSeconds = $old_date->diffInSeconds($currentDate);
-
-
-
-            $one_day_roi = $investment_amount * $paid_daily_roi  / 100;
-            Log::info('per day roi');
-            Log::info($one_day_roi);
-            $investment_claim_amount = number_format(($one_day_roi / 86400 * $differenceInSeconds), 8);
-
-            Log::info("differenceInSeconds");
-            Log::info($differenceInSeconds);
-            $claim_amount += $investment_claim_amount;
-            Log::info("claim_amount");
-            Log::info($claim_amount);
-            $per_day_roi_rate += $one_day_roi;
-        }
-
-
-        $per_10_milliseconds_rate = number_format($per_day_roi_rate / 86400, 8);
-
-        Log::info("claim_amounttt");
-        Log::info($claim_amount);
-
-        $user->claimable_amt = $claim_amount;
-        Log::info('perrr day roi');
-        Log::info($claim_amount);
-        if ($per_10_milliseconds_rate == 0.00000000) {
-            $per_10_milliseconds_rate = 0.00000006;
-        }
-        $user->roi_rate = $per_10_milliseconds_rate;
-
-
-
-        // Log::info(' per_10_milliseconds_rate roi');
-        // Log::info($per_10_milliseconds_rate);
-
-        $user->save();
-        // $user = User::find($id);
-        return $user;
-    }
 
     public function user_task(Request $request)
     {
@@ -607,6 +615,12 @@ class UserController extends Controller
                 return response()->json([
                     'message' => 'Amount must be at least ' . $min_withdrawal->min_withdrawal . ' Trx',
 
+                ], 200);
+            }
+
+            if ($user->status == 1) {
+                return response()->json([
+                    'message' => 'Boost your account to unlock your  withdrawal!'
                 ], 200);
             }
 

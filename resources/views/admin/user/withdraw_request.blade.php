@@ -44,67 +44,60 @@
             </tr>
           </thead>
           <tbody>
-            @foreach ($Withdraw as $Withdraw)
-            <tr>
-                                      
-                <td>{{ $Withdraw->user->first_name}}</td>
-                <td>{{$Withdraw->user->telegram_id}}</td>
-                <td>{{$Withdraw->address}}</td>
-                <td>{{$Withdraw->amount}}</td>
-                <td>
-                  @if ($Withdraw->created_at)
-                    {{ \Carbon\Carbon::parse($Withdraw->created_at)->timezone('Asia/Kolkata')->format('Y-m-d H:i:s') }}
-                  @else
-                    No Date
-                  @endif
-                </td>
-                {{-- <td>{{ \Carbon\Carbon::parse($Withdraw->created_at)->timezone('Asia/Kolkata')->format('Y-m-d H:i:s') }}</td> --}}
-                
-                {{-- <td>{{$Withdraw->created_at}}</td> --}}
-                @if ($Withdraw->status ==1)
-                <td style="color: #e4e136">Pending Request </td> 
-                @elseif($Withdraw->status ==2)
-                <td style="color: #32f10c"> Complete </td>
+            @foreach ($Withdraw as $withdraw)
+                @if ($withdraw->user)
+                    <tr>
+                        <td>{{ $withdraw->user->first_name ?? 'No Address' }}</td>
+                        <td>{{ $withdraw->user->telegram_id ?? 'No Address' }}</td>
+                        <td>{{ $withdraw->address ?? 'No Address' }}</td>
+                        <td>{{ $withdraw->amount ?? 'No Amount' }}</td>
+                        <td>
+                            @if ($withdraw->created_at)
+                                {{ \Carbon\Carbon::parse($withdraw->created_at)->timezone('Asia/Kolkata')->format('Y-m-d H:i:s') }}
+                            @else
+                                No Date
+                            @endif
+                        </td>
+        
+                        @if ($withdraw->status == 1)
+                            <td style="color: #e4e136">Pending Request</td>
+                        @elseif($withdraw->status == 2)
+                            <td style="color: #32f10c">Complete</td>
+                        @else
+                            <td style="color: hsl(0, 91%, 50%)">Rejected</td>
+                        @endif
+        
+                        <td style="display: flex;">
+                            @if($withdraw->status == 1)
+                                <form action="{{ route('admin.status_change', $withdraw->id) }}" method="POST">
+                                    @csrf
+                                    <button type="submit" class="open-modal" style="background: none;">
+                                        <i class="fa fa-check" style="color: #00c853;"></i>
+                                    </button>
+                                </form>
+                            @endif
+                            
+                            &nbsp;
+                            
+                            @if($withdraw->status == 1)
+                                <form action="{{ route('admin.reject_Status', $withdraw->id) }}" method="POST">
+                                    @csrf
+                                    <input type="hidden" name="status" value="2">
+                                    <button type="submit" style="background: none;">
+                                        <i class="fa fa-remove" style="color: red;"></i>
+                                    </button>
+                                </form>
+                            @endif
+                        </td>
+                    </tr>
                 @else
-                <td style="color: hsl(0, 91%, 50%)">Rrejected </td>
+                    {{-- <tr>
+                        <td colspan="5" style="text-align: center;">User Data Not Available</td>
+                    </tr> --}}
                 @endif
-                
-                <td style="    display: flex;">
-                  @if($Withdraw->status ==1)
-                  <form action="{{ route('admin.status_change', $Withdraw->id) }}" method="POST">
-                    @csrf
-                    @method('POST') <!-- Change to POST if your route uses POST -->
-                    <button type="submit" class="open-modal" data-id="" data-toggle="modal" data-target="#inputModal" style="background: none;">
-                        <i class="fa fa-check" style="color: #00c853;"></i>
-                    </button>
-                </form>
-                @else
-                <button type="submit" class="open-modal" data-id="" data-toggle="modal" data-target="#inputModal" style="background: none;">
-                  <i class="fa fa-check" style="color: #00c853;"></i>
-              </button>
-              @endif
-                
-                  &nbsp;
-                  @if($Withdraw->status ==1)
-                 <form action="{{ route('admin.reject_Status', $Withdraw->id) }}" method="POST">
-                      @csrf
-                      @method('POST')
-                      <input type="hidden" name="status" value="2">
-                  <button type="submit" style="background: none;">
-                      <i class="fa fa-remove" style="color: red;"></i>
-                  </button>
-              </form>
-              @else
-              <button type="submit" class="open-modal" data-id="" data-toggle="modal" data-target="#inputModal" style="background: none;">
-                <i class="fa fa-remove" style="color: #f60505;"></i>
-            </button>
-            @endif
-              </td>
-              
-            </tr>
             @endforeach
-           
-          </tbody>
+        </tbody>
+        
         </table>
       
       </div>
